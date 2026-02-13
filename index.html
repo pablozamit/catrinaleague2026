@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pirate Pool League: Official Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; background-color: #f0f9ff; color: #0c4a6e; }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .pirate-card { background-color: white; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transition: transform 0.3s ease; }
+        .pirate-card:hover { transform: translateY(-5px); }
+        .section-title { color: #0369a1; border-bottom: 4px solid #fbbf24; display: inline-block; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+    </style>
+    <!-- Palette: Brilliant Blues & Gold
+         Deep Blue: #0c4a6e
+         Ocean Blue: #0369a1
+         Sky Blue: #e0f2fe
+         Gold: #fbbf24
+         White: #ffffff
+    -->
+</head>
+<body class="bg-sky-50">
+
+    <!-- Header / Hook -->
+    <header class="bg-gradient-to-r from-sky-900 to-sky-700 text-white py-12 px-4 shadow-lg">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">PIRATE POOL LEAGUE</h1>
+            <p class="text-xl md:text-2xl font-light text-sky-100">Official Captain's Log & Regulations</p>
+            <div class="mt-8 flex justify-center space-x-4">
+                <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md">30 Players</span>
+                <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md">5 Teams</span>
+                <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md">8 Weeks</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12 space-y-16">
+
+        <!-- SECTION 1: THE RANKS -->
+        <section>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold section-title">The Crew Ranks</h2>
+                <p class="max-w-3xl mx-auto text-slate-600 text-lg">
+                    The league hierarchy is strictly divided into six tiers based on ELO ranking. 
+                    From the commanding Captains to the lowly Cabin Boys, every pirate has a rank 
+                    that dictates their role in the fleet.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Chart: ELO Ranges -->
+                <div class="pirate-card p-6">
+                    <h3 class="text-xl font-bold mb-4 text-sky-800 text-center">ELO Hierarchy</h3>
+                    <div class="chart-container">
+                        <canvas id="ranksChart"></canvas>
+                    </div>
+                    <p class="text-sm text-slate-500 text-center mt-4 italic">Ranking range (1 = Top ELO)</p>
+                </div>
+
+                <!-- Text Content: Description -->
+                <div class="space-y-4">
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-sky-600 shadow-sm">
+                        <h4 class="font-bold text-sky-800 text-lg">LEVEL A: Captain (1-5)</h4>
+                        <p class="text-slate-600 text-sm">The elite top 5. They lead the teams and make strategic decisions.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-sky-500 shadow-sm">
+                        <h4 class="font-bold text-sky-800 text-lg">LEVEL B: Boatswain (6-10)</h4>
+                        <p class="text-slate-600 text-sm">The Vice-Presidents. Assigned in reverse order to balance the strongest captains.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-yellow-400 shadow-sm">
+                        <h4 class="font-bold text-sky-800 text-lg">LEVELS C-F: The Crew (11-30)</h4>
+                        <p class="text-slate-600 text-sm">From Rogue Helmsmen to Clumsy Cabin Boys. Selected via Draft (C-E) or Lottery (F).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: TEAM FORMATION -->
+        <section class="bg-white rounded-xl shadow-md p-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold section-title">Building the Fleet</h2>
+                <p class="max-w-3xl mx-auto text-slate-600 text-lg">
+                    Fairness is paramount on the high seas. Teams are not just gathered; they are engineered 
+                    for balance using a specific protocol of assignment, drafting, and luck.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
+                    <div class="text-4xl mb-2">👑</div>
+                    <h3 class="font-bold text-sky-900 mb-2">1. Captains</h3>
+                    <p class="text-sm text-slate-600">Top 5 Players are fixed as leaders of Teams 1-5.</p>
+                </div>
+                <div class="flex items-center justify-center md:hidden text-2xl text-sky-300">⬇</div>
+                
+                <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
+                    <div class="text-4xl mb-2">⚖️</div>
+                    <h3 class="font-bold text-sky-900 mb-2">2. Inverse B</h3>
+                    <p class="text-sm text-slate-600">Rank 10 joins Rank 1. Rank 6 joins Rank 5. Perfect balance.</p>
+                </div>
+                <div class="flex items-center justify-center md:hidden text-2xl text-sky-300">⬇</div>
+
+                <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
+                    <div class="text-4xl mb-2">🤝</div>
+                    <h3 class="font-bold text-sky-900 mb-2">3. The Draft</h3>
+                    <p class="text-sm text-slate-600">Levels C, D, and E are hand-picked by the leadership.</p>
+                </div>
+                <div class="flex items-center justify-center md:hidden text-2xl text-sky-300">⬇</div>
+
+                <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
+                    <div class="text-4xl mb-2">🎲</div>
+                    <h3 class="font-bold text-sky-900 mb-2">4. Lottery</h3>
+                    <p class="text-sm text-slate-600">Level F (Clumsy Cabin Boys) are randomly drawn to fill spots.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: RULES OF ENGAGEMENT -->
+        <section>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold section-title">Rules of Engagement</h2>
+                <p class="max-w-3xl mx-auto text-slate-600 text-lg">
+                    8-Ball is the game, but strategy is the key. Matches are a "Race to 3". 
+                    Every rack counts, as a close defeat earns Merit Points for the team.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Chart: Scoring System -->
+                <div class="pirate-card p-6">
+                    <h3 class="text-xl font-bold mb-4 text-sky-800 text-center">The Spoils (Scoring System)</h3>
+                    <div class="chart-container">
+                        <canvas id="scoringChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-slate-500 mt-4">Points awarded towards Team Standings</p>
+                </div>
+
+                <!-- Matchup Matrix -->
+                <div class="pirate-card p-6 flex flex-col justify-center">
+                    <h3 class="text-xl font-bold mb-6 text-sky-800 text-center">Who Fights Whom?</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-slate-600">
+                            <thead class="text-xs text-sky-700 uppercase bg-sky-100">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 rounded-tl-lg">Your Rank</th>
+                                    <th scope="col" class="px-4 py-3 rounded-tr-lg">Your Opponents (8 Matches)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b border-sky-100 hover:bg-sky-50">
+                                    <td class="px-4 py-3 font-bold text-sky-900">A (Captain)</td>
+                                    <td class="px-4 py-3">2x A, 2x B, 2x C, 2x D</td>
+                                </tr>
+                                <tr class="bg-white border-b border-sky-100 hover:bg-sky-50">
+                                    <td class="px-4 py-3 font-bold text-sky-900">B, C, D</td>
+                                    <td class="px-4 py-3">Mix of Own Level + Adjacent Levels</td>
+                                </tr>
+                                <tr class="bg-white rounded-b-lg hover:bg-sky-50">
+                                    <td class="px-4 py-3 font-bold text-sky-900">E, F</td>
+                                    <td class="px-4 py-3">Primarily E, F, and D (Protected from A)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-6 bg-yellow-50 p-4 rounded border border-yellow-200 text-sm text-yellow-800">
+                        <strong>⚔️ Combat Note:</strong> Captains (A) can never prey on the weakest (E & F). The sea is harsh, but fair.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CAPTAIN'S ARMORY -->
+        <section>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold section-title">Captain's Armory</h2>
+                <p class="max-w-3xl mx-auto text-slate-600 text-lg">
+                    Brute force isn't enough. Each team possesses a limited arsenal of strategic powers 
+                    to turn the tide of battle. Use them wisely; they are single-use assets.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Power Inventory Chart -->
+                <div class="md:col-span-1 pirate-card p-6">
+                    <h3 class="text-xl font-bold mb-4 text-sky-800 text-center">Team Asset Inventory</h3>
+                    <div class="chart-container">
+                        <canvas id="powersChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Power Descriptions -->
+                <div class="md:col-span-2 space-y-6">
+                    <div class="flex items-start space-x-4 bg-white p-6 rounded-lg shadow-sm border-l-4 border-indigo-500">
+                        <div class="text-3xl">🎱</div>
+                        <div>
+                            <h4 class="font-bold text-indigo-900 text-lg">Challenge Cards (9-Ball & 10-Ball)</h4>
+                            <p class="text-slate-600 mb-2">Force a change of game mode! Instead of 8-ball, the match becomes 9-ball or 10-ball.</p>
+                            <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded font-bold">1 of each per team</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-4 bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
+                        <div class="text-3xl">⛳</div>
+                        <div>
+                            <h4 class="font-bold text-green-900 text-lg">Handicap Points (Head Start)</h4>
+                            <p class="text-slate-600 mb-2">Grant a player a <strong>1-0 lead</strong> at the start of their Race to 3.</p>
+                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded font-bold">2 points per team</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 text-white p-6 rounded-lg shadow-md">
+                        <h4 class="font-bold text-yellow-400 mb-2">⚠️ The Rules of War (Restrictions)</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-sm text-slate-200">
+                            <li><strong>Deadline:</strong> Must declare by Monday before the match.</li>
+                            <li><strong>Exclusive:</strong> Only ONE power per match. No counters allowed.</li>
+                            <li><strong>Conflict:</strong> Handicap points cannot be used in Challenge Card matches.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: THE TREASURE (STANDINGS) -->
+        <section class="mb-12">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold section-title">Claiming the Treasure</h2>
+                <p class="max-w-3xl mx-auto text-slate-600 text-lg">
+                    At the end of 8 weeks, only one crew will rule the seas. 
+                    Here is how the winner is determined when the smoke clears.
+                </p>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="relative">
+                    <div class="absolute left-1/2 -ml-0.5 w-0.5 h-full bg-sky-200"></div>
+                    
+                    <!-- Step 1 -->
+                    <div class="relative flex items-center mb-8">
+                        <div class="flex-1 text-right pr-8">
+                            <h3 class="font-bold text-xl text-sky-900">1. Total Points</h3>
+                            <p class="text-slate-600 text-sm">Sum of all Wins (3pts) and Merit Points (1pt).</p>
+                        </div>
+                        <div class="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center font-bold text-sky-900 z-10 shadow-md">1</div>
+                        <div class="flex-1 pl-8"></div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative flex items-center mb-8">
+                        <div class="flex-1"></div>
+                        <div class="w-8 h-8 bg-sky-600 rounded-full flex items-center justify-center font-bold text-white z-10 shadow-md">2</div>
+                        <div class="flex-1 pl-8 text-left">
+                            <h3 class="font-bold text-xl text-sky-900">2. Rack Difference</h3>
+                            <p class="text-slate-600 text-sm">Total Racks Won minus Total Racks Lost.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative flex items-center mb-8">
+                        <div class="flex-1 text-right pr-8">
+                            <h3 class="font-bold text-xl text-sky-900">3. Head-to-Head</h3>
+                            <p class="text-slate-600 text-sm">Direct record between tied teams.</p>
+                        </div>
+                        <div class="w-8 h-8 bg-sky-600 rounded-full flex items-center justify-center font-bold text-white z-10 shadow-md">3</div>
+                        <div class="flex-1 pl-8"></div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative flex items-center">
+                        <div class="flex-1"></div>
+                        <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center font-bold text-white z-10 shadow-md">4</div>
+                        <div class="flex-1 pl-8 text-left">
+                            <h3 class="font-bold text-xl text-red-700">4. Captains' Duel</h3>
+                            <p class="text-slate-600 text-sm">Sudden death match between team leaders.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-400 text-sm pb-8 pt-8 border-t border-slate-200">
+            <p>Pirate Pool League • Official Regulations</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- HELPER FUNCTION: Label Wrapping ---
+        function wrapLabel(str, maxChars) {
+            if (str.length <= maxChars) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxChars) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- CHART CONFIGURATIONS ---
+
+        // 1. Ranks Chart (Horizontal Bar)
+        const ctxRanks = document.getElementById('ranksChart').getContext('2d');
+        new Chart(ctxRanks, {
+            type: 'bar',
+            data: {
+                labels: ['Captain (A)', 'Boatswain (B)', 'Rogue Helmsman (C)', 'Scallywag Sailor (D)', 'Galician Cabin Boy (E)', 'Clumsy Cabin Boy (F)'],
+                datasets: [{
+                    label: 'Player Count per Level', // Abstract representation
+                    data: [5, 5, 5, 5, 5, 5], // Equal distribution in this conceptual chart
+                    backgroundColor: [
+                        '#0c4a6e', // Captain - Darkest Blue
+                        '#0369a1',
+                        '#0ea5e9',
+                        '#38bdf8',
+                        '#7dd3fc',
+                        '#bae6fd'  // Cabin Boy - Lightest
+                    ],
+                    borderColor: '#0f172a',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) return label.join(' ');
+                                return label;
+                            },
+                            label: function(context) {
+                                const ranks = ['1 - 5', '6 - 10', '11 - 15', '16 - 20', '21 - 25', '26 - 30'];
+                                return 'Ranking Range: ' + ranks[context.dataIndex];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { display: false }, // Hide numbers as it's qualitative
+                    y: { 
+                        ticks: { 
+                            font: { weight: 'bold' },
+                            color: '#0c4a6e'
+                        } 
+                    }
+                }
+            }
+        });
+
+        // 2. Scoring Chart (Bar)
+        const ctxScoring = document.getElementById('scoringChart').getContext('2d');
+        new Chart(ctxScoring, {
+            type: 'bar',
+            data: {
+                labels: wrapLabel('Victory (3-0, 3-1, 3-2), Merit Point (Loss 3-2), Defeat (Loss 3-0, 3-1)', 20),
+                datasets: [{
+                    label: 'Points for Team',
+                    data: [3, 1, 0],
+                    backgroundColor: ['#fbbf24', '#cbd5e1', '#ef4444'], // Gold, Silver/Grey, Red
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) return label.join(' ');
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+            }
+        });
+
+        // 3. Powers Chart (Doughnut)
+        const ctxPowers = document.getElementById('powersChart').getContext('2d');
+        new Chart(ctxPowers, {
+            type: 'doughnut',
+            data: {
+                labels: ['Handicap Points', '9-Ball Card', '10-Ball Card'],
+                datasets: [{
+                    label: 'Asset Quantity',
+                    data: [2, 1, 1],
+                    backgroundColor: [
+                        '#22c55e', // Green for handicap
+                        '#6366f1', // Indigo for 9-Ball
+                        '#8b5cf6'  // Purple for 10-Ball
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { boxWidth: 12, font: { size: 10 } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) return label.join(' ');
+                                return label;
+                            },
+                            label: function(context) {
+                                return context.raw + ' Available per Season';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
