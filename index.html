@@ -13,15 +13,15 @@
         }
 
         :root {
-            --felt-dark: #0d1f12;
-            --felt-mid: #1a3d23;
-            --felt-light: #2d5a3d;
+            --felt-base: #1a4d2e;
+            --felt-dark: #0f2e1b;
+            --felt-light: #2d6b42;
             --wood-dark: #1a0f08;
             --wood-mid: #2d1a0f;
             --wood-light: #4a2d1a;
+            --rubber: #0a0a0a;
             --gold: #d4af37;
-            --gold-bright: #f4d03f;
-            --shadow-dark: rgba(0, 0, 0, 0.9);
+            --gold-glow: rgba(212, 175, 55, 0.4);
         }
 
         body {
@@ -43,7 +43,7 @@
             width: 100%;
             height: 100%;
             background: 
-                linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(5, 5, 5, 0.5) 50%, rgba(5, 5, 5, 0.8) 100%),
+                linear-gradient(180deg, rgba(5, 5, 5, 0.6) 0%, rgba(5, 5, 5, 0.4) 50%, rgba(5, 5, 5, 0.7) 100%),
                 url('material/imagen2.jpeg') center/cover no-repeat;
             z-index: -2;
         }
@@ -55,12 +55,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.8) 100%);
+            background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.9) 100%);
             z-index: -1;
             pointer-events: none;
         }
 
-        /* Partículas de polvo/tiza */
+        /* Partículas de polvo */
         .dust-particles {
             position: fixed;
             top: 0;
@@ -76,16 +76,29 @@
             position: absolute;
             width: 2px;
             height: 2px;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
             border-radius: 50%;
-            animation: float 15s infinite;
+            animation: float 20s infinite;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(100vh) translateX(0); opacity: 0; }
-            10% { opacity: 0.5; }
-            90% { opacity: 0.5; }
-            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        /* Luz de ambiente */
+        .ambient-light {
+            position: fixed;
+            top: -50%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(255, 220, 150, 0.1) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
         }
 
         /* Header */
@@ -99,26 +112,26 @@
 
         .header h1 {
             font-family: 'Forum', serif;
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-size: clamp(1.8rem, 4vw, 3rem);
             font-weight: 400;
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             text-transform: uppercase;
             background: linear-gradient(to right, #fff, var(--gold), #fff);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
         }
 
         .header p {
-            font-size: 0.65rem;
-            letter-spacing: 3px;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
             text-transform: uppercase;
             color: #888;
-            margin-top: 0.3rem;
+            margin-top: 0.5rem;
         }
 
-        /* Contenedor principal */
+        /* Escenario principal */
         .game-stage {
             flex: 1;
             width: 100%;
@@ -126,66 +139,107 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 1rem;
+            padding: 0 1rem 2rem;
             position: relative;
-            perspective: 1500px;
+            perspective: 2000px;
             z-index: 10;
         }
 
-        /* Mesa 3D */
+        /* Mesa 3D Container */
         .table-container {
             position: relative;
             width: 95%;
-            max-width: 900px;
+            max-width: 1000px;
             transform-style: preserve-3d;
-            transform: rotateX(25deg) translateZ(-50px);
-            transition: transform 0.5s ease;
+            transform: rotateX(35deg) rotateZ(0deg);
         }
 
-        /* Marco de madera */
-        .table-frame {
+        /* Marco exterior de madera */
+        .table-frame-outer {
             position: relative;
-            background: linear-gradient(145deg, 
-                var(--wood-dark) 0%, 
-                var(--wood-mid) 30%, 
-                var(--wood-light) 50%, 
-                var(--wood-mid) 70%, 
+            background: linear-gradient(135deg,
+                var(--wood-dark) 0%,
+                var(--wood-mid) 25%,
+                var(--wood-light) 50%,
+                var(--wood-mid) 75%,
                 var(--wood-dark) 100%);
-            padding: clamp(15px, 3vw, 35px);
-            border-radius: 20px;
-            box-shadow: 
-                0 60px 120px rgba(0, 0, 0, 0.9),
-                0 30px 60px rgba(0, 0, 0, 0.6),
-                inset 0 2px 4px rgba(255, 255, 255, 0.05),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+            padding: clamp(20px, 4vw, 40px);
+            border-radius: 25px;
+            box-shadow:
+                0 80px 150px rgba(0, 0, 0, 0.95),
+                0 40px 80px rgba(0, 0, 0, 0.7),
+                inset 0 3px 6px rgba(255, 255, 255, 0.1),
+                inset 0 -3px 6px rgba(0, 0, 0, 0.6);
         }
 
-        /* Fieltro con textura */
+        /* Textura de madera */
+        .table-frame-outer::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.1) 2px,
+                    rgba(0, 0, 0, 0.1) 4px
+                );
+            border-radius: 20px;
+            pointer-events: none;
+        }
+
+        /* Marco interior (bandas de goma) */
+        .table-frame-inner {
+            position: relative;
+            background: linear-gradient(135deg,
+                #1a1a1a 0%,
+                #2a2a2a 50%,
+                #1a1a1a 100%);
+            padding: clamp(15px, 3vw, 25px);
+            border-radius: 15px;
+            box-shadow:
+                inset 0 5px 15px rgba(0, 0, 0, 0.8),
+                0 2px 4px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Fieltro */
         .table-felt {
             position: relative;
             background: 
-                radial-gradient(ellipse at 20% 30%, rgba(45, 90, 61, 0.4) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 70%, rgba(45, 90, 61, 0.3) 0%, transparent 50%),
-                linear-gradient(135deg, var(--felt-dark) 0%, var(--felt-mid) 50%, var(--felt-dark) 100%);
-            border-radius: 12px;
-            aspect-ratio: 2 / 1.1;
-            box-shadow: 
-                inset 0 0 150px rgba(0, 0, 0, 0.7),
-                inset 0 0 300px rgba(0, 0, 0, 0.4);
+                /* Luz central */
+                radial-gradient(ellipse at 50% 30%, rgba(45, 107, 66, 0.8) 0%, transparent 50%),
+                /* Sombra en las esquinas */
+                radial-gradient(ellipse at 0% 0%, rgba(0, 0, 0, 0.6) 0%, transparent 40%),
+                radial-gradient(ellipse at 100% 0%, rgba(0, 0, 0, 0.6) 0%, transparent 40%),
+                radial-gradient(ellipse at 0% 100%, rgba(0, 0, 0, 0.6) 0%, transparent 40%),
+                radial-gradient(ellipse at 100% 100%, rgba(0, 0, 0, 0.6) 0%, transparent 40%),
+                /* Color base del fieltro */
+                linear-gradient(135deg, var(--felt-dark) 0%, var(--felt-base) 50%, var(--felt-dark) 100%);
+            border-radius: 10px;
+            aspect-ratio: 2 / 1;
+            box-shadow:
+                inset 0 0 100px rgba(0, 0, 0, 0.5),
+                inset 0 0 200px rgba(0, 0, 0, 0.3);
             overflow: visible;
         }
 
-        /* Imagen de la mesa */
-        .table-image {
+        /* Textura del fieltro (puntos) */
+        .table-felt::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            border-radius: 12px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+            background-image: 
+                radial-gradient(circle, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 4px 4px;
+            border-radius: 10px;
+            pointer-events: none;
         }
 
         /* Líneas de la mesa */
@@ -202,39 +256,39 @@
             content: '';
             position: absolute;
             top: 50%;
-            left: 3%;
-            right: 3%;
+            left: 5%;
+            right: 5%;
             height: 1px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.1) 5%,
-                rgba(255, 255, 255, 0.1) 95%,
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.15) 10%,
+                rgba(255, 255, 255, 0.15) 90%,
                 transparent 100%);
         }
 
         .table-lines::after {
             content: '';
             position: absolute;
-            top: 3%;
-            bottom: 3%;
+            top: 5%;
+            bottom: 5%;
             left: 50%;
             width: 1px;
-            background: linear-gradient(180deg, 
-                transparent 0%, 
-                rgba(255, 255, 255, 0.1) 5%,
-                rgba(255, 255, 255, 0.1) 95%,
+            background: linear-gradient(180deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.15) 10%,
+                rgba(255, 255, 255, 0.15) 90%,
                 transparent 100%);
         }
 
-        /* Spot central */
+        /* Círculo central */
         .center-spot {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
         }
 
@@ -244,24 +298,23 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.3);
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 50%;
         }
 
-        /* Troneras 3D */
+        /* Troneras 3D realistas */
         .pocket {
             position: absolute;
-            width: clamp(40px, 6vw, 60px);
-            height: clamp(40px, 6vw, 60px);
+            width: clamp(45px, 6vw, 65px);
+            height: clamp(45px, 6vw, 65px);
             cursor: pointer;
             z-index: 50;
             transform-style: preserve-3d;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Exterior de la tronera */
+        /* Borde metálico exterior */
         .pocket::before {
             content: '';
             position: absolute;
@@ -269,31 +322,37 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 30% 30%, #2a2a2a 0%, #0a0a0a 50%, #000 100%);
+            background: linear-gradient(135deg,
+                #3a3a3a 0%,
+                #1a1a1a 50%,
+                #0a0a0a 100%);
             border-radius: 50%;
-            box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.9),
-                inset 0 0 20px rgba(0, 0, 0, 1),
-                inset 0 -5px 10px rgba(255, 255, 255, 0.05);
-            border: 2px solid #1a1a1a;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.9),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        /* Interior de la tronera (profundidad) */
+        /* Interior negro profundo */
         .pocket::after {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 70%;
-            height: 70%;
-            background: radial-gradient(circle at 40% 40%, #000 0%, #1a1a1a 100%);
+            width: 75%;
+            height: 75%;
+            background: radial-gradient(circle at 40% 40%,
+                #1a1a1a 0%,
+                #000 100%);
             border-radius: 50%;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 1);
+            box-shadow:
+                inset 0 0 20px rgba(0, 0, 0, 1),
+                0 0 10px rgba(0, 0, 0, 0.8);
         }
 
         .pocket:hover {
-            transform: scale(1.15) translateZ(10px);
+            transform: scale(1.1);
             z-index: 60;
         }
 
@@ -302,77 +361,84 @@
         }
 
         .pocket.locked:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
 
-        /* Iconos en troneras */
+        /* Iconos */
         .pocket-icon {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            font-size: clamp(1.1rem, 2.5vw, 1.6rem);
             z-index: 10;
-            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.6));
-            pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));
+            transition: all 0.3s ease;
+        }
+
+        .pocket:hover .pocket-icon {
+            transform: translate(-50%, -50%) scale(1.2);
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 1));
         }
 
         .pocket.locked .pocket-icon {
             filter: none;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
-        /* Posiciones */
-        .pocket.tl { top: -5%; left: -3%; }
-        .pocket.tc { top: -6%; left: 50%; transform: translateX(-50%); }
-        .pocket.tr { top: -5%; right: -3%; }
-        .pocket.bl { bottom: -5%; left: -3%; }
-        .pocket.bc { bottom: -6%; left: 50%; transform: translateX(-50%); }
-        .pocket.br { bottom: -5%; right: -3%; }
+        /* Posiciones exactas */
+        .pocket.tl { top: -22px; left: -22px; }
+        .pocket.tc { top: -25px; left: 50%; transform: translateX(-50%); }
+        .pocket.tr { top: -22px; right: -22px; }
+        .pocket.bl { bottom: -22px; left: -22px; }
+        .pocket.bc { bottom: -25px; left: 50%; transform: translateX(-50%); }
+        .pocket.br { bottom: -22px; right: -22px; }
 
         .pocket.tc:hover, .pocket.bc:hover {
-            transform: translateX(-50%) scale(1.15) translateZ(10px);
+            transform: translateX(-50%) scale(1.1);
         }
 
-        /* Glow en troneras activas */
+        /* Glow dorado en activas */
         @keyframes pocketGlow {
-            0%, 100% { 
-                box-shadow: 
-                    0 8px 25px rgba(0, 0, 0, 0.9),
-                    0 0 20px rgba(212, 175, 55, 0.2);
+            0%, 100% {
+                box-shadow:
+                    0 10px 30px rgba(0, 0, 0, 0.9),
+                    0 0 30px rgba(212, 175, 55, 0.3);
             }
-            50% { 
-                box-shadow: 
-                    0 8px 25px rgba(0, 0, 0, 0.9),
-                    0 0 40px rgba(212, 175, 55, 0.5),
-                    0 0 60px rgba(212, 175, 55, 0.2);
+            50% {
+                box-shadow:
+                    0 10px 30px rgba(0, 0, 0, 0.9),
+                    0 0 50px rgba(212, 175, 55, 0.6),
+                    0 0 70px rgba(212, 175, 55, 0.2);
             }
         }
 
         .pocket:not(.locked)::before {
-            animation: pocketGlow 2.5s infinite;
+            animation: pocketGlow 3s infinite;
         }
 
         /* Etiquetas flotantes */
         .pocket-label {
             position: absolute;
             background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 10px 18px;
-            border-radius: 25px;
-            border: 1px solid rgba(212, 175, 55, 0.4);
+            backdrop-filter: blur(15px);
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--gold);
             color: #fff;
-            font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+            font-size: clamp(0.65rem, 1.5vw, 0.8rem);
             font-weight: 600;
             letter-spacing: 2px;
             text-transform: uppercase;
             white-space: nowrap;
             opacity: 0;
-            transform: translateY(-15px) translateX(-50%);
-            transition: all 0.3s ease;
+            transform: translateY(-20px) translateX(-50%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
             left: 50%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.1);
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(212, 175, 55, 0.2);
             z-index: 100;
         }
 
@@ -382,107 +448,121 @@
         }
 
         .pocket.tl .pocket-label, .pocket.tc .pocket-label, .pocket.tr .pocket-label {
-            top: 80%;
+            top: 75px;
         }
 
         .pocket.bl .pocket-label, .pocket.bc .pocket-label, .pocket.br .pocket-label {
-            bottom: 80%;
+            bottom: 75px;
         }
 
-        /* Bola blanca */
+        /* Bola blanca hiperrealista */
         .cue-ball {
             position: absolute;
-            width: clamp(28px, 4vw, 40px);
-            height: clamp(28px, 4vw, 40px);
+            width: clamp(32px, 4.5vw, 45px);
+            height: clamp(32px, 4.5vw, 45px);
             border-radius: 50%;
-            background: 
-                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 20%, rgba(200, 200, 200, 0.8) 40%, rgba(150, 150, 150, 0.6) 100%);
-            box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.7),
-                0 20px 40px rgba(0, 0, 0, 0.4),
-                inset -8px -8px 20px rgba(0, 0, 0, 0.3),
-                inset 8px 8px 20px rgba(255, 255, 255, 0.9),
+            background:
+                /* Reflejo brillante */
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.4) 20%, transparent 40%),
+                /* Cuerpo de la bola */
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 1) 0%, rgba(230, 230, 230, 0.9) 40%, rgba(180, 180, 180, 0.8) 100%);
+            box-shadow:
+                /* Sombra proyectada */
+                0 15px 40px rgba(0, 0, 0, 0.8),
+                0 25px 60px rgba(0, 0, 0, 0.4),
+                /* Sombra interna */
+                inset -10px -10px 25px rgba(0, 0, 0, 0.3),
+                inset 10px 10px 25px rgba(255, 255, 255, 0.9),
+                /* Brillo interno */
                 inset 0 0 30px rgba(255, 255, 255, 0.2);
             z-index: 40;
             pointer-events: none;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
+            transition: none;
         }
 
+        /* Reflejo especular */
         .cue-ball::before {
             content: '';
             position: absolute;
-            top: 12%;
-            left: 18%;
-            width: 28%;
-            height: 22%;
-            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.95) 0%, transparent 70%);
+            top: 15%;
+            left: 20%;
+            width: 30%;
+            height: 25%;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 1) 0%, transparent 70%);
             border-radius: 50%;
             filter: blur(1px);
         }
 
         .cue-ball.rolling {
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .cue-ball.sinking {
-            animation: sinkBall 0.5s ease-in forwards;
+            animation: sinkBall 0.5s cubic-bezier(0.4, 0, 1, 1) forwards;
         }
 
         @keyframes sinkBall {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
         }
 
         /* Instrucciones */
         .instructions {
             position: absolute;
-            bottom: 3rem;
+            bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
-            padding: 12px 25px;
-            border-radius: 30px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            color: #888;
-            font-size: 0.65rem;
-            letter-spacing: 2px;
+            padding: 14px 30px;
+            border-radius: 35px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #aaa;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
             z-index: 100;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .table-container {
-                transform: rotateX(20deg) translateZ(-30px);
+                transform: rotateX(30deg);
             }
 
-            .pocket-label {
-                font-size: 0.6rem;
-                padding: 8px 12px;
+            .pocket {
+                width: 40px;
+                height: 40px;
+            }
+
+            .pocket-icon {
+                font-size: 1rem;
             }
 
             .instructions {
-                bottom: 1.5rem;
-                padding: 10px 20px;
+                bottom: 1rem;
+                padding: 12px 25px;
             }
         }
 
         @media (max-width: 480px) {
             .table-container {
-                transform: rotateX(15deg) translateZ(-20px);
+                transform: rotateX(25deg);
             }
 
-            .pocket {
-                width: 35px;
-                height: 35px;
-            }
-
-            .pocket-icon {
-                font-size: 0.9rem;
+            .header h1 {
+                font-size: 1.5rem;
+                letter-spacing: 4px;
             }
         }
     </style>
@@ -491,8 +571,9 @@
     <!-- Fondos y efectos -->
     <div class="bar-background"></div>
     <div class="vignette"></div>
+    <div class="ambient-light"></div>
     
-    <!-- Partículas de polvo -->
+    <!-- Partículas -->
     <div class="dust-particles" id="particles"></div>
 
     <!-- Header -->
@@ -504,50 +585,52 @@
     <!-- Escenario principal -->
     <div class="game-stage">
         <div class="table-container">
-            <div class="table-frame">
-                <div class="table-felt">
-                <!-- Imagen de la mesa -->
-                <img src="material/imagen1.jpeg" alt="Mesa de billar" class="table-image" id="tableImage">
-                    
-                    <!-- Líneas decorativas -->
-                    <div class="table-lines"></div>
-                    
-                    <!-- Spot central -->
-                    <div class="center-spot"></div>
+            <!-- Marco exterior -->
+            <div class="table-frame-outer">
+                <!-- Marco interior (bandas) -->
+                <div class="table-frame-inner">
+                    <!-- Fieltro -->
+                    <div class="table-felt">
+                        <!-- Líneas -->
+                        <div class="table-lines"></div>
+                        
+                        <!-- Spot central -->
+                        <div class="center-spot"></div>
 
-                    <!-- Troneras -->
-                    <div class="pocket tl" data-target="reglas/" data-active="true">
-                        <span class="pocket-icon">📋</span>
-                        <span class="pocket-label">Reglas</span>
+                        <!-- Troneras -->
+                        <div class="pocket tl" data-target="reglas/" data-active="true">
+                            <span class="pocket-icon">📋</span>
+                            <span class="pocket-label">Reglas</span>
+                        </div>
+
+                        <div class="pocket tc" data-target="elo/" data-active="true">
+                            <span class="pocket-icon">🏆</span>
+                            <span class="pocket-label">Ranking ELO</span>
+                        </div>
+
+                        <div class="pocket tr locked">
+                            <span class="pocket-icon">🔒</span>
+                            <span class="pocket-label">Próximamente</span>
+                        </div>
+
+                        <div class="pocket bl locked">
+                            <span class="pocket-icon">🔒</span>
+                            <span class="pocket-label">Próximamente</span>
+                        </div>
+
+                        <div class="pocket bc locked">
+                            <span class="pocket-icon">🔒</span>
+                            <span class="pocket-label">Próximamente</span>
+                        </div>
+
+                        <div class="pocket br locked">
+                            <span class="pocket-icon">🔒</span>
+                            <span class="pocket-label">Próximamente</span>
+                        </div>
+
+                        <!-- Bola blanca -->
+                        <div class="cue-ball" id="cueBall"></div>
                     </div>
-
-                    <div class="pocket tc" data-target="elo/" data-active="true">
-                        <span class="pocket-icon">🏆</span>
-                        <span class="pocket-label">Ranking</span>
-                    </div>
-
-                    <div class="pocket tr locked">
-                        <span class="pocket-icon">🔒</span>
-                        <span class="pocket-label">Próximamente</span>
-                    </div>
-
-                    <div class="pocket bl locked">
-                        <span class="pocket-icon">🔒</span>
-                        <span class="pocket-label">Próximamente</span>
-                    </div>
-
-                    <div class="pocket bc locked">
-                        <span class="pocket-icon">🔒</span>
-                        <span class="pocket-label">Próximamente</span>
-                    </div>
-
-                    <div class="pocket br locked">
-                        <span class="pocket-icon">🔒</span>
-                        <span class="pocket-label">Próximamente</span>
-                    </div>
-
-                    <!-- Bola blanca -->
-                    <div class="cue-ball" id="cueBall"></div>
                 </div>
             </div>
         </div>
@@ -565,27 +648,18 @@
     </audio>
 
     <script>
-        // Crear partículas de polvo
+        // Partículas de polvo
         const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 40; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
             particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 15 + 's';
-            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 15) + 's';
             particlesContainer.appendChild(particle);
         }
 
-        // Verificar si existe la imagen de la mesa
-        const tableImage = document.getElementById('tableImage');
-        tableImage.onload = function() {
-            this.style.opacity = '1';
-        };
-        tableImage.onerror = function() {
-            this.style.display = 'none';
-        };
-
-        // Interacción con troneras
+        // Interacción
         document.addEventListener('DOMContentLoaded', function() {
             const cueBall = document.getElementById('cueBall');
             const activePockets = document.querySelectorAll('.pocket[data-active="true"]');
@@ -593,31 +667,26 @@
             const pocketSound = document.getElementById('pocketSound');
 
             activePockets.forEach(pocket => {
-                // Touch y click
                 const handleInteraction = function(e) {
                     e.preventDefault();
                     
                     const target = this.getAttribute('data-target');
                     if (!target) return;
 
-                    // Bloquear interacciones
                     document.querySelectorAll('.pocket').forEach(p => p.style.pointerEvents = 'none');
 
-                    // Calcular posición
                     const pocketRect = this.getBoundingClientRect();
                     const feltRect = document.querySelector('.table-felt').getBoundingClientRect();
                     
                     const targetX = ((pocketRect.left + pocketRect.width / 2 - feltRect.left) / feltRect.width) * 100;
                     const targetY = ((pocketRect.top + pocketRect.height / 2 - feltRect.top) / feltRect.height) * 100;
 
-                    // Sonido
                     if (rollSound) {
                         rollSound.volume = 0.4;
                         rollSound.currentTime = 0;
                         rollSound.play().catch(() => {});
                     }
 
-                    // Animar bola
                     cueBall.classList.add('rolling');
                     cueBall.style.left = targetX + '%';
                     cueBall.style.top = targetY + '%';
@@ -635,14 +704,13 @@
                         setTimeout(() => {
                             window.location.href = target;
                         }, 400);
-                    }, 800);
+                    }, 900);
                 };
 
                 pocket.addEventListener('click', handleInteraction);
                 pocket.addEventListener('touchstart', handleInteraction, {passive: false});
             });
 
-            // Feedback en troneras bloqueadas
             document.querySelectorAll('.pocket.locked').forEach(pocket => {
                 const handleLocked = function(e) {
                     e.preventDefault();
