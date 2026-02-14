@@ -78,40 +78,55 @@
 
         /* Marcadores de troneras (posicionados sobre el canvas) */
         .pocket-marker {
-            position: absolute;
-            width: 60px;
-            height: 60px;
+            position: fixed;
+            width: 50px;
+            height: 50px;
             cursor: pointer;
             pointer-events: auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
             z-index: 100;
+            opacity: 0;
         }
 
         .pocket-marker:hover {
-            transform: scale(1.2);
+            transform: translate(-50%, -50%) scale(1.3) !important;
+            z-index: 200;
+        }
+
+        .pocket-marker.locked:hover {
+            transform: translate(-50%, -50%) scale(1.1) !important;
         }
 
         .pocket-label {
             position: absolute;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
             color: #d4af37;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
             white-space: nowrap;
             opacity: 0;
-            transition: opacity 0.3s ease;
-            top: 70px;
+            transition: all 0.3s ease;
+            top: 60px;
             pointer-events: none;
-            border: 1px solid #d4af37;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
         }
 
         .pocket-marker:hover .pocket-label {
             opacity: 1;
+        }
+
+        .pocket-marker.locked .pocket-label {
+            color: #666;
+            border-color: #444;
         }
 
         /* Indicador de carga */
@@ -152,6 +167,37 @@
             <h1>LA CATRINA</h1>
             <p>POOL LEAGUE & BILLIARDS</p>
         </div>
+    </div>
+
+    <!-- Marcadores de troneras -->
+    <div class="pocket-marker" id="marker-tl" data-target="reglas/" data-active="true" style="left: 20%; top: 30%;">
+        <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">📋</span>
+        <div class="pocket-label">Reglas de la Liga</div>
+    </div>
+    
+    <div class="pocket-marker" id="marker-tc" data-target="elo/" data-active="true" style="left: 50%; top: 25%;">
+        <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🏆</span>
+        <div class="pocket-label">Ranking ELO</div>
+    </div>
+    
+    <div class="pocket-marker locked" id="marker-tr" style="left: 80%; top: 30%;">
+        <span style="font-size: 2rem; opacity: 0.6;">🔒</span>
+        <div class="pocket-label">Próximamente</div>
+    </div>
+    
+    <div class="pocket-marker locked" id="marker-bl" style="left: 20%; top: 70%;">
+        <span style="font-size: 2rem; opacity: 0.6;">🔒</span>
+        <div class="pocket-label">Próximamente</div>
+    </div>
+    
+    <div class="pocket-marker locked" id="marker-bc" style="left: 50%; top: 75%;">
+        <span style="font-size: 2rem; opacity: 0.6;">🔒</span>
+        <div class="pocket-label">Próximamente</div>
+    </div>
+    
+    <div class="pocket-marker locked" id="marker-br" style="left: 80%; top: 70%;">
+        <span style="font-size: 2rem; opacity: 0.6;">🔒</span>
+        <div class="pocket-label">Próximamente</div>
     </div>
 
     <div class="instructions">Arrastra para rotar • Haz clic en las troneras</div>
@@ -484,6 +530,73 @@
             }
         });
 
+        // ACTUALIZAR POSICIÓN DE MARCADORES HTML
+        const markers = {
+            'tl': document.getElementById('marker-tl'),
+            'tc': document.getElementById('marker-tc'),
+            'tr': document.getElementById('marker-tr'),
+            'bl': document.getElementById('marker-bl'),
+            'bc': document.getElementById('marker-bc'),
+            'br': document.getElementById('marker-br')
+        };
+
+        function updateMarkers() {
+            pocketPositions.forEach(pocketData => {
+                const marker = markers[pocketData.id];
+                if (marker) {
+                    // Proyectar posición 3D a 2D
+                    const pos = new THREE.Vector3(pocketData.pos[0], pocketData.pos[1] + 1, pocketData.pos[2]);
+                    pos.project(camera);
+                    
+                    // Convertir a coordenadas de pantalla
+                    const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
+                    const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
+                    
+                    // Solo mostrar si está frente a la cámara
+                    if (pos.z < 1) {
+                        marker.style.left = x + 'px';
+                        marker.style.top = y + 'px';
+                        marker.style.transform = 'translate(-50%, -50%)';
+                        marker.style.opacity = '1';
+                    } else {
+                        marker.style.opacity = '0';
+                    }
+                }
+            });
+        }
+
+        // Click en marcadores HTML
+        Object.keys(markers).forEach(id => {
+            const marker = markers[id];
+            if (marker) {
+                const handleClick = (e) => {
+                    e.stopPropagation();
+                    const target = marker.getAttribute('data-target');
+                    const isLocked = marker.classList.contains('locked');
+                    
+                    if (!isLocked && target) {
+                        const pocketData = pocketPositions.find(p => p.id === id);
+                        if (pocketData) {
+                            const pos = new THREE.Vector3(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]);
+                            animateBallToPocket(pos);
+                            setTimeout(() => {
+                                window.location.href = target;
+                            }, 1000);
+                        }
+                    } else if (isLocked) {
+                        // Efecto de shake para bloqueados
+                        marker.style.transform = 'translate(-50%, -50%) scale(0.9)';
+                        setTimeout(() => {
+                            marker.style.transform = 'translate(-50%, -50%) scale(1)';
+                        }, 150);
+                    }
+                };
+                
+                marker.addEventListener('click', handleClick);
+                marker.addEventListener('touchend', handleClick);
+            }
+        });
+
         // ANIMACIÓN
         function animate() {
             requestAnimationFrame(animate);
@@ -493,6 +606,9 @@
             camera.position.z = Math.cos(cameraAngle) * cameraRadius;
             camera.position.y = cameraHeight;
             camera.lookAt(0, 0, 0);
+
+            // Actualizar posición de marcadores
+            updateMarkers();
 
             renderer.render(scene, camera);
         }
