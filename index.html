@@ -1,651 +1,463 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pirate Pool League: Official Infographic</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <title>La Catrina - Pool League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Roboto', sans-serif; background-color: #f0f9ff; color: #0c4a6e; }
-        .chart-container { 
-            position: relative; 
-            width: 100%; 
-            max-width: 600px; 
-            margin-left: auto; 
-            margin-right: auto; 
-            height: 300px;
-            max-height: 400px;
+        :root {
+            --color-bg: #0a0a0a;
+            --color-felt: #1a4a2e;
+            --color-felt-light: #2a6a42;
+            --color-wood: #3d2817;
+            --color-wood-light: #5a3d24;
+            --color-gold: #d4af37;
+            --color-gold-light: #f4d03f;
+            --color-white: #f5f5f5;
+            --color-locked: #666;
+            --shadow-glow: 0 0 20px rgba(212, 175, 55, 0.3);
         }
-        @media (min-width: 768px) { .chart-container { height: 350px; } }
-        .pirate-card { background-color: white; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transition: transform 0.3s ease; }
-        .pirate-card:hover { transform: translateY(-5px); }
-        .section-title { color: #0369a1; border-bottom: 4px solid #fbbf24; display: inline-block; padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
-        .flag-selector { cursor: pointer; font-size: 2rem; opacity: 0.5; transition: all 0.3s ease; }
-        .flag-selector:hover { transform: scale(1.2); opacity: 0.8; }
-        .flag-selector.active { opacity: 1; transform: scale(1.3); }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--color-bg);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+        }
+
+        /* Header */
+        .header {
+            position: absolute;
+            top: 2rem;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--color-gold);
+            text-shadow: 
+                0 0 10px rgba(212, 175, 55, 0.5),
+                0 0 20px rgba(212, 175, 55, 0.3),
+                0 0 40px rgba(212, 175, 55, 0.2);
+            letter-spacing: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--color-white);
+            font-size: 1rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* Mesa de billar */
+        .pool-table-container {
+            position: relative;
+            width: 90vw;
+            max-width: 1200px;
+            aspect-ratio: 2 / 1;
+            margin-top: 4rem;
+        }
+
+        .pool-table {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: linear-gradient(135deg, var(--color-wood) 0%, var(--color-wood-light) 50%, var(--color-wood) 100%);
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                inset 0 2px 4px rgba(255, 255, 255, 0.1);
+        }
+
+        .felt {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--color-felt) 0%, var(--color-felt-light) 50%, var(--color-felt) 100%);
+            border-radius: 15px;
+            position: relative;
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Líneas decorativas de la mesa */
+        .felt::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-50%);
+        }
+
+        .felt::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-50%);
+        }
+
+        /* Círculo central */
+        .center-spot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+        }
+
+        .center-spot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+        }
+
+        /* Troneras */
+        .pocket {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle at 30% 30%, #000 0%, #1a1a1a 50%, #000 100%);
+            border-radius: 50%;
+            box-shadow: 
+                inset 0 0 20px rgba(0, 0, 0, 1),
+                0 0 10px rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .pocket:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                inset 0 0 20px rgba(0, 0, 0, 1),
+                0 0 20px var(--color-gold),
+                var(--shadow-glow);
+        }
+
+        .pocket.locked {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .pocket.locked:hover {
+            transform: scale(1);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 1);
+        }
+
+        /* Posiciones de las troneras */
+        .pocket.top-left { top: -20px; left: -20px; }
+        .pocket.top-center { top: -25px; left: 50%; transform: translateX(-50%); }
+        .pocket.top-right { top: -20px; right: -20px; }
+        .pocket.bottom-left { bottom: -20px; left: -20px; }
+        .pocket.bottom-center { bottom: -25px; left: 50%; transform: translateX(-50%); }
+        .pocket.bottom-right { bottom: -20px; right: -20px; }
+
+        .pocket.top-center:hover, .pocket.bottom-center:hover {
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        /* Iconos en las troneras */
+        .pocket-icon {
+            font-size: 1.5rem;
+            color: var(--color-gold);
+            filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5));
+        }
+
+        .pocket.locked .pocket-icon {
+            color: var(--color-locked);
+            filter: none;
+        }
+
+        /* Etiquetas de las opciones */
+        .pocket-label {
+            position: absolute;
+            background: rgba(10, 10, 10, 0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--color-gold);
+            color: var(--color-white);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .pocket:hover .pocket-label {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pocket.top-left .pocket-label { top: 80px; left: 50%; transform: translateX(-50%); }
+        .pocket.top-center .pocket-label { top: 80px; left: 50%; transform: translateX(-50%); }
+        .pocket.top-right .pocket-label { top: 80px; right: 50%; transform: translateX(50%); }
+        .pocket.bottom-left .pocket-label { bottom: 80px; left: 50%; transform: translateX(-50%); }
+        .pocket.bottom-center .pocket-label { bottom: 80px; left: 50%; transform: translateX(-50%); }
+        .pocket.bottom-right .pocket-label { bottom: 80px; right: 50%; transform: translateX(50%); }
+
+        .pocket:hover .pocket-label {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .pocket.top-right:hover .pocket-label,
+        .pocket.bottom-right:hover .pocket-label {
+            transform: translateX(50%) translateY(0);
+        }
+
+        /* Bola blanca */
+        .cue-ball {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #e0e0e0 40%, #b0b0b0 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.4),
+                inset -5px -5px 10px rgba(0, 0, 0, 0.2),
+                inset 5px 5px 10px rgba(255, 255, 255, 0.8);
+            z-index: 10;
+            transition: none;
+            pointer-events: none;
+        }
+
+        .cue-ball.rolling {
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .cue-ball.sinking {
+            animation: sink 0.5s ease-in forwards;
+        }
+
+        @keyframes sink {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        }
+
+        /* Instrucciones */
+        .instructions {
+            position: absolute;
+            bottom: 2rem;
+            color: var(--color-white);
+            font-size: 0.9rem;
+            opacity: 0.6;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+                letter-spacing: 4px;
+            }
+
+            .pool-table-container {
+                width: 95vw;
+            }
+
+            .pocket {
+                width: 50px;
+                height: 50px;
+            }
+
+            .pocket-icon {
+                font-size: 1.2rem;
+            }
+
+            .cue-ball {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        /* Efecto de pulso en troneras activas */
+        @keyframes pulse {
+            0%, 100% { box-shadow: inset 0 0 20px rgba(0, 0, 0, 1), 0 0 10px rgba(212, 175, 55, 0.3); }
+            50% { box-shadow: inset 0 0 20px rgba(0, 0, 0, 1), 0 0 20px rgba(212, 175, 55, 0.6); }
+        }
+
+        .pocket:not(.locked) {
+            animation: pulse 2s infinite;
+        }
     </style>
 </head>
-<body class="bg-sky-50">
-
-    <!-- Language Selector -->
-    <div class="fixed top-4 right-4 z-50 bg-white rounded-full shadow-lg px-4 py-2 flex gap-3">
-        <span class="flag-selector active" data-lang="en" onclick="switchLanguage('en')" title="English">🇬🇧</span>
-        <span class="flag-selector" data-lang="es" onclick="switchLanguage('es')" title="Español">🇪🇸</span>
+<body>
+    <div class="header">
+        <h1>LA CATRINA</h1>
+        <p>Pool League & Billiards</p>
     </div>
 
-    <!-- Header / Hook -->
-    <header class="bg-gradient-to-r from-sky-900 to-sky-700 text-white py-12 px-4 shadow-lg">
-        <div class="max-w-6xl mx-auto text-center">
-            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">PIRATE POOL LEAGUE</h1>
-            <p class="text-xl md:text-2xl font-light text-sky-100" data-i18n="header.subtitle">Official Captain's Log & Regulations</p>
-            <div class="mt-8 flex justify-center space-x-4">
-                <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md"><span data-i18n="header.players">30 Players</span></span>
-                <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md"><span data-i18n="header.teams">5 Teams</span></span>
-                <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md"><span data-i18n="header.weeks">8 Weeks</span></span>
+    <div class="pool-table-container">
+        <div class="pool-table">
+            <div class="felt">
+                <div class="center-spot"></div>
+
+                <!-- Tronera 1: Reglas (ACTIVA) -->
+                <div class="pocket top-left" data-target="reglas/" data-active="true">
+                    <span class="pocket-icon">📋</span>
+                    <span class="pocket-label">Reglas de la Liga</span>
+                </div>
+
+                <!-- Tronera 2: Ranking ELO (ACTIVA) -->
+                <div class="pocket top-center" data-target="elo/" data-active="true">
+                    <span class="pocket-icon">🏆</span>
+                    <span class="pocket-label">Ranking ELO</span>
+                </div>
+
+                <!-- Tronera 3: BLOQUEADA -->
+                <div class="pocket top-right locked" data-active="false">
+                    <span class="pocket-icon">🔒</span>
+                    <span class="pocket-label">Próximamente</span>
+                </div>
+
+                <!-- Tronera 4: BLOQUEADA -->
+                <div class="pocket bottom-left locked" data-active="false">
+                    <span class="pocket-icon">🔒</span>
+                    <span class="pocket-label">Próximamente</span>
+                </div>
+
+                <!-- Tronera 5: BLOQUEADA -->
+                <div class="pocket bottom-center locked" data-active="false">
+                    <span class="pocket-icon">🔒</span>
+                    <span class="pocket-label">Próximamente</span>
+                </div>
+
+                <!-- Tronera 6: BLOQUEADA -->
+                <div class="pocket bottom-right locked" data-active="false">
+                    <span class="pocket-icon">🔒</span>
+                    <span class="pocket-label">Próximamente</span>
+                </div>
+
+                <!-- Bola blanca -->
+                <div class="cue-ball" id="cueBall"></div>
             </div>
         </div>
-    </header>
+    </div>
 
-    <main class="max-w-6xl mx-auto px-4 py-12 space-y-16">
+    <div class="instructions">Haz clic en una tronera para navegar</div>
 
-        <!-- SECTION 1: THE RANKS -->
-        <section>
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold section-title" data-i18n="ranks.title">The Crew Ranks</h2>
-                <p class="max-w-3xl mx-auto text-slate-600 text-lg" data-i18n="ranks.intro">
-                    The league hierarchy is strictly divided into six tiers based on ELO ranking. 
-                    From the commanding Captains to the lowly Cabin Boys, every pirate has a rank 
-                    that dictates their role in the fleet.
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <!-- Chart: ELO Ranges -->
-                <div class="pirate-card p-6">
-                    <h3 class="text-xl font-bold mb-4 text-sky-800 text-center" data-i18n="ranks.chart.title">ELO Hierarchy</h3>
-                    <div class="chart-container">
-                        <canvas id="ranksChart"></canvas>
-                    </div>
-                    <p class="text-sm text-slate-500 text-center mt-4 italic" data-i18n="ranks.chart.subtitle">Ranking range (1 = Top ELO)</p>
-                </div>
-
-                <!-- Text Content: Description -->
-                <div class="space-y-4">
-                    <div class="bg-white p-4 rounded-lg border-l-4 border-sky-600 shadow-sm">
-                        <h4 class="font-bold text-sky-800 text-lg" data-i18n="ranks.level_a.title">LEVEL A: Captain (1-5)</h4>
-                        <p class="text-slate-600 text-sm" data-i18n="ranks.level_a.desc">The elite top 5. They lead the teams and make strategic decisions.</p>
-                    </div>
-                    <div class="bg-white p-4 rounded-lg border-l-4 border-sky-500 shadow-sm">
-                        <h4 class="font-bold text-sky-800 text-lg" data-i18n="ranks.level_b.title">LEVEL B: Boatswain (6-10)</h4>
-                        <p class="text-slate-600 text-sm" data-i18n="ranks.level_b.desc">The Vice-Presidents. Assigned in reverse order to balance the strongest captains.</p>
-                    </div>
-                    <div class="bg-white p-4 rounded-lg border-l-4 border-yellow-400 shadow-sm">
-                        <h4 class="font-bold text-sky-800 text-lg" data-i18n="ranks.level_cf.title">LEVELS C-F: The Crew (11-30)</h4>
-                        <p class="text-slate-600 text-sm" data-i18n="ranks.level_cf.desc">From Rogue Helmsmen to Clumsy Cabin Boys. Selected via Draft (C-E) or Lottery (F).</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 2: TEAM FORMATION -->
-        <section class="bg-white rounded-xl shadow-md p-8">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold section-title" data-i18n="formation.title">Building the Fleet</h2>
-                <p class="max-w-3xl mx-auto text-slate-600 text-lg" data-i18n="formation.intro">
-                    Fairness is paramount on the high seas. Teams are not just gathered; they are engineered 
-                    for balance using a specific protocol of assignment, drafting, and luck.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
-                <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
-                    <div class="text-4xl mb-2">👑</div>
-                    <h3 class="font-bold text-sky-900 mb-2" data-i18n="formation.step1.title">1. Captains</h3>
-                    <p class="text-sm text-slate-600" data-i18n="formation.step1.desc">Top 5 Players are fixed as leaders of Teams 1-5.</p>
-                </div>
-                <div class="flex items-center justify-center md:hidden text-2xl text-sky-300">⬇</div>
-                
-                <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
-                    <div class="text-4xl mb-2">⚖️</div>
-                    <h3 class="font-bold text-sky-900 mb-2" data-i18n="formation.step2.title">2. Inverse B</h3>
-                    <p class="text-sm text-slate-600" data-i18n="formation.step2.desc">Rank 10 joins Rank 1. Rank 6 joins Rank 5. Perfect balance.</p>
-                </div>
-                <div class="flex items-center justify-center md:hidden text-2xl text-sky-300">⬇</div>
-
-                <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
-                    <div class="text-4xl mb-2">🤝</div>
-                    <h3 class="font-bold text-sky-900 mb-2" data-i18n="formation.step3.title">3. The Draft</h3>
-                    <p class="text-sm text-slate-600" data-i18n="formation.step3.desc">Levels C, D, and E are hand-picked by the leadership.</p>
-                </div>
-                <div class="flex items-center justify-center md:hidden text-2xl text-sky-300">⬇</div>
-
-                <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
-                    <div class="text-4xl mb-2">🎲</div>
-                    <h3 class="font-bold text-sky-900 mb-2" data-i18n="formation.step4.title">4. Lottery</h3>
-                    <p class="text-sm text-slate-600" data-i18n="formation.step4.desc">Level F (Clumsy Cabin Boys) are randomly drawn to fill spots.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: RULES OF ENGAGEMENT -->
-        <section>
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold section-title" data-i18n="rules.title">Rules of Engagement</h2>
-                <p class="max-w-3xl mx-auto text-slate-600 text-lg" data-i18n="rules.intro">
-                    8-Ball is the game, but strategy is the key. Matches are a "Race to 3". 
-                    Every rack counts, as a close defeat earns Merit Points for the team.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Chart: Scoring System -->
-                <div class="pirate-card p-6">
-                    <h3 class="text-xl font-bold mb-4 text-sky-800 text-center" data-i18n="rules.scoring.title">The Spoils (Scoring System)</h3>
-                    <div class="chart-container">
-                        <canvas id="scoringChart"></canvas>
-                    </div>
-                    <p class="text-center text-sm text-slate-500 mt-4" data-i18n="rules.scoring.subtitle">Points awarded towards Team Standings</p>
-                </div>
-
-                <!-- Matchup Matrix -->
-                <div class="pirate-card p-6 flex flex-col justify-center">
-                    <h3 class="text-xl font-bold mb-6 text-sky-800 text-center" data-i18n="rules.matchup.title">Who Fights Whom?</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left text-slate-600">
-                            <thead class="text-xs text-sky-700 uppercase bg-sky-100">
-                                <tr>
-                                    <th scope="col" class="px-4 py-3 rounded-tl-lg" data-i18n="rules.matchup.thead1">Your Rank</th>
-                                    <th scope="col" class="px-4 py-3 rounded-tr-lg" data-i18n="rules.matchup.thead2">Your Opponents (8 Matches)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="bg-white border-b border-sky-100 hover:bg-sky-50">
-                                    <td class="px-4 py-3 font-bold text-sky-900" data-i18n="rules.matchup.row1.rank">A (Captain)</td>
-                                    <td class="px-4 py-3" data-i18n="rules.matchup.row1.opponents">2x A, 2x B, 2x C, 2x D</td>
-                                </tr>
-                                <tr class="bg-white border-b border-sky-100 hover:bg-sky-50">
-                                    <td class="px-4 py-3 font-bold text-sky-900" data-i18n="rules.matchup.row2.rank">B, C, D</td>
-                                    <td class="px-4 py-3" data-i18n="rules.matchup.row2.opponents">Mix of Own Level + Adjacent Levels</td>
-                                </tr>
-                                <tr class="bg-white rounded-b-lg hover:bg-sky-50">
-                                    <td class="px-4 py-3 font-bold text-sky-900" data-i18n="rules.matchup.row3.rank">E, F</td>
-                                    <td class="px-4 py-3" data-i18n="rules.matchup.row3.opponents">Primarily E, F, and D (Protected from A)</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mt-6 bg-yellow-50 p-4 rounded border border-yellow-200 text-sm text-yellow-800" data-i18n="rules.matchup.note">
-                        <strong>⚔️ Combat Note:</strong> Captains (A) can never prey on the weakest (E & F). The sea is harsh, but fair.
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 4: CAPTAIN'S ARMORY -->
-        <section>
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold section-title" data-i18n="armory.title">Captain's Armory</h2>
-                <p class="max-w-3xl mx-auto text-slate-600 text-lg" data-i18n="armory.intro">
-                    Brute force isn't enough. Each team possesses a limited arsenal of strategic powers 
-                    to turn the tide of battle. Use them wisely; they are single-use assets.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Power Inventory Chart -->
-                <div class="md:col-span-1 pirate-card p-6">
-                    <h3 class="text-xl font-bold mb-4 text-sky-800 text-center" data-i18n="armory.chart.title">Team Asset Inventory</h3>
-                    <div class="chart-container">
-                        <canvas id="powersChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Power Descriptions -->
-                <div class="md:col-span-2 space-y-6">
-                    <div class="flex items-start space-x-4 bg-white p-6 rounded-lg shadow-sm border-l-4 border-indigo-500">
-                        <div class="text-3xl">🎱</div>
-                        <div>
-                            <h4 class="font-bold text-indigo-900 text-lg" data-i18n="armory.power1.title">Challenge Cards (9-Ball & 10-Ball)</h4>
-                            <p class="text-slate-600 mb-2" data-i18n="armory.power1.desc">Force a change of game mode! Instead of 8-ball, the match becomes 9-ball or 10-ball.</p>
-                            <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded font-bold" data-i18n="armory.power1.amount">1 of each per team</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-4 bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
-                        <div class="text-3xl">⛳</div>
-                        <div>
-                            <h4 class="font-bold text-green-900 text-lg" data-i18n="armory.power2.title">Handicap Points (Head Start)</h4>
-                            <p class="text-slate-600 mb-2" data-i18n="armory.power2.desc">Grant a player a <strong>1-0 lead</strong> at the start of their Race to 3.</p>
-                            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded font-bold" data-i18n="armory.power2.amount">2 points per team</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-800 text-white p-6 rounded-lg shadow-md">
-                        <h4 class="font-bold text-yellow-400 mb-2" data-i18n="armory.restrictions.title">⚠️ The Rules of War (Restrictions)</h4>
-                        <ul class="list-disc pl-5 space-y-2 text-sm text-slate-200">
-                            <li data-i18n="armory.restrictions.rule1"><strong>Deadline:</strong> Must declare by Monday before the match.</li>
-                            <li data-i18n="armory.restrictions.rule2"><strong>Exclusive:</strong> Only ONE power per match. No counters allowed.</li>
-                            <li data-i18n="armory.restrictions.rule3"><strong>Conflict:</strong> Handicap points cannot be used in Challenge Card matches.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 5: THE TREASURE (STANDINGS) -->
-        <section class="mb-12">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold section-title" data-i18n="treasure.title">Claiming the Treasure</h2>
-                <p class="max-w-3xl mx-auto text-slate-600 text-lg" data-i18n="treasure.intro">
-                    At the end of 8 weeks, only one crew will rule the seas. 
-                    Here is how the winner is determined when the smoke clears.
-                </p>
-            </div>
-
-            <div class="max-w-4xl mx-auto">
-                <div class="relative">
-                    <div class="absolute left-1/2 -ml-0.5 w-0.5 h-full bg-sky-200"></div>
-                    
-                    <!-- Step 1 -->
-                    <div class="relative flex items-center mb-8">
-                        <div class="flex-1 text-right pr-8">
-                            <h3 class="font-bold text-xl text-sky-900" data-i18n="treasure.step1.title">1. Total Points</h3>
-                            <p class="text-slate-600 text-sm" data-i18n="treasure.step1.desc">Sum of all Wins (3pts) and Merit Points (1pt).</p>
-                        </div>
-                        <div class="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center font-bold text-sky-900 z-10 shadow-md">1</div>
-                        <div class="flex-1 pl-8"></div>
-                    </div>
-
-                    <!-- Step 2 -->
-                    <div class="relative flex items-center mb-8">
-                        <div class="flex-1"></div>
-                        <div class="w-8 h-8 bg-sky-600 rounded-full flex items-center justify-center font-bold text-white z-10 shadow-md">2</div>
-                        <div class="flex-1 pl-8 text-left">
-                            <h3 class="font-bold text-xl text-sky-900" data-i18n="treasure.step2.title">2. Rack Difference</h3>
-                            <p class="text-slate-600 text-sm" data-i18n="treasure.step2.desc">Total Racks Won minus Total Racks Lost.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 3 -->
-                    <div class="relative flex items-center mb-8">
-                        <div class="flex-1 text-right pr-8">
-                            <h3 class="font-bold text-xl text-sky-900" data-i18n="treasure.step3.title">3. Head-to-Head</h3>
-                            <p class="text-slate-600 text-sm" data-i18n="treasure.step3.desc">Direct record between tied teams.</p>
-                        </div>
-                        <div class="w-8 h-8 bg-sky-600 rounded-full flex items-center justify-center font-bold text-white z-10 shadow-md">3</div>
-                        <div class="flex-1 pl-8"></div>
-                    </div>
-
-                    <!-- Step 4 -->
-                    <div class="relative flex items-center">
-                        <div class="flex-1"></div>
-                        <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center font-bold text-white z-10 shadow-md">4</div>
-                        <div class="flex-1 pl-8 text-left">
-                            <h3 class="font-bold text-xl text-red-700" data-i18n="treasure.step4.title">4. Captains' Duel</h3>
-                            <p class="text-slate-600 text-sm" data-i18n="treasure.step4.desc">Sudden death match between team leaders.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer class="text-center text-slate-400 text-sm pb-8 pt-8 border-t border-slate-200">
-            <p data-i18n="footer.text">Pirate Pool League • Official Regulations</p>
-        </footer>
-
-    </main>
+    <!-- Audio elements -->
+    <audio id="rollSound" preload="auto">
+        <source src="sounds/ball-roll.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="pocketSound" preload="auto">
+        <source src="sounds/ball-pocket.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
-        // Translations database
-        const translations = {
-            en: {
-                "header.subtitle": "Official Captain's Log & Regulations",
-                "header.players": "30 Players",
-                "header.teams": "5 Teams",
-                "header.weeks": "8 Weeks",
-                "ranks.title": "The Crew Ranks",
-                "ranks.intro": "The league hierarchy is strictly divided into six tiers based on ELO ranking. From the commanding Captains to the lowly Cabin Boys, every pirate has a rank that dictates their role in the fleet.",
-                "ranks.chart.title": "ELO Hierarchy",
-                "ranks.chart.subtitle": "Ranking range (1 = Top ELO)",
-                "ranks.level_a.title": "LEVEL A: Captain (1-5)",
-                "ranks.level_a.desc": "The elite top 5. They lead the teams and make strategic decisions.",
-                "ranks.level_b.title": "LEVEL B: Boatswain (6-10)",
-                "ranks.level_b.desc": "The Vice-Presidents. Assigned in reverse order to balance the strongest captains.",
-                "ranks.level_cf.title": "LEVELS C-F: The Crew (11-30)",
-                "ranks.level_cf.desc": "From Rogue Helmsmen to Clumsy Cabin Boys. Selected via Draft (C-E) or Lottery (F).",
-                "formation.title": "Building the Fleet",
-                "formation.intro": "Fairness is paramount on the high seas. Teams are not just gathered; they are engineered for balance using a specific protocol of assignment, drafting, and luck.",
-                "formation.step1.title": "1. Captains",
-                "formation.step1.desc": "Top 5 Players are fixed as leaders of Teams 1-5.",
-                "formation.step2.title": "2. Inverse B",
-                "formation.step2.desc": "Rank 10 joins Rank 1. Rank 6 joins Rank 5. Perfect balance.",
-                "formation.step3.title": "3. The Draft",
-                "formation.step3.desc": "Levels C, D, and E are hand-picked by the leadership.",
-                "formation.step4.title": "4. Lottery",
-                "formation.step4.desc": "Level F (Clumsy Cabin Boys) are randomly drawn to fill spots.",
-                "rules.title": "Rules of Engagement",
-                "rules.intro": "8-Ball is the game, but strategy is the key. Matches are a \"Race to 3\". Every rack counts, as a close defeat earns Merit Points for the team.",
-                "rules.scoring.title": "The Spoils (Scoring System)",
-                "rules.scoring.subtitle": "Points awarded towards Team Standings",
-                "rules.matchup.title": "Who Fights Whom?",
-                "rules.matchup.thead1": "Your Rank",
-                "rules.matchup.thead2": "Your Opponents (8 Matches)",
-                "rules.matchup.row1.rank": "A (Captain)",
-                "rules.matchup.row1.opponents": "2x A, 2x B, 2x C, 2x D",
-                "rules.matchup.row2.rank": "B, C, D",
-                "rules.matchup.row2.opponents": "Mix of Own Level + Adjacent Levels",
-                "rules.matchup.row3.rank": "E, F",
-                "rules.matchup.row3.opponents": "Primarily E, F, and D (Protected from A)",
-                "rules.matchup.note": "<strong>⚔️ Combat Note:</strong> Captains (A) can never prey on the weakest (E & F). The sea is harsh, but fair.",
-                "armory.title": "Captain's Armory",
-                "armory.intro": "Brute force isn't enough. Each team possesses a limited arsenal of strategic powers to turn the tide of battle. Use them wisely; they are single-use assets.",
-                "armory.chart.title": "Team Asset Inventory",
-                "armory.power1.title": "Challenge Cards (9-Ball & 10-Ball)",
-                "armory.power1.desc": "Force a change of game mode! Instead of 8-ball, the match becomes 9-ball or 10-ball.",
-                "armory.power1.amount": "1 of each per team",
-                "armory.power2.title": "Handicap Points (Head Start)",
-                "armory.power2.desc": "Grant a player a <strong>1-0 lead</strong> at the start of their Race to 3.",
-                "armory.power2.amount": "2 points per team",
-                "armory.restrictions.title": "⚠️ The Rules of War (Restrictions)",
-                "armory.restrictions.rule1": "<strong>Deadline:</strong> Must declare by Monday before the match.",
-                "armory.restrictions.rule2": "<strong>Exclusive:</strong> Only ONE power per match. No counters allowed.",
-                "armory.restrictions.rule3": "<strong>Conflict:</strong> Handicap points cannot be used in Challenge Card matches.",
-                "treasure.title": "Claiming the Treasure",
-                "treasure.intro": "At the end of 8 weeks, only one crew will rule the seas. Here is how the winner is determined when the smoke clears.",
-                "treasure.step1.title": "1. Total Points",
-                "treasure.step1.desc": "Sum of all Wins (3pts) and Merit Points (1pt).",
-                "treasure.step2.title": "2. Rack Difference",
-                "treasure.step2.desc": "Total Racks Won minus Total Racks Lost.",
-                "treasure.step3.title": "3. Head-to-Head",
-                "treasure.step3.desc": "Direct record between tied teams.",
-                "treasure.step4.title": "4. Captains' Duel",
-                "treasure.step4.desc": "Sudden death match between team leaders.",
-                "footer.text": "Pirate Pool League • Official Regulations",
-                "chart.ranks.label": "Player Count per Level",
-                "chart.ranks.levels": ["Captain (A)", "Boatswain (B)", "Rogue Helmsman (C)", "Scallywag Sailor (D)", "Galician Cabin Boy (E)", "Clumsy Cabin Boy (F)"],
-                "chart.scoring.labels": ["Victory (3-0, 3-1, 3-2)", "Merit Point (Loss 3-2)", "Defeat (Loss 3-0, 3-1)"],
-                "chart.scoring.label": "Points for Team",
-                "chart.powers.labels": ["Handicap Points", "9-Ball Card", "10-Ball Card"],
-                "chart.powers.label": "Asset Quantity"
-            },
-            es: {
-                "header.subtitle": "Registro Oficial del Capitán y Reglamento",
-                "header.players": "30 Jugadores",
-                "header.teams": "5 Equipos",
-                "header.weeks": "8 Semanas",
-                "ranks.title": "Los Rangos de la Tripulación",
-                "ranks.intro": "La jerarquía de la liga está estrictamente dividida en seis niveles según el ranking ELO. Desde los Capitanes al mando hasta los modestos Grumetes, cada pirata tiene un rango que dicta su rol en la flota.",
-                "ranks.chart.title": "Jerarquía ELO",
-                "ranks.chart.subtitle": "Rango de clasificación (1 = ELO más alto)",
-                "ranks.level_a.title": "NIVEL A: Capitán (1-5)",
-                "ranks.level_a.desc": "La élite del top 5. Lideran los equipos y toman decisiones estratégicas.",
-                "ranks.level_b.title": "NIVEL B: Contramaestre (6-10)",
-                "ranks.level_b.desc": "Los Vicepresidentes. Asignados en orden inverso para equilibrar a los capitanes más fuertes.",
-                "ranks.level_cf.title": "NIVELES C-F: La Tripulación (11-30)",
-                "ranks.level_cf.desc": "Desde Timoneles Pícaros hasta Grumetes Torpes. Seleccionados vía Draft (C-E) o Lotería (F).",
-                "formation.title": "Construyendo la Flota",
-                "formation.intro": "La justicia es primordial en alta mar. Los equipos no se reúnen simplemente; están diseñados para el equilibrio usando un protocolo específico de asignación, draft y suerte.",
-                "formation.step1.title": "1. Capitanes",
-                "formation.step1.desc": "Los 5 mejores jugadores son fijados como líderes de los Equipos 1-5.",
-                "formation.step2.title": "2. B Inverso",
-                "formation.step2.desc": "El rango 10 se une al rango 1. El rango 6 se une al rango 5. Equilibrio perfecto.",
-                "formation.step3.title": "3. El Draft",
-                "formation.step3.desc": "Los niveles C, D y E son seleccionados a mano por el liderazgo.",
-                "formation.step4.title": "4. Lotería",
-                "formation.step4.desc": "Nivel F (Grumetes Torpes) se sortean aleatoriamente para llenar los puestos.",
-                "rules.title": "Reglas de Combate",
-                "rules.intro": "La bola 8 es el juego, pero la estrategia es la clave. Los partidos son \"Carrera a 3\". Cada manga cuenta, ya que una derrota ajustada gana Puntos de Mérito para el equipo.",
-                "rules.scoring.title": "El Botín (Sistema de Puntuación)",
-                "rules.scoring.subtitle": "Puntos otorgados para la Clasificación del Equipo",
-                "rules.matchup.title": "¿Quién Lucha Contra Quién?",
-                "rules.matchup.thead1": "Tu Rango",
-                "rules.matchup.thead2": "Tus Oponentes (8 Partidos)",
-                "rules.matchup.row1.rank": "A (Capitán)",
-                "rules.matchup.row1.opponents": "2x A, 2x B, 2x C, 2x D",
-                "rules.matchup.row2.rank": "B, C, D",
-                "rules.matchup.row2.opponents": "Mezcla de Propio Nivel + Niveles Adyacentes",
-                "rules.matchup.row3.rank": "E, F",
-                "rules.matchup.row3.opponents": "Principalmente E, F y D (Protegidos de A)",
-                "rules.matchup.note": "<strong>⚔️ Nota de Combate:</strong> Los Capitanes (A) nunca pueden atacar a los más débiles (E y F). El mar es duro, pero justo.",
-                "armory.title": "Arsenal del Capitán",
-                "armory.intro": "La fuerza bruta no es suficiente. Cada equipo posee un arsenal limitado de poderes estratégicos para cambiar el rumbo de la batalla. Úsalos sabiamente; son activos de un solo uso.",
-                "armory.chart.title": "Inventario de Activos del Equipo",
-                "armory.power1.title": "Cartas de Desafío (Bola 9 y Bola 10)",
-                "armory.power1.desc": "¡Fuerza un cambio de modo de juego! En lugar de bola 8, el partido se convierte en bola 9 o bola 10.",
-                "armory.power1.amount": "1 de cada una por equipo",
-                "armory.power2.title": "Puntos de Hándicap (Ventaja Inicial)",
-                "armory.power2.desc": "Otorga a un jugador una <strong>ventaja de 1-0</strong> al inicio de su Carrera a 3.",
-                "armory.power2.amount": "2 puntos por equipo",
-                "armory.restrictions.title": "⚠️ Las Reglas de la Guerra (Restricciones)",
-                "armory.restrictions.rule1": "<strong>Fecha límite:</strong> Debe declararse antes del lunes anterior al partido.",
-                "armory.restrictions.rule2": "<strong>Exclusivo:</strong> Solo UN poder por partido. No se permiten contras.",
-                "armory.restrictions.rule3": "<strong>Conflicto:</strong> Los puntos de hándicap no se pueden usar en partidos de Carta de Desafío.",
-                "treasure.title": "Reclamando el Tesoro",
-                "treasure.intro": "Al final de 8 semanas, solo una tripulación gobernará los mares. Así es como se determina el ganador cuando el humo se disipa.",
-                "treasure.step1.title": "1. Puntos Totales",
-                "treasure.step1.desc": "Suma de todas las Victorias (3pts) y Puntos de Mérito (1pt).",
-                "treasure.step2.title": "2. Diferencia de Mangas",
-                "treasure.step2.desc": "Total de Mangas Ganadas menos Total de Mangas Perdidas.",
-                "treasure.step3.title": "3. Enfrentamiento Directo",
-                "treasure.step3.desc": "Registro directo entre equipos empatados.",
-                "treasure.step4.title": "4. Duelo de Capitanes",
-                "treasure.step4.desc": "Partido de muerte súbita entre líderes de equipo.",
-                "footer.text": "Liga Pirata de Billar • Reglamento Oficial",
-                "chart.ranks.label": "Número de Jugadores por Nivel",
-                "chart.ranks.levels": ["Capitán (A)", "Contramaestre (B)", "Timonel Pícaro (C)", "Marinero Canalla (D)", "Grumete Gallego (E)", "Grumete Torpe (F)"],
-                "chart.scoring.labels": ["Victoria (3-0, 3-1, 3-2)", "Punto de Mérito (Derrota 3-2)", "Derrota (Derrota 3-0, 3-1)"],
-                "chart.scoring.label": "Puntos para el Equipo",
-                "chart.powers.labels": ["Puntos de Hándicap", "Carta Bola 9", "Carta Bola 10"],
-                "chart.powers.label": "Cantidad de Activos"
-            }
-        };
-
-        let currentLang = localStorage.getItem('pirateLeagueLang') || 'en';
-        let ranksChart, scoringChart, powersChart;
-
-        function switchLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('pirateLeagueLang', lang);
-            
-            // Update flag selector UI
-            document.querySelectorAll('.flag-selector').forEach(flag => {
-                flag.classList.toggle('active', flag.dataset.lang === lang);
-            });
-            
-            // Update all text elements
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (translations[lang][key]) {
-                    element.innerHTML = translations[lang][key];
-                }
-            });
-
-            // Update charts
-            updateCharts(lang);
-        }
-
-        function updateCharts(lang) {
-            const t = translations[lang];
-            
-            // Update Ranks Chart
-            ranksChart.data.labels = t["chart.ranks.levels"];
-            ranksChart.data.datasets[0].label = t["chart.ranks.label"];
-            ranksChart.update();
-
-            // Update Scoring Chart
-            scoringChart.data.labels = t["chart.scoring.labels"];
-            scoringChart.data.datasets[0].label = t["chart.scoring.label"];
-            scoringChart.update();
-
-            // Update Powers Chart
-            powersChart.data.labels = t["chart.powers.labels"];
-            powersChart.data.datasets[0].label = t["chart.powers.label"];
-            powersChart.update();
-        }
-
-        // --- HELPER FUNCTION: Label Wrapping ---
-        function wrapLabel(str, maxChars) {
-            if (str.length <= maxChars) return str;
-            const words = str.split(' ');
-            const lines = [];
-            let currentLine = words[0];
-
-            for (let i = 1; i < words.length; i++) {
-                if (currentLine.length + 1 + words[i].length <= maxChars) {
-                    currentLine += ' ' + words[i];
-                } else {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                }
-            }
-            lines.push(currentLine);
-            return lines;
-        }
-
-        // Initialize charts after page load
         document.addEventListener('DOMContentLoaded', function() {
-            const t = translations[currentLang];
+            const cueBall = document.getElementById('cueBall');
+            const pockets = document.querySelectorAll('.pocket[data-active="true"]');
+            const rollSound = document.getElementById('rollSound');
+            const pocketSound = document.getElementById('pocketSound');
 
-            // 1. Ranks Chart (Horizontal Bar)
-            const ctxRanks = document.getElementById('ranksChart').getContext('2d');
-            ranksChart = new Chart(ctxRanks, {
-                type: 'bar',
-                data: {
-                    labels: t["chart.ranks.levels"],
-                    datasets: [{
-                        label: t["chart.ranks.label"],
-                        data: [5, 5, 5, 5, 5, 5],
-                        backgroundColor: [
-                            '#0c4a6e',
-                            '#0369a1',
-                            '#0ea5e9',
-                            '#38bdf8',
-                            '#7dd3fc',
-                            '#bae6fd'
-                        ],
-                        borderColor: '#0f172a',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                title: function(tooltipItems) {
-                                    const item = tooltipItems[0];
-                                    let label = item.chart.data.labels[item.dataIndex];
-                                    if (Array.isArray(label)) return label.join(' ');
-                                    return label;
-                                },
-                                label: function(context) {
-                                    const ranks = ['1 - 5', '6 - 10', '11 - 15', '16 - 20', '21 - 25', '26 - 30'];
-                                    return (currentLang === 'es' ? 'Rango: ' : 'Ranking Range: ') + ranks[context.dataIndex];
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { display: false },
-                        y: { 
-                            ticks: { 
-                                font: { weight: 'bold' },
-                                color: '#0c4a6e'
-                            } 
-                        }
+            // Posicionar la bola en el centro inicialmente
+            const felt = document.querySelector('.felt');
+            const feltRect = felt.getBoundingClientRect();
+            cueBall.style.left = '50%';
+            cueBall.style.top = '50%';
+            cueBall.style.transform = 'translate(-50%, -50%)';
+
+            pockets.forEach(pocket => {
+                pocket.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const target = this.getAttribute('data-target');
+                    if (!target) return;
+
+                    // Desactivar clics durante la animación
+                    pockets.forEach(p => p.style.pointerEvents = 'none');
+
+                    // Calcular posición de la tronera
+                    const pocketRect = this.getBoundingClientRect();
+                    const feltRect = felt.getBoundingClientRect();
+                    
+                    const targetX = ((pocketRect.left + pocketRect.width / 2 - feltRect.left) / feltRect.width) * 100;
+                    const targetY = ((pocketRect.top + pocketRect.height / 2 - feltRect.top) / feltRect.height) * 100;
+
+                    // Reproducir sonido de rodar
+                    if (rollSound) {
+                        rollSound.volume = 0.5;
+                        rollSound.currentTime = 0;
+                        rollSound.play().catch(e => console.log('Audio play failed:', e));
                     }
-                }
+
+                    // Animar la bola
+                    cueBall.classList.add('rolling');
+                    cueBall.style.left = targetX + '%';
+                    cueBall.style.top = targetY + '%';
+
+                    // Después de la animación de rodar, reproducir sonido de caída y redirigir
+                    setTimeout(() => {
+                        cueBall.classList.remove('rolling');
+                        cueBall.classList.add('sinking');
+
+                        if (pocketSound) {
+                            pocketSound.volume = 0.7;
+                            pocketSound.currentTime = 0;
+                            pocketSound.play().catch(e => console.log('Audio play failed:', e));
+                        }
+
+                        // Redirigir después de la animación de caída
+                        setTimeout(() => {
+                            window.location.href = target;
+                        }, 400);
+                    }, 800);
+                });
             });
 
-            // 2. Scoring Chart (Bar)
-            const ctxScoring = document.getElementById('scoringChart').getContext('2d');
-            scoringChart = new Chart(ctxScoring, {
-                type: 'bar',
-                data: {
-                    labels: t["chart.scoring.labels"],
-                    datasets: [{
-                        label: t["chart.scoring.label"],
-                        data: [3, 1, 0],
-                        backgroundColor: ['#fbbf24', '#cbd5e1', '#ef4444'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                title: function(tooltipItems) {
-                                    const item = tooltipItems[0];
-                                    let label = item.chart.data.labels[item.dataIndex];
-                                    if (Array.isArray(label)) return label.join(' ');
-                                    return label;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: { stepSize: 1 }
-                        }
-                    }
-                }
+            // Prevenir clicks en troneras bloqueadas
+            document.querySelectorAll('.pocket.locked').forEach(pocket => {
+                pocket.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Pequeña animación de "rechazo"
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
             });
-
-            // 3. Powers Chart (Doughnut)
-            const ctxPowers = document.getElementById('powersChart').getContext('2d');
-            powersChart = new Chart(ctxPowers, {
-                type: 'doughnut',
-                data: {
-                    labels: t["chart.powers.labels"],
-                    datasets: [{
-                        label: t["chart.powers.label"],
-                        data: [2, 1, 1],
-                        backgroundColor: [
-                            '#22c55e',
-                            '#6366f1',
-                            '#8b5cf6'
-                        ],
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { boxWidth: 12, font: { size: 10 } }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                title: function(tooltipItems) {
-                                    const item = tooltipItems[0];
-                                    let label = item.chart.data.labels[item.dataIndex];
-                                    if (Array.isArray(label)) return label.join(' ');
-                                    return label;
-                                },
-                                label: function(context) {
-                                    const suffix = currentLang === 'es' ? ' Disponible por Temporada' : ' Available per Season';
-                                    return context.raw + suffix;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Apply saved language
-            switchLanguage(currentLang);
         });
     </script>
 </body>
