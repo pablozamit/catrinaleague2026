@@ -4,177 +4,226 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Catrina - Pool League</title>
-    <link href="https://fonts.googleapis.com/css2?family=Forum&family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Forum&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --color-bg: #050505;
-            --color-surface: #0a0a0a;
-            --color-primary: #C9A86A;
-            --color-primary-light: #E8D5A3;
-            --color-felt: #0d2818;
-            --color-felt-light: #1a4a2e;
-            --color-wood: #1a0f08;
-            --color-wood-light: #2d1a0f;
-            --color-text: #ffffff;
-            --color-text-muted: #888888;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --felt-dark: #0d1f12;
+            --felt-mid: #1a3d23;
+            --felt-light: #2d5a3d;
+            --wood-dark: #1a0f08;
+            --wood-mid: #2d1a0f;
+            --wood-light: #4a2d1a;
+            --gold: #d4af37;
+            --gold-bright: #f4d03f;
+            --shadow-dark: rgba(0, 0, 0, 0.9);
+        }
+
         body {
             font-family: 'Montserrat', sans-serif;
-            background: var(--color-bg);
+            background: #050505;
             min-height: 100vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            background-image: 
-                radial-gradient(ellipse at 50% 0%, rgba(201, 168, 106, 0.15) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 100%, rgba(26, 74, 46, 0.2) 0%, transparent 50%),
-                linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+            position: relative;
         }
 
-        /* Header elegante y pequeño */
+        /* Fondo del bar */
+        .bar-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(5, 5, 5, 0.5) 50%, rgba(5, 5, 5, 0.8) 100%),
+                url('material/imagen2.jpeg') center/cover no-repeat;
+            z-index: -2;
+        }
+
+        /* Efecto de viñeta */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.8) 100%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Partículas de polvo/tiza */
+        .dust-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        /* Header */
         .header {
             position: relative;
             z-index: 100;
-            padding: 1.5rem 2rem;
+            padding: 1.5rem;
             text-align: center;
             width: 100%;
         }
 
         .header h1 {
             font-family: 'Forum', serif;
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
             font-weight: 400;
-            letter-spacing: 8px;
+            letter-spacing: 6px;
             text-transform: uppercase;
-            background: linear-gradient(to right, var(--color-primary-light), var(--color-primary), var(--color-primary-light));
+            background: linear-gradient(to right, #fff, var(--gold), #fff);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(201, 168, 106, 0.4));
-            margin-bottom: 0.3rem;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
         }
 
         .header p {
             font-size: 0.65rem;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            color: var(--color-text-muted);
-            font-weight: 300;
+            color: #888;
+            margin-top: 0.3rem;
         }
 
-        /* Container principal */
-        .game-container {
-            position: relative;
-            width: 100%;
-            max-width: 1400px;
+        /* Contenedor principal */
+        .game-stage {
             flex: 1;
+            width: 100%;
+            max-width: 1200px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0 2rem 2rem;
-            perspective: 2000px;
-        }
-
-        /* Mesa de billar 3D */
-        .pool-table-wrapper {
+            padding: 0 1rem;
             position: relative;
-            width: 100%;
-            max-width: 1100px;
-            transform-style: preserve-3d;
-            transform: rotateX(15deg);
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            perspective: 1500px;
+            z-index: 10;
         }
 
-        .pool-table-wrapper:hover {
-            transform: rotateX(12deg);
+        /* Mesa 3D */
+        .table-container {
+            position: relative;
+            width: 95%;
+            max-width: 900px;
+            transform-style: preserve-3d;
+            transform: rotateX(25deg) translateZ(-50px);
+            transition: transform 0.5s ease;
         }
 
         /* Marco de madera */
         .table-frame {
             position: relative;
-            background: linear-gradient(135deg, 
-                var(--color-wood) 0%, 
-                var(--color-wood-light) 30%,
-                #3d2314 50%,
-                var(--color-wood-light) 70%,
-                var(--color-wood) 100%);
-            padding: 35px;
-            border-radius: 25px;
+            background: linear-gradient(145deg, 
+                var(--wood-dark) 0%, 
+                var(--wood-mid) 30%, 
+                var(--wood-light) 50%, 
+                var(--wood-mid) 70%, 
+                var(--wood-dark) 100%);
+            padding: clamp(15px, 3vw, 35px);
+            border-radius: 20px;
             box-shadow: 
-                0 50px 100px rgba(0, 0, 0, 0.9),
-                0 20px 40px rgba(0, 0, 0, 0.5),
+                0 60px 120px rgba(0, 0, 0, 0.9),
+                0 30px 60px rgba(0, 0, 0, 0.6),
                 inset 0 2px 4px rgba(255, 255, 255, 0.05),
                 inset 0 -2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        .table-frame::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            right: 15px;
-            bottom: 15px;
-            background: linear-gradient(135deg,
-                rgba(139, 90, 43, 0.3) 0%,
-                transparent 50%,
-                rgba(139, 90, 43, 0.3) 100%);
-            border-radius: 20px;
-            pointer-events: none;
-        }
-
-        /* Fieltro verde */
+        /* Fieltro con textura */
         .table-felt {
             position: relative;
             background: 
-                radial-gradient(ellipse at 30% 20%, rgba(42, 106, 66, 0.3) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 80%, rgba(42, 106, 66, 0.3) 0%, transparent 50%),
-                linear-gradient(135deg, var(--color-felt) 0%, var(--color-felt-light) 50%, var(--color-felt) 100%);
-            border-radius: 15px;
-            aspect-ratio: 2 / 1;
+                radial-gradient(ellipse at 20% 30%, rgba(45, 90, 61, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(45, 90, 61, 0.3) 0%, transparent 50%),
+                linear-gradient(135deg, var(--felt-dark) 0%, var(--felt-mid) 50%, var(--felt-dark) 100%);
+            border-radius: 12px;
+            aspect-ratio: 2 / 1.1;
             box-shadow: 
-                inset 0 0 100px rgba(0, 0, 0, 0.6),
-                inset 0 0 200px rgba(0, 0, 0, 0.3);
+                inset 0 0 150px rgba(0, 0, 0, 0.7),
+                inset 0 0 300px rgba(0, 0, 0, 0.4);
             overflow: visible;
         }
 
+        /* Imagen de la mesa */
+        .table-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
         /* Líneas de la mesa */
-        .table-felt::before {
+        .table-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .table-lines::before {
             content: '';
             position: absolute;
             top: 50%;
-            left: 5%;
-            right: 5%;
+            left: 3%;
+            right: 3%;
             height: 1px;
             background: linear-gradient(90deg, 
                 transparent 0%, 
-                rgba(255, 255, 255, 0.1) 10%,
-                rgba(255, 255, 255, 0.1) 90%,
+                rgba(255, 255, 255, 0.1) 5%,
+                rgba(255, 255, 255, 0.1) 95%,
                 transparent 100%);
-            transform: translateY(-50%);
         }
 
-        .table-felt::after {
+        .table-lines::after {
             content: '';
             position: absolute;
-            top: 5%;
-            bottom: 5%;
+            top: 3%;
+            bottom: 3%;
             left: 50%;
             width: 1px;
             background: linear-gradient(180deg, 
                 transparent 0%, 
-                rgba(255, 255, 255, 0.1) 10%,
-                rgba(255, 255, 255, 0.1) 90%,
+                rgba(255, 255, 255, 0.1) 5%,
+                rgba(255, 255, 255, 0.1) 95%,
                 transparent 100%);
-            transform: translateX(-50%);
         }
 
         /* Spot central */
@@ -183,9 +232,9 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            border: 2px solid rgba(255, 255, 255, 0.15);
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
         }
 
@@ -195,23 +244,24 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: rgba(255, 255, 255, 0.3);
             border-radius: 50%;
         }
 
-        /* Troneras realistas */
+        /* Troneras 3D */
         .pocket {
             position: absolute;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
+            width: clamp(40px, 6vw, 60px);
+            height: clamp(40px, 6vw, 60px);
             cursor: pointer;
             z-index: 50;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Exterior de la tronera */
         .pocket::before {
             content: '';
             position: absolute;
@@ -219,35 +269,32 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 30% 30%, #1a1a1a 0%, #000 50%, #000 100%);
+            background: radial-gradient(circle at 30% 30%, #2a2a2a 0%, #0a0a0a 50%, #000 100%);
             border-radius: 50%;
             box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.9),
                 inset 0 0 20px rgba(0, 0, 0, 1),
-                0 5px 15px rgba(0, 0, 0, 0.8),
                 inset 0 -5px 10px rgba(255, 255, 255, 0.05);
+            border: 2px solid #1a1a1a;
         }
 
+        /* Interior de la tronera (profundidad) */
         .pocket::after {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 1.3rem;
-            filter: drop-shadow(0 0 5px rgba(201, 168, 106, 0.5));
-            transition: all 0.3s ease;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle at 40% 40%, #000 0%, #1a1a1a 100%);
+            border-radius: 50%;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 1);
         }
 
         .pocket:hover {
-            transform: scale(1.15);
+            transform: scale(1.15) translateZ(10px);
             z-index: 60;
-        }
-
-        .pocket:hover::before {
-            box-shadow: 
-                inset 0 0 20px rgba(0, 0, 0, 1),
-                0 0 30px rgba(201, 168, 106, 0.5),
-                0 5px 20px rgba(0, 0, 0, 0.9);
         }
 
         .pocket.locked {
@@ -258,43 +305,75 @@
             transform: scale(1.05);
         }
 
-        /* Iconos */
-        .pocket[data-icon="rules"]::after { content: '📋'; }
-        .pocket[data-icon="ranking"]::after { content: '🏆'; }
-        .pocket[data-icon="lock"]::after { content: '🔒'; }
-
-        /* Posiciones de troneras */
-        .pocket.tl { top: -15px; left: -15px; }
-        .pocket.tc { top: -20px; left: 50%; transform: translateX(-50%); }
-        .pocket.tr { top: -15px; right: -15px; }
-        .pocket.bl { bottom: -15px; left: -15px; }
-        .pocket.bc { bottom: -20px; left: 50%; transform: translateX(-50%); }
-        .pocket.br { bottom: -15px; right: -15px; }
-
-        .pocket.tc:hover, .pocket.bc:hover {
-            transform: translateX(-50%) scale(1.15);
+        /* Iconos en troneras */
+        .pocket-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            z-index: 10;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.6));
+            pointer-events: none;
         }
 
-        /* Labels flotantes */
+        .pocket.locked .pocket-icon {
+            filter: none;
+            opacity: 0.5;
+        }
+
+        /* Posiciones */
+        .pocket.tl { top: -5%; left: -3%; }
+        .pocket.tc { top: -6%; left: 50%; transform: translateX(-50%); }
+        .pocket.tr { top: -5%; right: -3%; }
+        .pocket.bl { bottom: -5%; left: -3%; }
+        .pocket.bc { bottom: -6%; left: 50%; transform: translateX(-50%); }
+        .pocket.br { bottom: -5%; right: -3%; }
+
+        .pocket.tc:hover, .pocket.bc:hover {
+            transform: translateX(-50%) scale(1.15) translateZ(10px);
+        }
+
+        /* Glow en troneras activas */
+        @keyframes pocketGlow {
+            0%, 100% { 
+                box-shadow: 
+                    0 8px 25px rgba(0, 0, 0, 0.9),
+                    0 0 20px rgba(212, 175, 55, 0.2);
+            }
+            50% { 
+                box-shadow: 
+                    0 8px 25px rgba(0, 0, 0, 0.9),
+                    0 0 40px rgba(212, 175, 55, 0.5),
+                    0 0 60px rgba(212, 175, 55, 0.2);
+            }
+        }
+
+        .pocket:not(.locked)::before {
+            animation: pocketGlow 2.5s infinite;
+        }
+
+        /* Etiquetas flotantes */
         .pocket-label {
             position: absolute;
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(10px);
             padding: 10px 18px;
             border-radius: 25px;
-            border: 1px solid rgba(201, 168, 106, 0.3);
-            color: var(--color-text);
-            font-size: 0.75rem;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: #fff;
+            font-size: clamp(0.6rem, 1.5vw, 0.75rem);
             font-weight: 600;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             white-space: nowrap;
             opacity: 0;
-            transform: translateY(-10px) translateX(-50%);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(-15px) translateX(-50%);
+            transition: all 0.3s ease;
             pointer-events: none;
             left: 50%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 175, 55, 0.1);
+            z-index: 100;
         }
 
         .pocket:hover .pocket-label {
@@ -303,27 +382,27 @@
         }
 
         .pocket.tl .pocket-label, .pocket.tc .pocket-label, .pocket.tr .pocket-label {
-            top: 70px;
+            top: 80%;
         }
 
         .pocket.bl .pocket-label, .pocket.bc .pocket-label, .pocket.br .pocket-label {
-            bottom: 70px;
+            bottom: 80%;
         }
 
-        /* Bola blanca hiperrealista */
+        /* Bola blanca */
         .cue-ball {
             position: absolute;
-            width: 36px;
-            height: 36px;
+            width: clamp(28px, 4vw, 40px);
+            height: clamp(28px, 4vw, 40px);
             border-radius: 50%;
             background: 
-                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 20%, rgba(200, 200, 200, 0.8) 40%, rgba(150, 150, 150, 0.6) 100%);
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 20%, rgba(200, 200, 200, 0.8) 40%, rgba(150, 150, 150, 0.6) 100%);
             box-shadow: 
-                0 8px 20px rgba(0, 0, 0, 0.6),
-                0 15px 30px rgba(0, 0, 0, 0.3),
-                inset -8px -8px 15px rgba(0, 0, 0, 0.2),
-                inset 8px 8px 15px rgba(255, 255, 255, 0.9),
-                inset 0 0 20px rgba(255, 255, 255, 0.3);
+                0 10px 30px rgba(0, 0, 0, 0.7),
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                inset -8px -8px 20px rgba(0, 0, 0, 0.3),
+                inset 8px 8px 20px rgba(255, 255, 255, 0.9),
+                inset 0 0 30px rgba(255, 255, 255, 0.2);
             z-index: 40;
             pointer-events: none;
             left: 50%;
@@ -334,154 +413,136 @@
         .cue-ball::before {
             content: '';
             position: absolute;
-            top: 15%;
-            left: 20%;
-            width: 25%;
-            height: 20%;
+            top: 12%;
+            left: 18%;
+            width: 28%;
+            height: 22%;
             background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.95) 0%, transparent 70%);
             border-radius: 50%;
             filter: blur(1px);
         }
 
         .cue-ball.rolling {
-            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .cue-ball.sinking {
-            animation: sinkBall 0.6s cubic-bezier(0.4, 0, 1, 1) forwards;
+            animation: sinkBall 0.5s ease-in forwards;
         }
 
         @keyframes sinkBall {
-            0% { 
-                transform: translate(-50%, -50%) scale(1); 
-                opacity: 1;
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(0.8);
-                opacity: 0.8;
-            }
-            100% { 
-                transform: translate(-50%, -50%) scale(0); 
-                opacity: 0;
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
-            }
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
         }
 
-        /* Indicador inferior */
+        /* Instrucciones */
         .instructions {
             position: absolute;
-            bottom: 2rem;
+            bottom: 3rem;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(10, 10, 10, 0.8);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
-            padding: 12px 30px;
+            padding: 12px 25px;
             border-radius: 30px;
-            border: 1px solid rgba(201, 168, 106, 0.2);
-            color: var(--color-text-muted);
-            font-size: 0.7rem;
-            letter-spacing: 3px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            color: #888;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Glow en troneras activas */
-        @keyframes pocketGlow {
-            0%, 100% { 
-                box-shadow: 
-                    inset 0 0 20px rgba(0, 0, 0, 1),
-                    0 5px 15px rgba(0, 0, 0, 0.8),
-                    0 0 20px rgba(201, 168, 106, 0.2);
-            }
-            50% { 
-                box-shadow: 
-                    inset 0 0 20px rgba(0, 0, 0, 1),
-                    0 5px 15px rgba(0, 0, 0, 0.8),
-                    0 0 40px rgba(201, 168, 106, 0.4);
-            }
-        }
-
-        .pocket:not(.locked)::before {
-            animation: pocketGlow 3s infinite;
+            z-index: 100;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.4rem;
-                letter-spacing: 4px;
-            }
-
-            .game-container {
-                padding: 0 1rem 1rem;
-            }
-
-            .pool-table-wrapper {
-                transform: rotateX(20deg);
-            }
-
-            .table-frame {
-                padding: 20px;
-            }
-
-            .pocket {
-                width: 40px;
-                height: 40px;
-            }
-
-            .pocket::after {
-                font-size: 1rem;
-            }
-
-            .cue-ball {
-                width: 28px;
-                height: 28px;
+            .table-container {
+                transform: rotateX(20deg) translateZ(-30px);
             }
 
             .pocket-label {
                 font-size: 0.6rem;
-                padding: 6px 12px;
+                padding: 8px 12px;
+            }
+
+            .instructions {
+                bottom: 1.5rem;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .table-container {
+                transform: rotateX(15deg) translateZ(-20px);
+            }
+
+            .pocket {
+                width: 35px;
+                height: 35px;
+            }
+
+            .pocket-icon {
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Fondos y efectos -->
+    <div class="bar-background"></div>
+    <div class="vignette"></div>
+    
+    <!-- Partículas de polvo -->
+    <div class="dust-particles" id="particles"></div>
+
+    <!-- Header -->
     <header class="header">
         <h1>La Catrina</h1>
         <p>Pool League & Billiards</p>
     </header>
 
-    <div class="game-container">
-        <div class="pool-table-wrapper">
+    <!-- Escenario principal -->
+    <div class="game-stage">
+        <div class="table-container">
             <div class="table-frame">
                 <div class="table-felt">
+                <!-- Imagen de la mesa -->
+                <img src="material/imagen1.jpeg" alt="Mesa de billar" class="table-image" id="tableImage">
+                    
+                    <!-- Líneas decorativas -->
+                    <div class="table-lines"></div>
+                    
+                    <!-- Spot central -->
                     <div class="center-spot"></div>
 
-                    <!-- Tronera 1: Reglas -->
-                    <div class="pocket tl" data-target="reglas/" data-active="true" data-icon="rules">
-                        <span class="pocket-label">Reglas de la Liga</span>
+                    <!-- Troneras -->
+                    <div class="pocket tl" data-target="reglas/" data-active="true">
+                        <span class="pocket-icon">📋</span>
+                        <span class="pocket-label">Reglas</span>
                     </div>
 
-                    <!-- Tronera 2: Ranking -->
-                    <div class="pocket tc" data-target="elo/" data-active="true" data-icon="ranking">
-                        <span class="pocket-label">Ranking ELO</span>
+                    <div class="pocket tc" data-target="elo/" data-active="true">
+                        <span class="pocket-icon">🏆</span>
+                        <span class="pocket-label">Ranking</span>
                     </div>
 
-                    <!-- Troneras bloqueadas -->
-                    <div class="pocket tr locked" data-icon="lock">
+                    <div class="pocket tr locked">
+                        <span class="pocket-icon">🔒</span>
                         <span class="pocket-label">Próximamente</span>
                     </div>
 
-                    <div class="pocket bl locked" data-icon="lock">
+                    <div class="pocket bl locked">
+                        <span class="pocket-icon">🔒</span>
                         <span class="pocket-label">Próximamente</span>
                     </div>
 
-                    <div class="pocket bc locked" data-icon="lock">
+                    <div class="pocket bc locked">
+                        <span class="pocket-icon">🔒</span>
                         <span class="pocket-label">Próximamente</span>
                     </div>
 
-                    <div class="pocket br locked" data-icon="lock">
+                    <div class="pocket br locked">
+                        <span class="pocket-icon">🔒</span>
                         <span class="pocket-label">Próximamente</span>
                     </div>
 
@@ -492,7 +553,8 @@
         </div>
     </div>
 
-    <div class="instructions">Selecciona una tronera para navegar</div>
+    <!-- Instrucciones -->
+    <div class="instructions">Toca una tronera para navegar</div>
 
     <!-- Audio -->
     <audio id="rollSound" preload="auto">
@@ -503,6 +565,27 @@
     </audio>
 
     <script>
+        // Crear partículas de polvo
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Verificar si existe la imagen de la mesa
+        const tableImage = document.getElementById('tableImage');
+        tableImage.onload = function() {
+            this.style.opacity = '1';
+        };
+        tableImage.onerror = function() {
+            this.style.display = 'none';
+        };
+
+        // Interacción con troneras
         document.addEventListener('DOMContentLoaded', function() {
             const cueBall = document.getElementById('cueBall');
             const activePockets = document.querySelectorAll('.pocket[data-active="true"]');
@@ -510,7 +593,8 @@
             const pocketSound = document.getElementById('pocketSound');
 
             activePockets.forEach(pocket => {
-                pocket.addEventListener('click', function(e) {
+                // Touch y click
+                const handleInteraction = function(e) {
                     e.preventDefault();
                     
                     const target = this.getAttribute('data-target');
@@ -519,18 +603,18 @@
                     // Bloquear interacciones
                     document.querySelectorAll('.pocket').forEach(p => p.style.pointerEvents = 'none');
 
-                    // Calcular posición objetivo
+                    // Calcular posición
                     const pocketRect = this.getBoundingClientRect();
                     const feltRect = document.querySelector('.table-felt').getBoundingClientRect();
                     
                     const targetX = ((pocketRect.left + pocketRect.width / 2 - feltRect.left) / feltRect.width) * 100;
                     const targetY = ((pocketRect.top + pocketRect.height / 2 - feltRect.top) / feltRect.height) * 100;
 
-                    // Sonido de rodar
+                    // Sonido
                     if (rollSound) {
                         rollSound.volume = 0.4;
                         rollSound.currentTime = 0;
-                        rollSound.play().catch(e => {});
+                        rollSound.play().catch(() => {});
                     }
 
                     // Animar bola
@@ -538,7 +622,6 @@
                     cueBall.style.left = targetX + '%';
                     cueBall.style.top = targetY + '%';
 
-                    // Sonido de caída y redirección
                     setTimeout(() => {
                         cueBall.classList.remove('rolling');
                         cueBall.classList.add('sinking');
@@ -546,24 +629,31 @@
                         if (pocketSound) {
                             pocketSound.volume = 0.6;
                             pocketSound.currentTime = 0;
-                            pocketSound.play().catch(e => {});
+                            pocketSound.play().catch(() => {});
                         }
 
                         setTimeout(() => {
                             window.location.href = target;
-                        }, 500);
-                    }, 1000);
-                });
+                        }, 400);
+                    }, 800);
+                };
+
+                pocket.addEventListener('click', handleInteraction);
+                pocket.addEventListener('touchstart', handleInteraction, {passive: false});
             });
 
             // Feedback en troneras bloqueadas
             document.querySelectorAll('.pocket.locked').forEach(pocket => {
-                pocket.addEventListener('click', function() {
+                const handleLocked = function(e) {
+                    e.preventDefault();
                     this.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         this.style.transform = '';
                     }, 150);
-                });
+                };
+
+                pocket.addEventListener('click', handleLocked);
+                pocket.addEventListener('touchstart', handleLocked, {passive: false});
             });
         });
     </script>

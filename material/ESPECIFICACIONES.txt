@@ -1,0 +1,76 @@
+# MATERIAL NECESARIO PARA EL DISEÑO WEB DE LA CATRINA POOL LEAGUE
+
+## ESTILO OBJETIVO
+Videojuego de billar estilo 2005 (Virtual Pool, Hustle Kings) - Vista en perspectiva 3D realista, iluminación cinematográfica, ambiente inmersivo de bar.
+
+---
+
+## IMAGEN 1: MESA DE BILLAR (VISTA PRINCIPAL)
+
+### Descripción necesaria:
+Fotografía de mesa de billar profesional americana (9 pies) vista desde perspectiva lateral-alta (45 grados aprox). Debe mostrar toda la mesa completa con los 6 agujeros visibles. Fieltro verde clásico (#1a4a2e), bandas de goma negras, troneras de cuero negro con red interior visible. Marco de madera oscura con vetas visibles. Iluminación dramática desde arriba creando sombras suaves. Sin bolas encima, solo la mesa vacía lista para jugar.
+
+### Prompt para IA:
+"Professional 9-foot American pool table photographed from a 45-degree elevated side angle, showing the entire table with all 6 pockets visible. Classic green felt (#1a4a2e), black rubber cushions, black leather pockets with visible netting inside. Dark oak wood frame with visible grain texture. Dramatic overhead lighting creating soft shadows. Empty table with no balls. High-end billiard hall atmosphere, cinematic lighting, 4K quality, photorealistic, professional product photography style"
+
+---
+
+## IMAGEN 2: FONDO AMBIENTE DEL BAR
+
+### Descripción necesaria:
+Imagen de fondo desenfocada (bokeh) del interior del bar La Catrina. Luces cálidas ambientales, estanterías con botellas borrosas, sillones de cuero oscuro, paredes con ladrillo o madera oscura. Atmósfera íntima y rockera. Totalmente desenfocada para usar como background, solo se perciben luces y formas.
+
+### Prompt para IA:
+"Blurred background of an upscale rock-themed bar interior, warm ambient lighting with golden and amber tones, out-of-focus bottles on shelves, dark leather sofas barely visible, exposed brick or dark wood walls, intimate atmosphere, bokeh effect from hanging lights, rock music venue aesthetic, depth of field blur, dark and moody color palette, professional photography background style, 4K"
+
+---
+
+## IMAGEN 3: TRONERA DETALLE (PARA TEXTURA)
+
+### Descripción necesaria:
+Primer plano macro de una tronera de billar. Cuero negro gastado con textura realista, red interior de nylon negro, el borde metálico o de cuero que recibe la bola. Iluminación que resalta la textura del material. Fondo verde del fieltro borroso.
+
+### Prompt para IA:
+"Macro close-up photograph of a professional pool table pocket, worn black leather texture with realistic grain, black nylon net inside visible, brass or leather rim where balls enter, dramatic side lighting highlighting material texture, green pool felt blurred in background, shallow depth of field, photorealistic detail, professional product photography, 4K quality"
+
+---
+
+## IMAGEN 4: BOLA DE BILLAR BLANCA (PARA REFERENCIA)
+
+### Descripción necesaria:
+Bola de billar blanca (cue ball) aislada sobre fondo negro. Perfectamente redonda, brillante, con reflejos de luz realistas. Se debe ver la marca de rayas rojas o azules si las tiene, o completamente blanca si es tradicional.
+
+### Prompt para IA:
+"Professional studio photograph of a white cue ball isolated on pure black background, perfectly spherical, glossy surface with realistic light reflections and specular highlights, traditional billiard ball with possible red or blue dot markings, dramatic studio lighting from top-left, high contrast, photorealistic, product photography style, 4K"
+
+---
+
+## ELEMENTOS ADICIONALES NO FOTOGRÁFICOS (CSS/SVG)
+
+Los siguientes elementos serán creados con código (no necesitan imágenes):
+
+- **Efecto de polvo/tiza flotante**: Partículas CSS animadas sutiles
+- **Iluminación dinámica**: Gradientes y sombras CSS avanzadas
+- **Glow de troneras**: Efectos CSS con box-shadow y filtros
+- **Etiquetas flotantes**: HTML/CSS con glass morphism
+- **Sombras de la bola**: CSS dinámico según posición
+
+---
+
+## ESPECIFICACIONES TÉCNICAS PARA IMÁGENES
+
+- **Formato**: JPG o PNG
+- **Resolución mínima**: 1920x1080 (preferiblemente 4K)
+- **Relación de aspecto**: 16:9 o similar
+- **Optimización**: Para web (comprimidas sin pérdida visible)
+- **Fondos**: Transparente (PNG) solo si es necesario, sino fondo integrado
+
+---
+
+## NOTAS PARA IMPLEMENTACIÓN
+
+1. La mesa principal usará Imagen 1 como base
+2. El fondo usará Imagen 2 con overlay oscuro
+3. Las troneras tendrán overlay de Imagen 3 o serán CSS avanzado
+4. La bola será CSS 3D o Imagen 4 con animaciones
+5. Todo optimizado para móvil (touch events, no hover)
