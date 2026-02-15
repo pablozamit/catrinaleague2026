@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - La Catrina Pool League</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            color: #d4af37;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateX(-4px);
+        }
+
+        .profile-header {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #d4af37;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-username {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 8px;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #d4af37;
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #d4af37;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .badge-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .badge-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .badge-card.locked {
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+
+        .badge-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .badge-name {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .badge-description {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+
+        .badge-points {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .badge-earned-date {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .progress-section {
+            margin-top: 24px;
+        }
+
+        .progress-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #d4af37 0%, #f4d03f 100%);
+            transition: width 0.3s ease;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #aaa;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #ef4444;
+        }
+
+        .level-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .category-filter {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: rgba(212, 175, 55, 0.3);
+            border-color: #d4af37;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../elo/" class="back-btn">
+                <span>←</span>
+                <span>Volver al Ranking</span>
+            </a>
+            <div id="notificationBellContainer"></div>
+        </header>
+
+        <div id="profileContent">
+            <div class="loading">Cargando perfil...</div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="../js/firebase.js"></script>
+    <script src="../js/badges.js"></script>
+    <script src="../js/notifications.js"></script>
+
+    <script>
+        // Wait for Firebase to load
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                if (typeof firebase !== 'undefined') {
+                    resolve();
+                } else {
+                    setTimeout(() => waitForFirebase().then(resolve), 100);
+                }
+            });
+        }
+
+        // Get username from URL
+        function getUsernameFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('u');
+        }
+
+        // Format date
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        // Render profile
+        async function renderProfile(username) {
+            const container = document.getElementById('profileContent');
+            
+            try {
+                // Find user by username
+                const usersSnap = await database.ref('users').once('value');
+                const users = usersSnap.val();
+                
+                let userData = null;
+                let userId = null;
+                
+                for (const [uid, user] of Object.entries(users)) {
+                    if (user.username === username) {
+                        userData = user;
+                        userId = uid;
+                        break;
+                    }
+                }
+                
+                if (!userData) {
+                    container.innerHTML = '<div class="error">Usuario no encontrado</div>';
+                    return;
+                }
+                
+                // Calculate level
+                const exp = userData.experience_points || 0;
+                const levelData = calculateLevel(exp);
+                const winRate = userData.matches_played > 0 
+                    ? ((userData.matches_won / userData.matches_played) * 100).toFixed(1)
+                    : 0;
+                
+                // Get user's badges
+                const userBadges = userData.badges || {};
+                const earnedBadgeIds = Object.keys(userBadges);
+                
+                // Separate earned and locked badges
+                const earnedBadges = BADGE_CATALOG.filter(b => earnedBadgeIds.includes(b.id))
+                    .map(b => ({ ...b, earned_at: userBadges[b.id].earned_at }))
+                    .sort((a, b) => b.earned_at - a.earned_at);
+                
+                const lockedBadges = BADGE_CATALOG.filter(b => !earnedBadgeIds.includes(b.id) && !b.secret);
+                
+                // Render HTML
+                container.innerHTML = `
+                    <div class="profile-header">
+                        <div class="profile-avatar">${username.substring(0, 2).toUpperCase()}</div>
+                        <div class="profile-info">
+                            <div class="profile-username">${username}</div>
+                            <div class="level-badge">Nivel ${levelData.level} - ${exp} XP</div>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">${userData.elo_rating || 1200}</div>
+                                    <div class="stat-label">ELO Rating</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${userData.matches_played || 0}</div>
+                                    <div class="stat-label">Partidos Jugados</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${userData.matches_won || 0}</div>
+                                    <div class="stat-label">Partidos Ganados</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${winRate}%</div>
+                                    <div class="stat-label">% Victorias</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${earnedBadges.length}/50</div>
+                                    <div class="stat-label">Badges</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">
+                            <span>🏆</span>
+                            <span>Badges Obtenidos (${earnedBadges.length})</span>
+                        </div>
+                        
+                        <div class="category-filter">
+                            <button class="filter-btn active" onclick="filterBadges('ALL')">Todos</button>
+                            <button class="filter-btn" onclick="filterBadges('BEGINNER')">Principiante</button>
+                            <button class="filter-btn" onclick="filterBadges('SKILL')">Habilidad</button>
+                            <button class="filter-btn" onclick="filterBadges('CONSISTENCY')">Constancia</button>
+                            <button class="filter-btn" onclick="filterBadges('SOCIAL')">Social</button>
+                            <button class="filter-btn" onclick="filterBadges('ACHIEVEMENT')">Logros</button>
+                            <button class="filter-btn" onclick="filterBadges('STREAK')">Rachas</button>
+                            <button class="filter-btn" onclick="filterBadges('SPECIAL')">Especial</button>
+                            <button class="filter-btn" onclick="filterBadges('LEGENDARY')">Legendario</button>
+                        </div>
+
+                        <div class="badges-grid" id="earnedBadgesGrid">
+                            ${earnedBadges.map(badge => `
+                                <div class="badge-card" data-category="${badge.category}" style="border-color: ${RARITY_COLORS[badge.rarity]}">
+                                    <div class="badge-icon">${badge.icon}</div>
+                                    <div class="badge-name">${badge.name}</div>
+                                    <div class="badge-description">${badge.description}</div>
+                                    <div class="badge-points">+${badge.points} XP</div>
+                                    <div class="badge-earned-date">Obtenido: ${formatDate(badge.earned_at)}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        ${earnedBadges.length === 0 ? '<p style="text-align: center; color: #aaa; padding: 20px;">Aún no has obtenido ningún badge. ¡Empieza a jugar!</p>' : ''}
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">
+                            <span>🔒</span>
+                            <span>Badges Bloqueados (${lockedBadges.length})</span>
+                        </div>
+                        
+                        <div class="badges-grid" id="lockedBadgesGrid">
+                            ${lockedBadges.map(badge => `
+                                <div class="badge-card locked" data-category="${badge.category}" style="border-color: ${RARITY_COLORS[badge.rarity]}">
+                                    <div class="badge-icon">${badge.icon}</div>
+                                    <div class="badge-name">${badge.name}</div>
+                                    <div class="badge-description">${badge.description}</div>
+                                    <div class="badge-points">+${badge.points} XP</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                container.innerHTML = `<div class="error">Error al cargar el perfil: ${error.message}</div>`;
+            }
+        }
+
+        // Filter badges by category
+        let currentFilter = 'ALL';
+        function filterBadges(category) {
+            currentFilter = category;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.includes(getCategoryName(category)));
+            });
+            
+            // Filter earned badges
+            document.querySelectorAll('#earnedBadgesGrid .badge-card').forEach(card => {
+                if (category === 'ALL' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Filter locked badges
+            document.querySelectorAll('#lockedBadgesGrid .badge-card').forEach(card => {
+                if (category === 'ALL' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                'ALL': 'Todos',
+                'BEGINNER': 'Principiante',
+                'SKILL': 'Habilidad',
+                'CONSISTENCY': 'Constancia',
+                'SOCIAL': 'Social',
+                'ACHIEVEMENT': 'Logros',
+                'STREAK': 'Rachas',
+                'SPECIAL': 'Especial',
+                'LEGENDARY': 'Legendario'
+            };
+            return names[category] || category;
+        }
+
+        // Initialize
+        waitForFirebase().then(async () => {
+            initFirebase();
+            
+            const username = getUsernameFromUrl();
+            if (!username) {
+                document.getElementById('profileContent').innerHTML = '<div class="error">Usuario no especificado</div>';
+                return;
+            }
+            
+            await renderProfile(username);
+            
+            // Add notification bell if user is logged in
+            onAuthStateChanged(async (user) => {
+                if (user) {
+                    const bellContainer = document.getElementById('notificationBellContainer');
+                    bellContainer.innerHTML = createNotificationBell();
+                    await updateNotificationBell(user.uid);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - La Catrina Pool League</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #d4af37;
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #aaa;
+        }
+
+        .section {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #d4af37;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 12px;
+            margin-bottom: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .leaderboard-container {
+            margin-top: 20px;
+        }
+
+        .leaderboard-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .leaderboard-item.champion {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #d4af37;
+            min-width: 30px;
+        }
+
+        .wins {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        .status {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 16px;
+        }
+
+        .status.success {
+            background: rgba(74, 222, 128, 0.2);
+            border: 1px solid #4ade80;
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+        }
+
+        .status.info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+        }
+
+        .period-select {
+            margin-bottom: 16px;
+        }
+
+        .period-select label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d4af37;
+        }
+
+        .period-select select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Panel de Administración</h1>
+            <p class="subtitle">Sistema de Campeones - La Catrina Pool League</p>
+        </header>
+
+        <div class="section">
+            <div class="section-title">🏆 Calcular y Otorgar Campeones</div>
+            <p style="color: #aaa; margin-bottom: 16px;">
+                Estos botones calculan los campeones del período anterior y otorgan los badges correspondientes.
+            </p>
+            
+            <button class="btn" onclick="awardChampions('daily')">Campeón del Día (Ayer)</button>
+            <button class="btn" onclick="awardChampions('weekly')">Campeón de la Semana (Semana Pasada)</button>
+            <button class="btn" onclick="awardChampions('monthly')">Campeón del Mes (Mes Pasado)</button>
+            <button class="btn" onclick="awardChampions('quarterly')">Campeón del Trimestre (Trimestre Pasado)</button>
+            <button class="btn" onclick="awardChampions('yearly')">Campeón del Año (Año Pasado)</button>
+            
+            <div id="awardStatus"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">📊 Ver Ranking Actual</div>
+            
+            <div class="period-select">
+                <label for="periodType">Seleccionar período:</label>
+                <select id="periodType" onchange="loadCurrentLeaderboard()">
+                    <option value="daily">Hoy</option>
+                    <option value="weekly">Esta Semana</option>
+                    <option value="monthly" selected>Este Mes</option>
+                    <option value="quarterly">Este Trimestre</option>
+                    <option value="yearly">Este Año</option>
+                </select>
+            </div>
+            
+            <div id="leaderboardContainer">
+                <div class="loading">Selecciona un período para ver el ranking</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="../js/firebase.js"></script>
+    <script src="../js/badges.js"></script>
+
+    <script>
+        // Wait for Firebase to load
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                if (typeof firebase !== 'undefined') {
+                    resolve();
+                } else {
+                    setTimeout(() => waitForFirebase().then(resolve), 100);
+                }
+            });
+        }
+
+        // Award champions for a specific period
+        async function awardChampions(periodType) {
+            const statusDiv = document.getElementById('awardStatus');
+            statusDiv.innerHTML = '<div class="status info">Calculando campeones...</div>';
+            
+            try {
+                const result = await awardChampionBadges(periodType);
+                
+                if (!result) {
+                    statusDiv.innerHTML = '<div class="status error">No hay datos para este período</div>';
+                    return;
+                }
+                
+                const championNames = result.champions.map(c => c.username).join(', ');
+                const message = result.champions.length === 1
+                    ? `¡${championNames} es el campeón con ${result.maxWins} victorias!`
+                    : `¡Empate! ${championNames} son campeones con ${result.maxWins} victorias cada uno.`;
+                
+                statusDiv.innerHTML = `<div class="status success">✅ ${message}</div>`;
+                
+            } catch (error) {
+                console.error('Error awarding champions:', error);
+                statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        // Load current leaderboard
+        async function loadCurrentLeaderboard() {
+            const periodType = document.getElementById('periodType').value;
+            const container = document.getElementById('leaderboardContainer');
+            
+            container.innerHTML = '<div class="loading">Cargando ranking...</div>';
+            
+            try {
+                const { leaders, periodKey } = await getCurrentLeaderboard(periodType);
+                
+                if (leaders.length === 0) {
+                    container.innerHTML = '<div class="loading">No hay datos para este período</div>';
+                    return;
+                }
+                
+                // Find max wins to identify champion(s)
+                const maxWins = Math.max(...leaders.map(l => l.wins));
+                
+                const html = `
+                    <div style="margin-bottom: 16px; color: #aaa;">
+                        Período: <strong style="color: #d4af37;">${periodKey}</strong>
+                    </div>
+                    ${leaders.map((leader, index) => `
+                        <div class="leaderboard-item ${leader.wins === maxWins ? 'champion' : ''}">
+                            <div class="player-info">
+                                <span class="rank">#${index + 1}</span>
+                                <span>${leader.username}</span>
+                                ${leader.wins === maxWins ? '<span style="color: #d4af37;">👑</span>' : ''}
+                            </div>
+                            <span class="wins">${leader.wins} victoria${leader.wins !== 1 ? 's' : ''}</span>
+                        </div>
+                    `).join('')}
+                `;
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                container.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Initialize
+        waitForFirebase().then(async () => {
+            initFirebase();
+            loadCurrentLeaderboard();
+        });
+    </script>
+</body>
+</html>
