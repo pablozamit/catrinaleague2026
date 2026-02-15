@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducir Resultado - La Catrina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="../js/elo.js"></script>
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-felt: #1a4a2e;
+            --color-gold: #d4af37;
+            --color-gold-light: #f4d03f;
+            --color-white: #f5f5f5;
+            --color-text-muted: #888;
+            --color-success: #4ade80;
+            --color-danger: #f87171;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--color-bg);
+            min-height: 100vh;
+            color: var(--color-white);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+        }
+
+        .header {
+            background: linear-gradient(180deg, rgba(26, 74, 46, 0.3) 0%, transparent 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-gold);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info {
+            color: var(--color-white);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--color-gold);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: transparent;
+            border: 1px solid var(--color-gold);
+            color: var(--color-gold);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--color-gold);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--color-white);
+            font-size: 1rem;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-gold);
+        }
+
+        .form-group select option {
+            background: #1a1a1a;
+        }
+
+        .player-fixed {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid var(--color-gold);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .player-fixed .label {
+            color: var(--color-gold);
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .player-fixed .username {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--color-white);
+        }
+
+        .player-fixed .elo {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-top: 0.3rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-gold) 0%, #b8962e 100%);
+            color: var(--color-bg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--color-gold);
+            color: var(--color-gold);
+            margin-top: 1rem;
+        }
+
+        .btn-danger {
+            background: rgba(248, 113, 113, 0.2);
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+        }
+
+        .error {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid var(--color-success);
+            color: var(--color-success);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .preview {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .preview h4 {
+            color: var(--color-gold);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem 0;
+        }
+
+        .preview-row .positive { color: var(--color-success); }
+        .preview-row .negative { color: var(--color-danger); }
+
+        .match-type-info {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-top: 0.3rem;
+        }
+
+        .hidden { display: none; }
+
+        .result-selector {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .result-option {
+            flex: 1;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .result-option:hover { border-color: var(--color-gold); }
+        .result-option.selected {
+            border-color: var(--color-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .result-option .player-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .result-option .score {
+            font-size: 1.5rem;
+            font-family: 'Cinzel', serif;
+            color: var(--color-gold);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-muted);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="../" class="back-link">← Volver</a>
+        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        <h1>INTRODUCIR RESULTADO</h1>
+        <div class="user-info">Usuario: <span id="currentUsername">-</span></div>
+    </div>
+
+    <div class="container">
+        <!-- Loading -->
+        <div id="loadingScreen" class="card">
+            <div class="loading">Cargando...</div>
+        </div>
+
+        <!-- Formulario -->
+        <div id="resultScreen" class="card hidden">
+            <div id="resultSuccess" class="success">¡Resultado enviado! Esperando confirmación del oponente.</div>
+            <div id="resultError" class="error"></div>
+
+            <!-- Jugador logueado (fijo) -->
+            <div class="player-fixed">
+                <div class="label">TÚ</div>
+                <div class="username" id="myUsername">-</div>
+                <div class="elo">ELO: <span id="myElo">-</span></div>
+            </div>
+
+            <!-- Oponente -->
+            <div class="form-group">
+                <label>Contrincante</label>
+                <select id="opponent" onchange="updatePreview()">
+                    <option value="">Seleccionar oponente...</option>
+                </select>
+            </div>
+
+            <!-- Tipo de partido -->
+            <div class="form-group">
+                <label>Tipo de Partido</label>
+                <select id="matchType" onchange="updatePreview()">
+                    <option value="rey_mesa">Rey de la Mesa (×1.0)</option>
+                    <option value="torneo">Torneo (×1.5)</option>
+                    <option value="liga_grupos">Liga - Fase de Grupos (×2.0)</option>
+                    <option value="liga_finales">Liga - Playoffs (×2.5)</option>
+                </select>
+                <div class="match-type-info">×1.0 (base) ×2.5 (máximo para finales)</div>
+            </div>
+
+            <!-- Resultado -->
+            <div class="form-group">
+                <label>Resultado</label>
+                <div class="result-selector">
+                    <div class="result-option" id="resultMe" onclick="selectWinner('me')">
+                        <div class="player-name" id="winnerMeName">Yo</div>
+                        <div class="score">GANA</div>
+                    </div>
+                    <div class="result-option" id="resultOpponent" onclick="selectWinner('opponent')">
+                        <div class="player-name" id="winnerOpponentName">Oponente</div>
+                        <div class="score">GANA</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview ELO -->
+            <div id="eloPreview" class="preview hidden">
+                <h4>📊 Previsualización del cambio ELO</h4>
+                <div class="preview-row">
+                    <span id="previewMyName">Yo</span>
+                    <span id="previewMyChange">+0</span>
+                </div>
+                <div class="preview-row">
+                    <span id="previewOpponentName">Oponente</span>
+                    <span id="previewOpponentChange">+0</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="submitBtn" onclick="submitResult()" disabled>
+                Enviar Resultado
+            </button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>La Catrina Pool League</p>
+    </div>
+
+    <script src="../js/firebase.js"></script>
+    <script>
+        // Variables globales
+        let currentUser = null;
+        let currentUserData = null;
+        let allUsers = [];
+        let selectedWinner = null;
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', async () => {
+            initFirebase();
+            
+            // Esperar a que cargue Firebase
+            await new Promise(resolve => {
+                if (window.firebase && window.firebase.auth) {
+                    resolve();
+                } else {
+                    setTimeout(resolve, 500);
+                }
+            });
+
+            onAuthStateChanged((user) => {
+                if (!user) {
+                    // No hay sesión, redirigir a login
+                    window.location.href = '../';
+                } else {
+                    loadUserData(user);
+                }
+            });
+        });
+
+        async function loadUserData(user) {
+            try {
+                currentUser = user;
+                
+                // Obtener datos del usuario desde Firebase
+                const userData = await getUserData(user.uid);
+                
+                if (!userData) {
+                    // Usuario no encontrado, crear entrada
+                    const username = user.email.split('@')[0];
+                    currentUserData = {
+                        username: username,
+                        elo_rating: 1200,
+                        matches_played: 0,
+                        matches_won: 0,
+                        email: user.email
+                    };
+                    await updateUserElo(user.uid, 1200, 0, 0);
+                } else {
+                    currentUserData = userData;
+                }
+
+                // Actualizar UI
+                document.getElementById('currentUsername').textContent = currentUserData.username;
+                document.getElementById('myUsername').textContent = currentUserData.username;
+                document.getElementById('myElo').textContent = currentUserData.elo_rating;
+
+                // Cargar todos los usuarios
+                await loadAllUsers();
+                
+                // Mostrar formulario
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('resultScreen').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('loadingScreen').innerHTML = `
+                    <div class="error" style="display:block">
+                        Error al cargar datos: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function loadAllUsers() {
+            try {
+                allUsers = await getAllUsers();
+                
+                const opponentSelect = document.getElementById('opponent');
+                opponentSelect.innerHTML = '<option value="">Seleccionar oponente...</option>';
+                
+                // Filtrar el usuario actual
+                const otherUsers = allUsers.filter(u => u.uid !== currentUser.uid);
+                
+                otherUsers.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.uid;
+                    option.textContent = `${user.username} (ELO: ${user.elo_rating || 1200})`;
+                    opponentSelect.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        function selectWinner(winner) {
+            selectedWinner = winner;
+            document.querySelectorAll('.result-option').forEach(el => el.classList.remove('selected'));
+            
+            if (winner === 'me') {
+                document.getElementById('resultMe').classList.add('selected');
+            } else {
+                document.getElementById('resultOpponent').classList.add('selected');
+            }
+            
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const opponentUid = document.getElementById('opponent').value;
+            const matchType = document.getElementById('matchType').value;
+
+            if (!opponentUid || !selectedWinner) {
+                document.getElementById('eloPreview').classList.add('hidden');
+                document.getElementById('submitBtn').disabled = true;
+                return;
+            }
+
+            const opponent = allUsers.find(u => u.uid === opponentUid);
+            if (!opponent) return;
+
+            const myElo = currentUserData.elo_rating || 1200;
+            const opponentElo = opponent.elo_rating || 1200;
+            const myMatches = currentUserData.matches_played || 0;
+            const opponentMatches = opponent.matches_played || 0;
+
+            // Actualizar nombres
+            document.getElementById('winnerMeName').textContent = currentUserData.username;
+            document.getElementById('winnerOpponentName').textContent = opponent.username;
+            document.getElementById('previewMyName').textContent = currentUserData.username;
+            document.getElementById('previewOpponentName').textContent = opponent.username;
+
+            // Calcular cambio ELO
+            const winner = selectedWinner === 'me' ? currentUserData : opponent;
+            const loser = selectedWinner === 'me' ? opponent : currentUserData;
+            
+            const winnerElo = selectedWinner === 'me' ? myElo : opponentElo;
+            const loserElo = selectedWinner === 'me' ? opponentElo : myElo;
+            const winnerMatches = selectedWinner === 'me' ? myMatches : opponentMatches;
+            const loserMatches = selectedWinner === 'me' ? opponentMatches : myMatches;
+
+            const changes = calculateEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType);
+
+            const myChange = selectedWinner === 'me' ? changes.winnerChange : changes.loserChange;
+            const opponentChange = selectedWinner === 'me' ? changes.loserChange : changes.winnerChange;
+
+            const myEl = document.getElementById('previewMyChange');
+            const opponentEl = document.getElementById('previewOpponentChange');
+
+            myEl.textContent = (myChange >= 0 ? '+' : '') + myChange;
+            myEl.className = myChange >= 0 ? 'positive' : 'negative';
+
+            opponentEl.textContent = (opponentChange >= 0 ? '+' : '') + opponentChange;
+            opponentEl.className = opponentChange >= 0 ? 'positive' : 'negative';
+
+            document.getElementById('eloPreview').classList.remove('hidden');
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        async function submitResult() {
+            const opponentUid = document.getElementById('opponent').value;
+            const matchType = document.getElementById('matchType').value;
+
+            if (!opponentUid || !selectedWinner) {
+                showError('Por favor completa todos los campos');
+                return;
+            }
+
+            const opponent = allUsers.find(u => u.uid === opponentUid);
+            
+            const matchData = {
+                player1_id: currentUser.uid,
+                player1_username: currentUserData.username,
+                player2_id: opponent.uid,
+                player2_username: opponent.username,
+                winner_id: selectedWinner === 'me' ? currentUser.uid : opponent.uid,
+                match_type: matchType,
+                submitted_by: currentUser.uid
+            };
+
+            try {
+                await createMatch(matchData);
+                
+                document.getElementById('resultSuccess').style.display = 'block';
+                document.getElementById('resultError').style.display = 'none';
+                
+                // Reset form
+                setTimeout(() => {
+                    document.getElementById('opponent').selectedIndex = 0;
+                    document.getElementById('matchType').selectedIndex = 0;
+                    selectedWinner = null;
+                    document.querySelectorAll('.result-option').forEach(el => el.classList.remove('selected'));
+                    document.getElementById('eloPreview').classList.add('hidden');
+                    document.getElementById('submitBtn').disabled = true;
+                    document.getElementById('resultSuccess').style.display = 'none';
+                }, 3000);
+                
+            } catch (error) {
+                showError('Error al enviar resultado: ' + error.message);
+            }
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('resultError');
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        async function logout() {
+            await signOut();
+            window.location.href = '../';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Resultados - La Catrina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="../js/elo.js"></script>
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-gold: #d4af37;
+            --color-white: #f5f5f5;
+            --color-text-muted: #888;
+            --color-success: #4ade80;
+            --color-danger: #f87171;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--color-bg);
+            min-height: 100vh;
+            color: var(--color-white);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+        }
+
+        .header {
+            background: linear-gradient(180deg, rgba(26, 74, 46, 0.3) 0%, transparent 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-gold);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info {
+            color: var(--color-white);
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--color-gold);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: transparent;
+            border: 1px solid var(--color-gold);
+            color: var(--color-gold);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--color-text-muted);
+        }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .match-card {
+            position: relative;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .match-type {
+            font-size: 0.8rem;
+            color: var(--color-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .match-date {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .players {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .player {
+            text-align: center;
+            flex: 1;
+        }
+
+        .player.winner .name {
+            color: var(--color-success);
+            font-weight: 700;
+        }
+
+        .player .name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .player .elo {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .vs {
+            color: var(--color-gold);
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            padding: 0 1rem;
+        }
+
+        .elo-preview {
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 8px;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .elo-preview h4 {
+            color: var(--color-gold);
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .elo-preview .row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+
+        .elo-preview .positive { color: var(--color-success); }
+        .elo-preview .negative { color: var(--color-danger); }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirm {
+            background: var(--color-success);
+            color: #000;
+        }
+
+        .btn-confirm:hover {
+            box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);
+        }
+
+        .btn-decline {
+            background: transparent;
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+        }
+
+        .btn-decline:hover {
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-muted);
+        }
+
+        .hidden { display: none; }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-muted);
+            font-size: 0.8rem;
+        }
+
+        .error {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid var(--color-success);
+            color: var(--color-success);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .match-type-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--color-gold);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="../" class="back-link">← Volver</a>
+        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        <h1>CONFIRMAR RESULTADOS</h1>
+        <div class="user-info">Usuario: <span id="currentUsername">-</span></div>
+    </div>
+
+    <div class="container">
+        <div id="messageArea"></div>
+
+        <!-- Loading -->
+        <div id="loadingScreen">
+            <div class="loading">Cargando partidos pendientes...</div>
+        </div>
+
+        <!-- Lista de partidos -->
+        <div id="matchesList" class="hidden"></div>
+
+        <!-- Estado vacío -->
+        <div id="emptyState" class="card hidden">
+            <div class="empty-state">
+                <div class="icon">✅</div>
+                <p>No tienes partidos pendientes de confirmar</p>
+                <p style="font-size: 0.8rem; margin-top: 0.5rem;">¡Todo al día!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>La Catrina Pool League</p>
+    </div>
+
+    <script src="../js/firebase.js"></script>
+    <script>
+        let currentUser = null;
+        let currentUserData = null;
+        let pendingMatches = [];
+        let allUsers = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            initFirebase();
+            
+            await new Promise(resolve => {
+                if (window.firebase && window.firebase.auth) resolve();
+                else setTimeout(resolve, 500);
+            });
+
+            onAuthStateChanged((user) => {
+                if (!user) {
+                    window.location.href = '../';
+                } else {
+                    loadUserData(user);
+                }
+            });
+        });
+
+        async function loadUserData(user) {
+            try {
+                currentUser = user;
+                
+                const userData = await getUserData(user.uid);
+                currentUserData = userData || {
+                    username: user.email.split('@')[0],
+                    elo_rating: 1200,
+                    matches_played: 0,
+                    matches_won: 0
+                };
+
+                document.getElementById('currentUsername').textContent = currentUserData.username;
+
+                // Cargar usuarios y partidos
+                allUsers = await getAllUsers();
+                await loadPendingMatches();
+                
+                document.getElementById('loadingScreen').classList.add('hidden');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loadingScreen').innerHTML = `
+                    <div class="error" style="display:block">Error: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function loadPendingMatches() {
+            try {
+                // Obtener partidos donde el usuario es player2 y están pending
+                pendingMatches = await getPendingMatches(currentUser.uid);
+                
+                // Filtrar solo pending
+                pendingMatches = pendingMatches.filter(m => m.status === 'pending');
+
+                if (pendingMatches.length === 0) {
+                    document.getElementById('emptyState').classList.remove('hidden');
+                    return;
+                }
+
+                renderMatches();
+                document.getElementById('matchesList').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error loading matches:', error);
+            }
+        }
+
+        function renderMatches() {
+            const container = document.getElementById('matchesList');
+            container.innerHTML = '';
+
+            pendingMatches.forEach(match => {
+                const opponent = match.player1_id === currentUser.uid ? 
+                    { username: match.player2_username, uid: match.player2_id } :
+                    { username: match.player1_username, uid: match.player1_id };
+                
+                const myUid = currentUser.uid;
+                const opponentUid = opponent.uid;
+                
+                const myElo = currentUserData.elo_rating || 1200;
+                const opponentData = allUsers.find(u => u.uid === opponentUid);
+                const opponentElo = (opponentData?.elo_rating || 1200);
+                
+                const winnerUid = match.winner_id;
+                const winnerIsMe = winnerUid === myUid;
+                
+                const matchTypeLabels = {
+                    'rey_mesa': 'Rey de la Mesa',
+                    'torneo': 'Torneo',
+                    'liga_grupos': 'Liga - Grupos',
+                    'liga_finales': 'Liga - Playoffs'
+                };
+
+                const weights = {
+                    'rey_mesa': 1.0,
+                    'torneo': 1.5,
+                    'liga_grupos': 2.0,
+                    'liga_finales': 2.5
+                };
+                const weight = weights[match.match_type] || 1.0;
+
+                const changes = calculateEloChange(
+                    winnerIsMe ? myElo : opponentElo,
+                    winnerIsMe ? opponentElo : myElo,
+                    currentUserData.matches_played || 0,
+                    opponentData?.matches_played || 0,
+                    match.match_type
+                );
+
+                const myChange = winnerIsMe ? changes.winnerChange : changes.loserChange;
+                const opponentChange = winnerIsMe ? changes.loserChange : changes.winnerChange;
+                const myNewElo = winnerIsMe ? changes.winnerElo : changes.loserElo;
+                const opponentNewElo = winnerIsMe ? changes.loserElo : changes.winnerElo;
+
+                const card = document.createElement('div');
+                card.className = 'card match-card';
+                card.innerHTML = `
+                    <div class="match-header">
+                        <span class="match-type-badge">${matchTypeLabels[match.match_type] || match.match_type}</span>
+                        <span class="match-date">${formatDate(match.created_at)}</span>
+                    </div>
+                    
+                    <div class="players">
+                        <div class="player ${winnerIsMe ? 'winner' : ''}">
+                            <div class="name">${currentUserData.username}</div>
+                            <div class="elo">${myElo} → ${myNewElo}</div>
+                        </div>
+                        <div class="vs">vs</div>
+                        <div class="player ${!winnerIsMe ? 'winner' : ''}">
+                            <div class="name">${opponent.username}</div>
+                            <div class="elo">${opponentElo} → ${opponentNewElo}</div>
+                        </div>
+                    </div>
+
+                    <div class="elo-preview">
+                        <h4>📊 Cambio ELO (×${weight})</h4>
+                        <div class="row">
+                            <span>${currentUserData.username}</span>
+                            <span class="${myChange >= 0 ? 'positive' : 'negative'}">
+                                ${myChange >= 0 ? '+' : ''}${myChange}
+                            </span>
+                        </div>
+                        <div class="row">
+                            <span>${opponent.username}</span>
+                            <span class="${opponentChange >= 0 ? 'positive' : 'negative'}">
+                                ${opponentChange >= 0 ? '+' : ''}${opponentChange}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn btn-confirm" onclick="confirmMatch('${match.key}')">
+                            ✅ Confirmar
+                        </button>
+                        <button class="btn btn-decline" onclick="declineMatch('${match.key}')">
+                            ❌ Rechazar
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        async function confirmMatch(matchId) {
+            const match = pendingMatches.find(m => m.key === matchId);
+            if (!match) return;
+
+            const opponentUid = match.player1_id === currentUser.uid ? match.player2_id : match.player1_id;
+            const opponentData = allUsers.find(u => u.uid === opponentUid);
+            
+            const myElo = currentUserData.elo_rating || 1200;
+            const opponentElo = (opponentData?.elo_rating || 1200);
+            
+            const winnerUid = match.winner_id;
+            const winnerIsMe = winnerUid === currentUser.uid;
+
+            const changes = calculateEloChange(
+                winnerIsMe ? myElo : opponentElo,
+                winnerIsMe ? opponentElo : myElo,
+                currentUserData.matches_played || 0,
+                opponentData?.matches_played || 0,
+                match.match_type
+            );
+
+            const eloChanges = {
+                winnerId: winnerUid,
+                loserId: winnerUid === currentUser.uid ? opponentUid : currentUser.uid,
+                winnerElo: changes.winnerElo,
+                loserElo: changes.loserElo,
+                winnerMatches: (winnerIsMe ? currentUserData.matches_played : opponentData?.matches_played || 0) + 1,
+                loserMatches: (winnerIsMe ? opponentData?.matches_played : currentUserData.matches_played || 0) + 1,
+                winnerWins: (winnerIsMe ? currentUserData.matches_won : 0) + 1
+            };
+
+            try {
+                await confirmMatch(matchId, eloChanges);
+                showMessage('✅ Resultado confirmado', 'success');
+                
+                // Recargar
+                await loadPendingMatches();
+            } catch (error) {
+                showMessage('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        async function declineMatch(matchId) {
+            try {
+                await declineMatch(matchId);
+                showMessage('❌ Partido rechazado', 'success');
+                
+                // Recargar
+                await loadPendingMatches();
+            } catch (error) {
+                showMessage('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        function showMessage(text, type) {
+            const container = document.getElementById('messageArea');
+            container.innerHTML = `
+                <div class="${type}" style="display:block">${text}</div>
+            `;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 3000);
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Fecha desconocida';
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        async function logout() {
+            await signOut();
+            window.location.href = '../';
+        }
+    </script>
+</body>
+</html>
