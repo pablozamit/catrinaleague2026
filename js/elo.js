@@ -21,15 +21,12 @@ const K_FACTOR_BASE = 20;
  * @returns {number} - K-factor efectivo
  */
 function getKFactor(elo, matchesPlayed) {
-    // Jugadores nuevos (< 30 partidos): K = 40
     if (matchesPlayed < 30) {
         return 40;
     }
-    // Jugadores elite (ELO > 2400): K = 10
     if (elo > 2400) {
         return 10;
     }
-    // Jugadores regulares: K = 20
     return 20;
 }
 
@@ -53,23 +50,17 @@ function getExpectedScore(playerElo, opponentElo) {
  * @returns {object} - Cambios de ELO para winner y loser
  */
 function calculateEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType) {
-    // Obtener K-factor para cada jugador
     const kWinner = getKFactor(winnerElo, winnerMatches);
     const kLoser = getKFactor(loserElo, loserMatches);
 
-    // Aplicar peso del tipo de partido
     const weight = ELO_WEIGHTS[matchType] || 1.0;
     const kEffectiveWinner = kWinner * weight;
     const kEffectiveLoser = kLoser * weight;
 
-    // Calcular probabilidad esperada
     const expectedWinner = getExpectedScore(winnerElo, loserElo);
     const expectedLoser = getExpectedScore(loserElo, winnerElo);
 
-    // Calcular nuevo ELO
-    // Winner: ELO + K * (1 - expected)
     const winnerChange = Math.round(kEffectiveWinner * (1 - expectedWinner));
-    // Loser: ELO + K * (0 - expected) = ELO - K * expected
     const loserChange = Math.round(kEffectiveLoser * (0 - expectedLoser));
 
     return {
@@ -107,52 +98,7 @@ function getEloCategory(elo) {
     return { name: 'Novato', color: '#9CA3AF', icon: '🌱' };
 }
 
-// Firebase configuration (to be filled)
-const firebaseConfig = {
-    apiKey: "",
-    authDomain: "",
-    databaseURL: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
-};
-
-let firebaseDb = null;
-
-/**
- * Inicializa Firebase (cuando esté configurado)
- */
-async function initFirebase(config) {
-    // Esta función se implementará cuando se configure Firebase
-    console.log('Firebase initialization pending config:', config);
-}
-
-/**
- * Guarda un resultado en Firebase
- */
-async function saveMatchToFirebase(matchData) {
-    // Esta función se implementará cuando se configure Firebase
-    console.log('Saving match to Firebase:', matchData);
-}
-
-/**
- * Obtiene todos los jugadores de Firebase
- */
-async function getPlayersFromFirebase() {
-    // Esta función se implementará cuando se configure Firebase
-    return [];
-}
-
-/**
- * Actualiza el ELO de un jugador en Firebase
- */
-async function updatePlayerElo(playerId, newElo, matchesPlayed, matchesWon) {
-    // Esta función se implementará cuando se configure Firebase
-    console.log('Updating player in Firebase:', { playerId, newElo, matchesPlayed, matchesWon });
-}
-
-// Exportar funciones (para uso como módulo si es necesario)
+// Exportar funciones
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         getKFactor,
