@@ -360,11 +360,11 @@
                 <h4>📊 Previsualización del cambio ELO</h4>
                 <div class="preview-row">
                     <span id="previewMyName">Yo</span>
-                    <span id="previewMyChange">+0</span>
+                    <span><span id="previewMyChange">+0</span> → <strong id="previewMyNewElo">0</strong></span>
                 </div>
                 <div class="preview-row">
                     <span id="previewOpponentName">Oponente</span>
-                    <span id="previewOpponentChange">+0</span>
+                    <span><span id="previewOpponentChange">+0</span> → <strong id="previewOpponentNewElo">0</strong></span>
                 </div>
             </div>
 
@@ -530,6 +530,8 @@
 
             const myChange = selectedWinner === 'me' ? changes.winnerChange : changes.loserChange;
             const opponentChange = selectedWinner === 'me' ? changes.loserChange : changes.winnerChange;
+            const myNewElo = selectedWinner === 'me' ? changes.winnerElo : changes.loserElo;
+            const opponentNewElo = selectedWinner === 'me' ? changes.loserElo : changes.winnerElo;
 
             const myEl = document.getElementById('previewMyChange');
             const opponentEl = document.getElementById('previewOpponentChange');
@@ -539,6 +541,10 @@
 
             opponentEl.textContent = (opponentChange >= 0 ? '+' : '') + opponentChange;
             opponentEl.className = opponentChange >= 0 ? 'positive' : 'negative';
+
+            // Mostrar nuevo ELO
+            document.getElementById('previewMyNewElo').textContent = myNewElo;
+            document.getElementById('previewOpponentNewElo').textContent = opponentNewElo;
 
             document.getElementById('eloPreview').classList.remove('hidden');
             document.getElementById('submitBtn').disabled = false;
