@@ -381,23 +381,28 @@
     <script src="../js/firebase.js"></script>
     <script>
         // Variables globales
-        let currentUser = null;
         let currentUserData = null;
         let allUsers = [];
         let selectedWinner = null;
 
+        async function waitForFirebase() {
+            let attempts = 0;
+            while (!window.firebase && attempts < 20) {
+                await new Promise(r => setTimeout(r, 100));
+                attempts++;
+            }
+            return !!window.firebase;
+        }
+
         // Inicializar
         document.addEventListener('DOMContentLoaded', async () => {
-            initFirebase();
+            const ready = await waitForFirebase();
+            if (!ready) {
+                document.getElementById('loadingScreen').innerHTML = '<div class="error" style="display:block">Error cargando Firebase</div>';
+                return;
+            }
             
-            // Esperar a que cargue Firebase
-            await new Promise(resolve => {
-                if (window.firebase && window.firebase.auth) {
-                    resolve();
-                } else {
-                    setTimeout(resolve, 500);
-                }
-            });
+            initFirebase();
 
             onAuthStateChanged((user) => {
                 if (!user) {

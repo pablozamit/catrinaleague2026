@@ -238,14 +238,24 @@
 
     <script src="js/firebase.js"></script>
     <script>
+        async function waitForFirebase() {
+            let attempts = 0;
+            while (!window.firebase && attempts < 20) {
+                await new Promise(r => setTimeout(r, 100));
+                attempts++;
+            }
+            if (!window.firebase) {
+                document.getElementById('loadingIndicator').innerHTML = '<p style="color:red">Error cargando Firebase</p>';
+                return false;
+            }
+            return true;
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
-            initFirebase();
+            const ready = await waitForFirebase();
+            if (!ready) return;
             
-            // Esperar Firebase
-            await new Promise(resolve => {
-                if (window.firebase && window.firebase.auth) resolve();
-                else setTimeout(resolve, 500);
-            });
+            initFirebase();
 
             // Verificar sesión existente
             onAuthStateChanged((user) => {
