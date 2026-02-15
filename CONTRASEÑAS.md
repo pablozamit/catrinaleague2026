@@ -30,7 +30,7 @@
 | 24 | Dennis | dennis123 |
 | 25 | Andrea | andrea123 |
 | 26 | Jorge | jorge123 |
-| 27 | Ed | ed123 |
+| 27 | Ed | ed1234 |
 | 28 | Clint | clint123 |
 | 29 | Paddy | paddy123 |
 | 30 | Pavlo | pavlo123 |
