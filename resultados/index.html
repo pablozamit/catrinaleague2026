@@ -302,82 +302,83 @@
 </head>
 <body>
     <div class="header">
-        <a href="../" class="back-link">← Volver</a>
+        <a href="../" class="back-link" data-i18n="back">← Volver</a>
         <div class="header-right">
+            <div id="langSelectorContainer" style="margin-right: 15px;"></div>
             <div id="notificationBellContainer"></div>
-            <button class="logout-btn" onclick="showChangePasswordModal()" style="margin-right: 10px;">Cambiar Contraseña</button>
-            <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+            <button class="logout-btn" onclick="showChangePasswordModal()" style="margin-right: 10px;" data-i18n="change_password">Cambiar Contraseña</button>
+            <button class="logout-btn" onclick="logout()" data-i18n="logout">Cerrar Sesión</button>
         </div>
-        <h1>INTRODUCIR RESULTADO</h1>
-        <div class="user-info">Usuario: <span id="currentUsername">-</span></div>
+        <h1 data-i18n="results_title">INTRODUCIR RESULTADO</h1>
+        <div class="user-info"><span data-i18n="results_user">Usuario</span>: <span id="currentUsername">-</span></div>
     </div>
 
     <div class="container">
         <!-- Loading -->
         <div id="loadingScreen" class="card">
-            <div class="loading">Cargando...</div>
+            <div class="loading" data-i18n="loading">Cargando...</div>
         </div>
 
         <!-- Formulario -->
         <div id="resultScreen" class="card hidden">
-            <div id="resultSuccess" class="success">¡Resultado enviado! Esperando confirmación del oponente.</div>
+            <div id="resultSuccess" class="success" data-i18n="results_success">¡Resultado enviado! Esperando confirmación del oponente.</div>
             <div id="resultError" class="error"></div>
 
             <!-- Jugador logueado (fijo) -->
             <div class="player-fixed">
-                <div class="label">TÚ</div>
+                <div class="label" data-i18n="results_you">TÚ</div>
                 <div class="username" id="myUsername">-</div>
-                <div class="elo">ELO: <span id="myElo">-</span></div>
+                <div class="elo"><span data-i18n="results_opponent_elo">ELO</span>: <span id="myElo">-</span></div>
             </div>
 
             <!-- Oponente -->
             <div class="form-group">
-                <label>Contrincante</label>
+                <label data-i18n="results_opponent">Contrincante</label>
                 <select id="opponent" onchange="updatePreview()">
-                    <option value="">Seleccionar oponente...</option>
+                    <option value="" data-i18n="results_select_opponent">Seleccionar oponente...</option>
                 </select>
             </div>
 
             <!-- Tipo de partido -->
             <div class="form-group">
-                <label>Tipo de Partido</label>
+                <label data-i18n="results_match_type">Tipo de Partido</label>
                 <select id="matchType" onchange="updatePreview()">
-                    <option value="rey_mesa">Rey de la Mesa (×1.0)</option>
-                    <option value="torneo">Torneo (×1.5)</option>
-                    <option value="liga_grupos">Liga - Fase de Grupos (×2.0)</option>
-                    <option value="liga_finales">Liga - Playoffs (×2.5)</option>
+                    <option value="rey_mesa" data-i18n="match_type_rey_mesa_full">Rey de la Mesa (×1.0)</option>
+                    <option value="torneo" data-i18n="match_type_torneo_full">Torneo (×1.5)</option>
+                    <option value="liga_grupos" data-i18n="match_type_liga_grupos_full">Liga - Fase de Grupos (×2.0)</option>
+                    <option value="liga_finales" data-i18n="match_type_liga_finales_full">Liga - Playoffs (×2.5)</option>
                 </select>
-                <div class="match-type-info">×1.0 (base) ×2.5 (máximo para finales)</div>
+                <div class="match-type-info" data-i18n="results_match_type_info">×1.0 (base) ×2.5 (máximo para finales)</div>
             </div>
 
             <!-- Resultado -->
             <div class="form-group">
-                <label>Resultado</label>
+                <label data-i18n="results_result">Resultado</label>
                 <div class="result-selector">
                     <div class="result-option" id="resultMe" onclick="selectWinner('me')">
-                        <div class="player-name" id="winnerMeName">Yo</div>
-                        <div class="score">GANA</div>
+                        <div class="player-name" id="winnerMeName" data-i18n="results_you_win">Yo</div>
+                        <div class="score" data-i18n="results_wins">GANA</div>
                     </div>
                     <div class="result-option" id="resultOpponent" onclick="selectWinner('opponent')">
-                        <div class="player-name" id="winnerOpponentName">Oponente</div>
-                        <div class="score">GANA</div>
+                        <div class="player-name" id="winnerOpponentName" data-i18n="results_opponent_win">Oponente</div>
+                        <div class="score" data-i18n="results_wins">GANA</div>
                     </div>
                 </div>
             </div>
 
             <!-- Score / Marcador -->
             <div class="form-group" id="scoreGroup" style="display: none;">
-                <label>Marcador Final</label>
+                <label data-i18n="results_final_score">Marcador Final</label>
                 <div class="score-inputs" style="display: flex; gap: 10px; align-items: center; justify-content: center;">
                     <div style="text-align: center;">
-                        <div style="font-size: 12px; color: #888; margin-bottom: 5px;">Ganador</div>
+                        <div style="font-size: 12px; color: #888; margin-bottom: 5px;" data-i18n="results_winner">Ganador</div>
                         <select id="winnerScore" onchange="updatePreview()" style="padding: 10px; font-size: 16px; min-width: 60px; text-align: center; background: rgba(212, 175, 55, 0.1); border: 2px solid #d4af37; color: #d4af37; border-radius: 8px;">
                             <option value="3" selected>3</option>
                         </select>
                     </div>
                     <div style="font-size: 24px; color: #666;">-</div>
                     <div style="text-align: center;">
-                        <div style="font-size: 12px; color: #888; margin-bottom: 5px;">Perdedor</div>
+                        <div style="font-size: 12px; color: #888; margin-bottom: 5px;" data-i18n="results_loser">Perdedor</div>
                         <select id="loserScore" onchange="updatePreview()" style="padding: 10px; font-size: 16px; min-width: 60px; text-align: center; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.2); color: #fff; border-radius: 8px;">
                             <option value="0">0</option>
                             <option value="1">1</option>
@@ -390,7 +391,7 @@
 
             <!-- Preview ELO -->
             <div id="eloPreview" class="preview hidden">
-                <h4>📊 Previsualización del cambio ELO</h4>
+                <h4 data-i18n="results_elo_preview">📊 Previsualización del cambio ELO</h4>
                 <div class="preview-row">
                     <span id="previewMyName">Yo</span>
                     <span><span id="previewMyChange">+0</span> → <strong id="previewMyNewElo">0</strong></span>
@@ -401,42 +402,42 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary" id="submitBtn" onclick="submitResult()" disabled>
+            <button class="btn btn-primary" id="submitBtn" onclick="submitResult()" disabled data-i18n="results_submit">
                 Enviar Resultado
             </button>
         </div>
     </div>
 
     <div class="footer">
-        <p>La Catrina Pool League</p>
+        <p data-i18n="app_name">La Catrina Pool League</p>
     </div>
 
     <!-- Modal Cambiar Contraseña -->
     <div id="changePasswordModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
         <div class="modal-content" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #d4af37; border-radius: 16px; padding: 32px; max-width: 400px; width: 90%;">
-            <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">Cambiar Contraseña</h3>
+            <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;" data-i18n="password_change_title">Cambiar Contraseña</h3>
             
             <div id="changePasswordError" class="error" style="display: none; margin-bottom: 15px;"></div>
-            <div id="changePasswordSuccess" class="success" style="display: none; margin-bottom: 15px;">¡Contraseña actualizada correctamente!</div>
+            <div id="changePasswordSuccess" class="success" style="display: none; margin-bottom: 15px;" data-i18n="password_change_success">¡Contraseña actualizada correctamente!</div>
             
             <div class="form-group" style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 8px; color: #d4af37;">Contraseña Actual</label>
-                <input type="password" id="currentPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" placeholder="Tu contraseña actual">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37;" data-i18n="password_current">Contraseña Actual</label>
+                <input type="password" id="currentPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" data-i18n="password_current_placeholder" placeholder="Tu contraseña actual">
             </div>
             
             <div class="form-group" style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 8px; color: #d4af37;">Nueva Contraseña</label>
-                <input type="password" id="newPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" placeholder="Mínimo 6 caracteres">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37;" data-i18n="password_new">Nueva Contraseña</label>
+                <input type="password" id="newPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" data-i18n="password_new_placeholder" placeholder="Mínimo 6 caracteres">
             </div>
             
             <div class="form-group" style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: #d4af37;">Confirmar Nueva Contraseña</label>
-                <input type="password" id="confirmNewPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" placeholder="Repite la nueva contraseña">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37;" data-i18n="password_confirm">Confirmar Nueva Contraseña</label>
+                <input type="password" id="confirmNewPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" data-i18n="password_confirm_placeholder" placeholder="Repite la nueva contraseña">
             </div>
             
             <div style="display: flex; gap: 10px;">
-                <button onclick="closeChangePasswordModal()" style="flex: 1; padding: 12px; background: transparent; border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; cursor: pointer;">Cancelar</button>
-                <button onclick="changePassword()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%); border: none; color: #000; border-radius: 8px; cursor: pointer; font-weight: bold;">Cambiar</button>
+                <button onclick="closeChangePasswordModal()" style="flex: 1; padding: 12px; background: transparent; border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; cursor: pointer;" data-i18n="password_cancel">Cancelar</button>
+                <button onclick="changePassword()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%); border: none; color: #000; border-radius: 8px; cursor: pointer; font-weight: bold;" data-i18n="password_change_button">Cambiar</button>
             </div>
         </div>
     </div>
@@ -776,28 +777,28 @@
 
             // Validaciones
             if (!currentPassword || !newPassword || !confirmNewPassword) {
-                errorEl.textContent = 'Por favor completa todos los campos';
+                errorEl.textContent = typeof t !== 'undefined' ? t('password_error_all_fields') : 'Por favor completa todos los campos';
                 errorEl.style.display = 'block';
                 successEl.style.display = 'none';
                 return;
             }
 
             if (newPassword.length < 6) {
-                errorEl.textContent = 'La nueva contraseña debe tener al menos 6 caracteres';
+                errorEl.textContent = typeof t !== 'undefined' ? t('error_password_min_length') : 'La nueva contraseña debe tener al menos 6 caracteres';
                 errorEl.style.display = 'block';
                 successEl.style.display = 'none';
                 return;
             }
 
             if (newPassword !== confirmNewPassword) {
-                errorEl.textContent = 'Las contraseñas nuevas no coinciden';
+                errorEl.textContent = typeof t !== 'undefined' ? t('password_error_no_match') : 'Las contraseñas nuevas no coinciden';
                 errorEl.style.display = 'block';
                 successEl.style.display = 'none';
                 return;
             }
 
             if (newPassword === currentPassword) {
-                errorEl.textContent = 'La nueva contraseña debe ser diferente a la actual';
+                errorEl.textContent = typeof t !== 'undefined' ? t('password_error_different') : 'La nueva contraseña debe ser diferente a la actual';
                 errorEl.style.display = 'block';
                 successEl.style.display = 'none';
                 return;
@@ -841,14 +842,14 @@
             } catch (error) {
                 console.error('Error changing password:', error);
                 
-                let errorMessage = 'Error al cambiar la contraseña';
+                let errorMessage = typeof t !== 'undefined' ? t('password_change_error') : 'Error al cambiar la contraseña';
                 
                 if (error.code === 'auth/wrong-password') {
-                    errorMessage = 'La contraseña actual es incorrecta';
+                    errorMessage = typeof t !== 'undefined' ? t('password_error_current_wrong') : 'La contraseña actual es incorrecta';
                 } else if (error.code === 'auth/weak-password') {
-                    errorMessage = 'La nueva contraseña es demasiado débil';
+                    errorMessage = typeof t !== 'undefined' ? t('password_error_weak') : 'La nueva contraseña es demasiado débil';
                 } else if (error.code === 'auth/requires-recent-login') {
-                    errorMessage = 'Por seguridad, debes cerrar sesión y volver a iniciar sesión antes de cambiar la contraseña';
+                    errorMessage = typeof t !== 'undefined' ? t('password_error_relogin_required') : 'Por seguridad, debes cerrar sesión y volver a iniciar sesión antes de cambiar la contraseña';
                 }
 
                 errorEl.textContent = errorMessage;
@@ -868,6 +869,10 @@
             await signOut();
             window.location.href = '../';
         }
+    </script>
+    <script src="../js/translations.js"></script>
+    <script>
+        document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
     </script>
 </body>
 </html>
