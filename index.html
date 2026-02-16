@@ -159,48 +159,49 @@
 </head>
 <body>
     <div class="bar-bg"></div>
-    <div id="loading">Cargando...</div>
+    <div id="loading" data-i18n="loading">Cargando...</div>
     <div id="canvas-container"></div>
     
     <div class="ui-layer">
         <div class="header">
+            <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;" id="langSelectorContainer"></div>
             <h1>LA CATRINA</h1>
-            <p>POOL LEAGUE & BILLIARDS</p>
+            <p data-i18n="app_subtitle">POOL LEAGUE & BILLIARDS</p>
         </div>
     </div>
 
     <!-- Marcadores de troneras -->
     <div class="pocket-marker" id="marker-tl" data-target="reglas/" data-active="true" style="left: 20%; top: 30%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">📋</span>
-        <div class="pocket-label">Reglas de la Liga</div>
+        <div class="pocket-label" data-i18n="nav_rules">Reglas de la Liga</div>
     </div>
     
     <div class="pocket-marker" id="marker-tc" data-target="elo/" data-active="true" style="left: 50%; top: 25%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🏆</span>
-        <div class="pocket-label">Ranking ELO</div>
+        <div class="pocket-label" data-i18n="nav_ranking">Ranking ELO</div>
     </div>
     
     <div class="pocket-marker" id="marker-tr" data-target="login.html" data-active="true" style="left: 80%; top: 30%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🔐</span>
-        <div class="pocket-label">Login / Resultados</div>
+        <div class="pocket-label" data-i18n="nav_login">Login / Resultados</div>
     </div>
     
     <div class="pocket-marker locked" id="marker-bl" style="left: 20%; top: 70%;">
         <span style="font-size: 2rem; opacity: 0.6;">🔒</span>
-        <div class="pocket-label">Próximamente</div>
+        <div class="pocket-label" data-i18n="nav_coming_soon">Próximamente</div>
     </div>
     
     <div class="pocket-marker locked" id="marker-bc" style="left: 50%; top: 75%;">
         <span style="font-size: 2rem; opacity: 0.6;">🔒</span>
-        <div class="pocket-label">Próximamente</div>
+        <div class="pocket-label" data-i18n="nav_coming_soon">Próximamente</div>
     </div>
     
     <div class="pocket-marker locked" id="marker-br" style="left: 80%; top: 70%;">
         <span style="font-size: 2rem; opacity: 0.6;">🔒</span>
-        <div class="pocket-label">Próximamente</div>
+        <div class="pocket-label" data-i18n="nav_coming_soon">Próximamente</div>
     </div>
 
-    <div class="instructions">Arrastra para rotar • Haz clic en las troneras</div>
+    <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras</div>
 
     <script>
         // Escena 3D
@@ -621,6 +622,13 @@
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
+    </script>
+    
+    <!-- Translations -->
+    <script src="js/translations.js"></script>
+    <script>
+        // Add language selector to header
+        document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
     </script>
 </body>
 </html>

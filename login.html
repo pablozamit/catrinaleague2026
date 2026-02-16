@@ -202,36 +202,37 @@
     <div class="login-container">
         <div class="logo">
             <h1>CATRINA</h1>
-            <p>POOL LEAGUE</p>
+            <p data-i18n="app_subtitle">POOL LEAGUE</p>
         </div>
 
         <div class="login-card">
-            <h2>INICIAR SESIÓN</h2>
+            <div style="position: absolute; top: 20px; right: 20px;" id="langSelectorContainer"></div>
+            <h2 data-i18n="login_title">INICIAR SESIÓN</h2>
             
             <div id="loginError" class="error"></div>
             <div id="loadingIndicator" class="loading" style="display:none;">
                 <div class="loading-spinner"></div>
-                <p>Cargando...</p>
+                <p data-i18n="loading">Cargando...</p>
             </div>
 
             <form id="loginForm">
                 <div class="form-group">
-                    <label>Usuario</label>
-                    <input type="text" id="username" placeholder="Tu nombre de usuario" required>
+                    <label data-i18n="login_username">Usuario</label>
+                    <input type="text" id="username" data-i18n="login_username_placeholder" placeholder="Tu nombre de usuario" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" id="password" placeholder="Tu contraseña" required>
+                    <label data-i18n="login_password">Contraseña</label>
+                    <input type="password" id="password" data-i18n="login_password_placeholder" placeholder="Tu contraseña" required>
                 </div>
                 
-                <button type="submit" class="btn btn-primary" id="loginBtn">
+                <button type="submit" class="btn btn-primary" id="loginBtn" data-i18n="login_button">
                     ENTRAR
                 </button>
             </form>
 
             <div class="links">
-                <a href="elo/">Ver Ranking ELO</a>
+                <a href="elo/" data-i18n="login_view_ranking">Ver Ranking ELO</a>
             </div>
         </div>
     </div>
@@ -280,23 +281,23 @@
             // Only allow alphanumeric characters, underscores, and hyphens
             const validPattern = /^[a-zA-Z0-9_-]+$/;
             if (!validPattern.test(username)) {
-                return { valid: false, error: 'El usuario solo puede contener letras, números, guiones y guiones bajos' };
+                return { valid: false, error: typeof t !== 'undefined' ? t('error_invalid_username_chars') : 'El usuario solo puede contener letras, números, guiones y guiones bajos' };
             }
             if (username.length < 3) {
-                return { valid: false, error: 'El usuario debe tener al menos 3 caracteres' };
+                return { valid: false, error: typeof t !== 'undefined' ? t('error_username_min_length') : 'El usuario debe tener al menos 3 caracteres' };
             }
             if (username.length > 20) {
-                return { valid: false, error: 'El usuario no puede tener más de 20 caracteres' };
+                return { valid: false, error: typeof t !== 'undefined' ? t('error_username_max_length') : 'El usuario no puede tener más de 20 caracteres' };
             }
             return { valid: true };
         }
 
         function validatePassword(password) {
             if (password.length < 6) {
-                return { valid: false, error: 'La contraseña debe tener al menos 6 caracteres' };
+                return { valid: false, error: typeof t !== 'undefined' ? t('error_password_min_length') : 'La contraseña debe tener al menos 6 caracteres' };
             }
             if (password.length > 100) {
-                return { valid: false, error: 'La contraseña es demasiado larga' };
+                return { valid: false, error: typeof t !== 'undefined' ? t('error_password_max_length') : 'La contraseña es demasiado larga' };
             }
             return { valid: true };
         }
@@ -314,12 +315,12 @@
             // Rate limiting check
             const now = Date.now();
             if (now - lastLoginAttempt < LOGIN_COOLDOWN) {
-                showError('Por favor espera un momento antes de intentar de nuevo');
+                showError(typeof t !== 'undefined' ? t('error_rate_limit') : 'Por favor espera un momento antes de intentar de nuevo');
                 return;
             }
             
             if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
-                showError('Demasiados intentos fallidos. Por favor espera unos minutos.');
+                showError(typeof t !== 'undefined' ? t('error_max_attempts') : 'Demasiados intentos fallidos. Por favor espera unos minutos.');
                 return;
             }
             
@@ -387,22 +388,22 @@
                 loginAttempts++;
                 
                 // Sanitize error message before displaying
-                let errorMessage = 'Error al iniciar sesión';
+                let errorMessage = t('error_login');
                 
                 if (error.code === 'auth/user-not-found') {
-                    errorMessage = 'Usuario no encontrado. Contacta al administrador.';
+                    errorMessage = t('error_user_not_found');
                 } else if (error.code === 'auth/wrong-password') {
-                    errorMessage = 'Contraseña incorrecta';
+                    errorMessage = t('error_wrong_password');
                 } else if (error.code === 'auth/invalid-email') {
-                    errorMessage = 'Formato de usuario inválido';
+                    errorMessage = t('error_invalid_email');
                 } else if (error.code === 'auth/user-disabled') {
-                    errorMessage = 'Esta cuenta ha sido desactivada';
+                    errorMessage = t('error_user_disabled');
                 } else if (error.code === 'auth/too-many-requests') {
-                    errorMessage = 'Demasiados intentos fallidos. Por favor espera unos minutos.';
+                    errorMessage = t('error_too_many_requests');
                     loginAttempts = MAX_LOGIN_ATTEMPTS; // Force cooldown
                 } else if (error.message) {
                     // Only show generic message for unknown errors, never expose internal details
-                    errorMessage = 'Error al iniciar sesión. Por favor intenta de nuevo.';
+                    errorMessage = t('error_login_generic');
                 }
                 
                 showError(errorMessage);
@@ -418,7 +419,7 @@
             
             // También mostrar como toast
             if (typeof CatrinaToast !== 'undefined') {
-                CatrinaToast.error(message, 'Error de Inicio de Sesión');
+                CatrinaToast.error(message, typeof t !== 'undefined' ? t('error_login') : 'Error de Inicio de Sesión');
             }
         }
 
@@ -430,6 +431,10 @@
             document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
             document.getElementById('loginForm').style.display = show ? 'none' : 'block';
         }
+    </script>
+    <script src="js/translations.js"></script>
+    <script>
+        document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
     </script>
 </body>
 </html>
