@@ -271,14 +271,15 @@
 </head>
 <body>
     <div class="header">
-        <a href="../" class="back-link">← Volver</a>
+        <a href="../" class="back-link" data-i18n="back">← Volver</a>
         <div class="header-right">
+            <div id="langSelectorContainer" style="margin-right: 15px;"></div>
             <div id="notificationBellContainer"></div>
-            <button class="logout-btn" onclick="showChangePasswordModal()" style="margin-right: 10px;">Cambiar Contraseña</button>
-            <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+            <button class="logout-btn" onclick="showChangePasswordModal()" style="margin-right: 10px;" data-i18n="change_password">Cambiar Contraseña</button>
+            <button class="logout-btn" onclick="logout()" data-i18n="logout">Cerrar Sesión</button>
         </div>
-        <h1>CONFIRMAR RESULTADOS</h1>
-        <div class="user-info">Usuario: <span id="currentUsername">-</span></div>
+        <h1 data-i18n="confirm_title">CONFIRMAR RESULTADOS</h1>
+        <div class="user-info"><span data-i18n="results_user">Usuario</span>: <span id="currentUsername">-</span></div>
     </div>
 
     <div class="container">
@@ -286,7 +287,7 @@
 
         <!-- Loading -->
         <div id="loadingScreen">
-            <div class="loading">Cargando partidos pendientes...</div>
+            <div class="loading" data-i18n="confirm_loading">Cargando partidos pendientes...</div>
         </div>
 
         <!-- Lista de partidos -->
@@ -296,42 +297,42 @@
         <div id="emptyState" class="card hidden">
             <div class="empty-state">
                 <div class="icon">✅</div>
-                <p>No tienes partidos pendientes de confirmar</p>
-                <p style="font-size: 0.8rem; margin-top: 0.5rem;">¡Todo al día!</p>
+                <p data-i18n="confirm_empty_title">No tienes partidos pendientes de confirmar</p>
+                <p style="font-size: 0.8rem; margin-top: 0.5rem;" data-i18n="confirm_empty_subtitle">¡Todo al día!</p>
             </div>
         </div>
     </div>
 
     <div class="footer">
-        <p>La Catrina Pool League</p>
+        <p data-i18n="app_name">La Catrina Pool League</p>
     </div>
 
     <!-- Modal Cambiar Contraseña -->
     <div id="changePasswordModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
         <div class="modal-content" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #d4af37; border-radius: 16px; padding: 32px; max-width: 400px; width: 90%;">
-            <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">Cambiar Contraseña</h3>
+            <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;" data-i18n="password_change_title">Cambiar Contraseña</h3>
             
             <div id="changePasswordError" class="error" style="display: none; margin-bottom: 15px;"></div>
-            <div id="changePasswordSuccess" class="success" style="display: none; margin-bottom: 15px;">¡Contraseña actualizada correctamente!</div>
+            <div id="changePasswordSuccess" class="success" style="display: none; margin-bottom: 15px;" data-i18n="password_change_success">¡Contraseña actualizada correctamente!</div>
             
             <div class="form-group" style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 8px; color: #d4af37;">Contraseña Actual</label>
-                <input type="password" id="currentPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" placeholder="Tu contraseña actual">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37;" data-i18n="password_current">Contraseña Actual</label>
+                <input type="password" id="currentPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" data-i18n="password_current_placeholder" placeholder="Tu contraseña actual">
             </div>
             
             <div class="form-group" style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 8px; color: #d4af37;">Nueva Contraseña</label>
-                <input type="password" id="newPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" placeholder="Mínimo 6 caracteres">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37;" data-i18n="password_new">Nueva Contraseña</label>
+                <input type="password" id="newPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" data-i18n="password_new_placeholder" placeholder="Mínimo 6 caracteres">
             </div>
             
             <div class="form-group" style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: #d4af37;">Confirmar Nueva Contraseña</label>
-                <input type="password" id="confirmNewPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" placeholder="Repite la nueva contraseña">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37;" data-i18n="password_confirm">Confirmar Nueva Contraseña</label>
+                <input type="password" id="confirmNewPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" data-i18n="password_confirm_placeholder" placeholder="Repite la nueva contraseña">
             </div>
             
             <div style="display: flex; gap: 10px;">
-                <button onclick="closeChangePasswordModal()" style="flex: 1; padding: 12px; background: transparent; border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; cursor: pointer;">Cancelar</button>
-                <button onclick="changePassword()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%); border: none; color: #000; border-radius: 8px; cursor: pointer; font-weight: bold;">Cambiar</button>
+                <button onclick="closeChangePasswordModal()" style="flex: 1; padding: 12px; background: transparent; border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; cursor: pointer;" data-i18n="password_cancel">Cancelar</button>
+                <button onclick="changePassword()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%); border: none; color: #000; border-radius: 8px; cursor: pointer; font-weight: bold;" data-i18n="password_change_button">Cambiar</button>
             </div>
         </div>
     </div>
@@ -749,6 +750,10 @@
             await signOut();
             window.location.href = '../';
         }
+    </script>
+    <script src="../js/translations.js"></script>
+    <script>
+        document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
     </script>
 </body>
 </html>
