@@ -305,6 +305,7 @@
         <a href="../" class="back-link">← Volver</a>
         <div class="header-right">
             <div id="notificationBellContainer"></div>
+            <button class="logout-btn" onclick="showChangePasswordModal()" style="margin-right: 10px;">Cambiar Contraseña</button>
             <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
         </div>
         <h1>INTRODUCIR RESULTADO</h1>
@@ -408,6 +409,36 @@
 
     <div class="footer">
         <p>La Catrina Pool League</p>
+    </div>
+
+    <!-- Modal Cambiar Contraseña -->
+    <div id="changePasswordModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #d4af37; border-radius: 16px; padding: 32px; max-width: 400px; width: 90%;">
+            <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">Cambiar Contraseña</h3>
+            
+            <div id="changePasswordError" class="error" style="display: none; margin-bottom: 15px;"></div>
+            <div id="changePasswordSuccess" class="success" style="display: none; margin-bottom: 15px;">¡Contraseña actualizada correctamente!</div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37;">Contraseña Actual</label>
+                <input type="password" id="currentPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" placeholder="Tu contraseña actual">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37;">Nueva Contraseña</label>
+                <input type="password" id="newPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" placeholder="Mínimo 6 caracteres">
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37;">Confirmar Nueva Contraseña</label>
+                <input type="password" id="confirmNewPassword" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff; font-size: 16px;" placeholder="Repite la nueva contraseña">
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeChangePasswordModal()" style="flex: 1; padding: 12px; background: transparent; border: 1px solid #d4af37; color: #d4af37; border-radius: 8px; cursor: pointer;">Cancelar</button>
+                <button onclick="changePassword()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%); border: none; color: #000; border-radius: 8px; cursor: pointer; font-weight: bold;">Cambiar</button>
+            </div>
+        </div>
     </div>
 
     <script src="../js/firebase.js"></script>
@@ -721,6 +752,117 @@
                 CatrinaToast.error(message, 'Error');
             }
         }
+
+        // Cambiar Contraseña Functions
+        function showChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'flex';
+            document.getElementById('changePasswordError').style.display = 'none';
+            document.getElementById('changePasswordSuccess').style.display = 'none';
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmNewPassword').value = '';
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'none';
+        }
+
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            const errorEl = document.getElementById('changePasswordError');
+            const successEl = document.getElementById('changePasswordSuccess');
+
+            // Validaciones
+            if (!currentPassword || !newPassword || !confirmNewPassword) {
+                errorEl.textContent = 'Por favor completa todos los campos';
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                errorEl.textContent = 'La nueva contraseña debe tener al menos 6 caracteres';
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+                return;
+            }
+
+            if (newPassword !== confirmNewPassword) {
+                errorEl.textContent = 'Las contraseñas nuevas no coinciden';
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+                return;
+            }
+
+            if (newPassword === currentPassword) {
+                errorEl.textContent = 'La nueva contraseña debe ser diferente a la actual';
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+                return;
+            }
+
+            try {
+                const user = firebase.auth().currentUser;
+                if (!user) {
+                    throw new Error('No hay usuario autenticado');
+                }
+
+                // Re-autenticar usuario con contraseña actual
+                const credential = firebase.auth.EmailAuthProvider.credential(
+                    user.email,
+                    currentPassword
+                );
+                await user.reauthenticateWithCredential(credential);
+
+                // Cambiar contraseña
+                await user.updatePassword(newPassword);
+
+                // Mostrar éxito
+                successEl.style.display = 'block';
+                errorEl.style.display = 'none';
+
+                // Limpiar campos
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmNewPassword').value = '';
+
+                // Cerrar modal después de 2 segundos
+                setTimeout(() => {
+                    closeChangePasswordModal();
+                }, 2000);
+
+                // Mostrar toast
+                if (typeof CatrinaToast !== 'undefined') {
+                    CatrinaToast.success('Tu contraseña ha sido actualizada correctamente', 'Contraseña Cambiada');
+                }
+
+            } catch (error) {
+                console.error('Error changing password:', error);
+                
+                let errorMessage = 'Error al cambiar la contraseña';
+                
+                if (error.code === 'auth/wrong-password') {
+                    errorMessage = 'La contraseña actual es incorrecta';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'La nueva contraseña es demasiado débil';
+                } else if (error.code === 'auth/requires-recent-login') {
+                    errorMessage = 'Por seguridad, debes cerrar sesión y volver a iniciar sesión antes de cambiar la contraseña';
+                }
+
+                errorEl.textContent = errorMessage;
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+            }
+        }
+
+        // Cerrar modal al hacer click fuera
+        document.getElementById('changePasswordModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeChangePasswordModal();
+            }
+        });
 
         async function logout() {
             await signOut();
