@@ -181,6 +181,14 @@ async function confirmMatch(matchId, eloChanges) {
             // Don't throw - leaderboard is non-critical
         }
         
+        // Calculate rankings and update ranking-based badges
+        try {
+            await updateRankingBadges();
+        } catch (rankingError) {
+            console.error('Ranking badges update failed:', rankingError);
+            // Don't throw - ranking badges are non-critical
+        }
+        
         // Check badges for both players
         const winnerNewStats = { ...winnerStats, ...winnerUpdates };
         const loserNewStats = { ...loserStats, ...loserUpdates };
@@ -349,6 +357,84 @@ function updatePlayerStats(playerStats, opponentStats, matchData, isWinner, newE
     if (now.getMonth() === 0 && !playerStats.new_year_resolution_unlocked) {
         updates.new_year_resolution_unlocked = true;
     }
+    
+    // COMEBACK TRACKING
+    const comebackHistory = playerStats.comeback_history || {};
+    if (!comebackHistory[opponentId]) {
+        comebackHistory[opponentId] = { consecutive_losses: 0, consecutive_wins_after_losses: 0 };
+    }
+    
+    if (isWinner) {
+        // Check if we had consecutive losses to this opponent
+        if (comebackHistory[opponentId].consecutive_losses >= 2) {
+            comebackHistory[opponentId].consecutive_wins_after_losses++;
+            
+            // Rey del Comeback: 3 wins after 2 consecutive losses
+            if (comebackHistory[opponentId].consecutive_wins_after_losses >= 3) {
+                if (!playerStats.comeback_king_unlocked) {
+                    updates.comeback_king_unlocked = true;
+                }
+            }
+            
+            // Artista del Comeback: count all comeback wins
+            updates.comeback_wins = (playerStats.comeback_wins || 0) + 1;
+        }
+        // Reset losses counter on win
+        comebackHistory[opponentId].consecutive_losses = 0;
+    } else {
+        // Increment losses counter
+        comebackHistory[opponentId].consecutive_losses++;
+        // Reset wins after losses counter
+        comebackHistory[opponentId].consecutive_wins_after_losses = 0;
+    }
+    updates.comeback_history = comebackHistory;
+    
+    // PERFECT WINS TRACKING (for sharpshooter)
+    // Track 3-0 victories in liga_grupos
+    if (isWinner && matchData.match_type === 'liga_grupos') {
+        // Store match timestamp for consecutive matches check
+        const recentWins = playerStats.recent_wins_timestamps || [];
+        recentWins.push(now.getTime());
+        if (recentWins.length > 20) recentWins.shift();
+        updates.recent_wins_timestamps = recentWins;
+    }
+    
+    // SPEED DEMON TRACKING
+    // Track last 5 wins to check if they're within 1 hour
+    if (isWinner) {
+        const speedWins = playerStats.speed_wins_timestamps || [];
+        speedWins.push(now.getTime());
+        if (speedWins.length > 5) speedWins.shift();
+        updates.speed_wins_timestamps = speedWins;
+        
+        // Check if 5 wins within 1 hour
+        if (speedWins.length === 5) {
+            const timeSpan = speedWins[4] - speedWins[0];
+            if (timeSpan <= 3600000 && !playerStats.speed_demon_unlocked) { // 1 hour in ms
+                updates.speed_demon_unlocked = true;
+            }
+        }
+    }
+    
+    // MARATHON PLAYER TRACKING
+    // Track consecutive hours of play
+    const lastMatchTime = playerStats.last_match_timestamp;
+    const currentTime = now.getTime();
+    const marathonSession = playerStats.marathon_session || { start_time: currentTime, total_hours: 0 };
+    
+    if (lastMatchTime && (currentTime - lastMatchTime) <= 3600000) { // Within 1 hour
+        // Still in marathon session
+        const hoursInSession = (currentTime - marathonSession.start_time) / (1000 * 60 * 60);
+        if (hoursInSession >= 6 && !playerStats.marathon_player_unlocked) {
+            updates.marathon_player_unlocked = true;
+        }
+    } else {
+        // New session
+        marathonSession.start_time = currentTime;
+        marathonSession.total_hours = 0;
+    }
+    updates.marathon_session = marathonSession;
+    updates.last_match_timestamp = currentTime;
     
     return updates;
 }
@@ -597,6 +683,63 @@ async function getCurrentLeaderboard(periodType) {
     return { leaders, periodKey };
 }
 
+// Update ranking-based badges (Leyenda del Club, Inmortal)
+async function updateRankingBadges() {
+    // Get all users
+    const usersSnap = await database.ref('users').once('value');
+    const users = usersSnap.val();
+    
+    if (!users) return;
+    
+    // Sort by ELO (descending)
+    const sortedUsers = Object.entries(users)
+        .map(([uid, user]) => ({ uid, ...user }))
+        .sort((a, b) => (b.elo_rating || 1200) - (a.elo_rating || 1200));
+    
+    const updates = {};
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    
+    // 1. Award "Leyenda del Club" to rank #1
+    if (sortedUsers.length > 0) {
+        const rank1User = sortedUsers[0];
+        if (!rank1User.reached_rank_1) {
+            console.log(`🏆 Awarding Leyenda del Club to ${rank1User.username}`);
+            updates[`users/${rank1User.uid}/reached_rank_1`] = true;
+        }
+    }
+    
+    // 2. Track "Inmortal" (consecutive days in top 3)
+    const top3 = sortedUsers.slice(0, 3);
+    
+    for (const user of top3) {
+        const currentStreak = user.consecutive_days_top3 || 0;
+        const lastDate = user.last_top3_date;
+        
+        if (lastDate === today) {
+            // Already counted today, do nothing
+            continue;
+        } else if (lastDate === yesterdayStr) {
+            // Was in top 3 yesterday too, increment streak
+            updates[`users/${user.uid}/consecutive_days_top3`] = currentStreak + 1;
+            updates[`users/${user.uid}/last_top3_date`] = today;
+            console.log(`💎 ${user.username}: Top 3 streak ${currentStreak + 1} days`);
+        } else {
+            // Lost the streak or first time, reset to 1
+            updates[`users/${user.uid}/consecutive_days_top3`] = 1;
+            updates[`users/${user.uid}/last_top3_date`] = today;
+            console.log(`💎 ${user.username}: Top 3 streak started (1 day)`);
+        }
+    }
+    
+    // Apply all updates
+    if (Object.keys(updates).length > 0) {
+        await database.ref().update(updates);
+    }
+}
+
 // ===== EXPORTAR =====
 
 if (typeof window !== 'undefined') {
@@ -621,4 +764,5 @@ if (typeof window !== 'undefined') {
     window.calculateChampions = calculateChampions;
     window.awardChampionBadges = awardChampionBadges;
     window.getCurrentLeaderboard = getCurrentLeaderboard;
+    window.updateRankingBadges = updateRankingBadges;
 }
