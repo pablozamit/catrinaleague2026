@@ -364,6 +364,29 @@
                 </div>
             </div>
 
+            <!-- Score / Marcador -->
+            <div class="form-group" id="scoreGroup" style="display: none;">
+                <label>Marcador Final</label>
+                <div class="score-inputs" style="display: flex; gap: 10px; align-items: center; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; color: #888; margin-bottom: 5px;">Ganador</div>
+                        <select id="winnerScore" onchange="updatePreview()" style="padding: 10px; font-size: 16px; min-width: 60px; text-align: center; background: rgba(212, 175, 55, 0.1); border: 2px solid #d4af37; color: #d4af37; border-radius: 8px;">
+                            <option value="3" selected>3</option>
+                        </select>
+                    </div>
+                    <div style="font-size: 24px; color: #666;">-</div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 12px; color: #888; margin-bottom: 5px;">Perdedor</div>
+                        <select id="loserScore" onchange="updatePreview()" style="padding: 10px; font-size: 16px; min-width: 60px; text-align: center; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.2); color: #fff; border-radius: 8px;">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2" selected>2</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="match-type-info" id="scoreInfo" style="margin-top: 10px; font-size: 13px;"></div>
+            </div>
+
             <!-- Preview ELO -->
             <div id="eloPreview" class="preview hidden">
                 <h4>📊 Previsualización del cambio ELO</h4>
@@ -507,6 +530,9 @@
                 document.getElementById('resultOpponent').classList.add('selected');
             }
             
+            // Show score inputs
+            document.getElementById('scoreGroup').style.display = 'block';
+            
             updatePreview();
         }
 
@@ -629,6 +655,10 @@
                 // Sanitize usernames
                 const sanitizeUsername = (name) => name.replace(/[<>"'&]/g, '');
 
+                // Get scores
+                const winnerScore = parseInt(document.getElementById('winnerScore').value);
+                const loserScore = parseInt(document.getElementById('loserScore').value);
+
                 const matchData = {
                     player1_id: currentUser.uid,
                     player1_username: sanitizeUsername(currentUserData.username),
@@ -637,7 +667,11 @@
                     winner_id: selectedWinner === 'me' ? currentUser.uid : opponent.uid,
                     match_type: matchType,
                     submitted_by: currentUser.uid,
-                    submitted_at: Date.now()
+                    submitted_at: Date.now(),
+                    player1_score: selectedWinner === 'me' ? winnerScore : loserScore,
+                    player2_score: selectedWinner === 'me' ? loserScore : winnerScore,
+                    winner_score: winnerScore,
+                    loser_score: loserScore
                 };
 
                 lastSubmissionTime = now;

@@ -390,13 +390,17 @@ function updatePlayerStats(playerStats, opponentStats, matchData, isWinner, newE
     updates.comeback_history = comebackHistory;
     
     // PERFECT WINS TRACKING (for sharpshooter)
-    // Track 3-0 victories in liga_grupos
+    // Track 3-0 victories in liga_grupos ONLY (not liga_finales)
     if (isWinner && matchData.match_type === 'liga_grupos') {
-        // Store match timestamp for consecutive matches check
-        const recentWins = playerStats.recent_wins_timestamps || [];
-        recentWins.push(now.getTime());
-        if (recentWins.length > 20) recentWins.shift();
-        updates.recent_wins_timestamps = recentWins;
+        // Check if it was a 3-0 victory
+        const winnerScore = isWinner ? matchData.player1_score : matchData.player2_score;
+        const loserScore = isWinner ? matchData.player2_score : matchData.player1_score;
+        
+        if (winnerScore === 3 && loserScore === 0) {
+            // Perfect 3-0 win in liga_grupos
+            updates.perfect_liga_wins = (playerStats.perfect_liga_wins || 0) + 1;
+            console.log(`🎯 Perfect 3-0 win recorded for player. Total: ${updates.perfect_liga_wins}`);
+        }
     }
     
     // SPEED DEMON TRACKING
