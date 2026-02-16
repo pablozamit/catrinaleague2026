@@ -785,27 +785,57 @@ async function initializeRankingBadges() {
         const rank1User = sortedUsers[0];
         console.log(`\n👑 #1 del ranking: ${rank1User.username}`);
         
-        if (!rank1User.reached_rank_1) {
+        // Verificar si ya tiene el badge (no solo el campo reached_rank_1)
+        const hasBadge = rank1User.badges && rank1User.badges.club_legend;
+        
+        if (!hasBadge) {
             console.log(`🎉 Otorgando "Leyenda del Club" a ${rank1User.username}`);
+            
+            // Primero asegurar que reached_rank_1 está en true
             await database.ref(`users/${rank1User.uid}/reached_rank_1`).set(true);
             
-            // Check and award the badge
-            if (typeof checkBadges !== 'undefined') {
-                const userSnap = await database.ref(`users/${rank1User.uid}`).once('value');
-                const userData = userSnap.val();
-                const newBadges = checkBadges(userData);
-                
-                if (newBadges.length > 0) {
-                    await awardBadges(rank1User.uid, userData, newBadges);
-                    console.log(`✅ Badge otorgado: ${newBadges.map(b => b.name).join(', ')}`);
-                }
-            }
+            // Esperar un momento para asegurar que se guardó
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Recargar datos del usuario
+            const userSnap = await database.ref(`users/${rank1User.uid}`).once('value');
+            const userData = userSnap.val();
+            
+            // Crear el badge manualmente si checkBadges no funciona
+            const now = Date.now();
+            const badgeUpdate = {};
+            
+            // Asegurar que existe el objeto badges
+            const currentBadges = userData.badges || {};
+            currentBadges.club_legend = {
+                earned_at: now,
+                seen: false
+            };
+            
+            badgeUpdate[`users/${rank1User.uid}/badges`] = currentBadges;
+            badgeUpdate[`users/${rank1User.uid}/reached_rank_1`] = true;
+            
+            // Actualizar XP y nivel
+            const currentExp = userData.experience_points || 0;
+            const newExp = currentExp + 1000; // 1000 puntos por Leyenda del Club
+            badgeUpdate[`users/${rank1User.uid}/experience_points`] = newExp;
+            
+            const level = Math.floor(Math.sqrt(newExp / 100)) + 1;
+            badgeUpdate[`users/${rank1User.uid}/level`] = level;
+            
+            // Aplicar todas las actualizaciones
+            await database.ref().update(badgeUpdate);
+            
+            console.log(`✅ Badge "Leyenda del Club" otorgado a ${rank1User.username}`);
+            console.log(`   - XP ganada: 1000`);
+            console.log(`   - Nivel actual: ${level}`);
         } else {
             console.log(`✅ ${rank1User.username} ya tiene "Leyenda del Club"`);
         }
     }
     
     console.log('\n✅ Inicialización completada');
+    console.log('Recarga la página del perfil para ver los cambios');
 }
 
 // ===== EXPORTAR =====
