@@ -239,6 +239,7 @@
     <script src="js/firebase.js"></script>
     <script src="js/badges.js"></script>
     <script src="js/notifications.js"></script>
+    <script src="js/toast.js"></script>
     <script>
         async function waitForFirebase() {
             let attempts = 0;
@@ -414,6 +415,11 @@
             const errorEl = document.getElementById('loginError');
             errorEl.textContent = message;
             errorEl.style.display = 'block';
+            
+            // También mostrar como toast
+            if (typeof CatrinaToast !== 'undefined') {
+                CatrinaToast.error(message, 'Error de Inicio de Sesión');
+            }
         }
 
         function hideError() {

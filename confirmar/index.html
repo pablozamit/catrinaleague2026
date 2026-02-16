@@ -307,6 +307,7 @@
     <script src="../js/firebase.js"></script>
     <script src="../js/badges.js"></script>
     <script src="../js/notifications.js"></script>
+    <script src="../js/toast.js"></script>
     <script>
         let currentUserData = null;
         let pendingMatches = [];
@@ -523,7 +524,14 @@
 
             try {
                 await confirmMatch(matchId, eloChanges);
-                showMessage('✅ Resultado confirmado', 'success');
+                
+                // Mostrar toast de éxito
+                if (typeof CatrinaToast !== 'undefined') {
+                    CatrinaToast.success(
+                        'El resultado ha sido confirmado exitosamente.',
+                        '✅ Partido Confirmado'
+                    );
+                }
                 
                 // Actualizar notificaciones
                 await updateNotificationBell(currentUser.uid);
@@ -531,14 +539,27 @@
                 // Recargar
                 await loadPendingMatches();
             } catch (error) {
-                showMessage('❌ Error: ' + error.message, 'error');
+                console.error('Error confirming match:', error);
+                if (typeof CatrinaToast !== 'undefined') {
+                    CatrinaToast.error(
+                        'No se pudo confirmar el partido. Intenta de nuevo.',
+                        'Error'
+                    );
+                }
             }
         }
 
         async function declineMatchHandler(matchId) {
             try {
                 await declineMatch(matchId);
-                showMessage('❌ Partido rechazado', 'success');
+                
+                // Mostrar toast de rechazo
+                if (typeof CatrinaToast !== 'undefined') {
+                    CatrinaToast.warning(
+                        'Has rechazado el partido.',
+                        '❌ Partido Rechazado'
+                    );
+                }
                 
                 // Actualizar notificaciones
                 await updateNotificationBell(currentUser.uid);
@@ -546,27 +567,28 @@
                 // Recargar
                 await loadPendingMatches();
             } catch (error) {
-                showMessage('❌ Error: ' + error.message, 'error');
+                console.error('Error declining match:', error);
+                if (typeof CatrinaToast !== 'undefined') {
+                    CatrinaToast.error(
+                        'No se pudo rechazar el partido. Intenta de nuevo.',
+                        'Error'
+                    );
+                }
             }
         }
 
+        // Función legacy - ahora usa toast system
         function showMessage(text, type) {
-            const container = document.getElementById('messageArea');
-            
-            // Clear previous messages
-            container.innerHTML = '';
-            
-            // Create message element safely
-            const messageDiv = document.createElement('div');
-            messageDiv.className = type;
-            messageDiv.style.display = 'block';
-            messageDiv.textContent = text; // Use textContent to prevent XSS
-            
-            container.appendChild(messageDiv);
-            
-            setTimeout(() => {
-                container.innerHTML = '';
-            }, 3000);
+            // Fallback a toast system
+            if (typeof CatrinaToast !== 'undefined') {
+                if (type === 'success') {
+                    CatrinaToast.success(text);
+                } else if (type === 'error') {
+                    CatrinaToast.error(text);
+                } else {
+                    CatrinaToast.info(text);
+                }
+            }
         }
 
         function formatDate(timestamp) {

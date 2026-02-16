@@ -390,6 +390,7 @@
     <script src="../js/firebase.js"></script>
     <script src="../js/badges.js"></script>
     <script src="../js/notifications.js"></script>
+    <script src="../js/toast.js"></script>
     <script>
         // Variables globales
         let currentUserData = null;
@@ -642,8 +643,15 @@
                 lastSubmissionTime = now;
                 await createMatch(matchData);
                 
-                document.getElementById('resultSuccess').style.display = 'block';
-                document.getElementById('resultError').style.display = 'none';
+                // Mostrar toast de éxito
+                if (typeof CatrinaToast !== 'undefined') {
+                    const winnerName = selectedWinner === 'me' ? currentUserData.username : opponent.username;
+                    CatrinaToast.success(
+                        `Resultado enviado correctamente. Esperando confirmación de ${opponent.username}.`,
+                        '¡Partido Registrado!',
+                        { duration: 5000 }
+                    );
+                }
                 
                 // Reset form
                 setTimeout(() => {
@@ -653,21 +661,31 @@
                     document.querySelectorAll('.result-option').forEach(el => el.classList.remove('selected'));
                     document.getElementById('eloPreview').classList.add('hidden');
                     document.getElementById('submitBtn').disabled = true;
-                    document.getElementById('resultSuccess').style.display = 'none';
                 }, 3000);
                 
             } catch (error) {
                 console.error('Error submitting result:', error);
-                // Don't expose internal error details
-                showError('Error al enviar resultado. Por favor intenta de nuevo.');
+                // Mostrar toast de error
+                if (typeof CatrinaToast !== 'undefined') {
+                    CatrinaToast.error(
+                        'No se pudo enviar el resultado. Por favor intenta de nuevo.',
+                        'Error al Enviar'
+                    );
+                } else {
+                    // Fallback a mensaje tradicional
+                    showError('Error al enviar resultado. Por favor intenta de nuevo.');
+                }
             }
         }
 
         function showError(message) {
             const errorEl = document.getElementById('resultError');
-            // Use textContent to prevent XSS
             errorEl.textContent = message;
             errorEl.style.display = 'block';
+            // También mostrar como toast si está disponible
+            if (typeof CatrinaToast !== 'undefined') {
+                CatrinaToast.error(message, 'Error');
+            }
         }
 
         async function logout() {
