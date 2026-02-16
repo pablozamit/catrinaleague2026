@@ -9,6 +9,7 @@ const translations = {
         app_name: 'La Catrina Pool League',
         app_subtitle: 'POOL LEAGUE & BILLIARDS',
         loading: 'Cargando...',
+        label_new: 'NUEVO',
         back: '← Volver',
         back_to_table: '← Volver a la mesa',
         back_to_ranking: '← Volver al Ranking',
@@ -149,6 +150,13 @@ const translations = {
         profile_badges_locked: 'Badges Bloqueados',
         profile_no_badges: 'Aún no has obtenido ningún badge. ¡Empieza a jugar!',
         profile_earned_date: 'Obtenido: {date}',
+        profile_history_title: 'Historial de Partidos',
+        profile_history_win: 'Victoria',
+        profile_history_loss: 'Derrota',
+        profile_history_vs: 'vs',
+        profile_no_history: 'No hay partidos recientes',
+        profile_elo_chart_title: 'Progreso ELO',
+        profile_elo_chart_label: 'ELO Rating',
         
         // Badge categories
         badge_cat_all: 'Todos',
@@ -187,6 +195,12 @@ const translations = {
         admin_period_this_quarter: 'Este Trimestre',
         admin_period_this_year: 'Este Año',
         admin_select_period_loading: 'Selecciona un período para ver el ranking',
+        admin_no_data: 'No hay datos para este período',
+        admin_wins_suffix: 'victorias',
+        
+        // Notifications
+        popup_new_achievements: '¡Nuevos Logros!',
+        popup_accept: 'Aceptar',
         
         // Toast notifications
         toast_success_title: '¡Éxito!',
@@ -206,7 +220,7 @@ const translations = {
         elo_novice: 'Novato',
         
         // Badges - Names
-        badge_debut: 'Debut',
+        badge_first_match: 'Debut',
         badge_first_victory: 'Primera Victoria',
         badge_rookie: 'Novato',
         badge_getting_started: 'Tomando Ritmo',
@@ -258,7 +272,7 @@ const translations = {
         badge_billiard_god: 'Dios del Billar',
         
         // Badges - Descriptions
-        badge_desc_debut: 'Juega tu primer partido',
+        badge_desc_first_match: 'Juega tu primer partido',
         badge_desc_first_victory: 'Gana tu primer partido',
         badge_desc_rookie: 'Completa 5 partidos',
         badge_desc_getting_started: 'Gana 3 partidos',
@@ -315,6 +329,7 @@ const translations = {
         app_name: 'La Catrina Pool League',
         app_subtitle: 'POOL LEAGUE & BILLIARDS',
         loading: 'Loading...',
+        label_new: 'NEW',
         back: '← Back',
         back_to_table: '← Back to Table',
         back_to_ranking: '← Back to Ranking',
@@ -455,6 +470,13 @@ const translations = {
         profile_badges_locked: 'Locked Badges',
         profile_no_badges: 'You have not earned any badges yet. Start playing!',
         profile_earned_date: 'Earned: {date}',
+        profile_history_title: 'Match History',
+        profile_history_win: 'Victory',
+        profile_history_loss: 'Defeat',
+        profile_history_vs: 'vs',
+        profile_no_history: 'No recent matches',
+        profile_elo_chart_title: 'ELO Progress',
+        profile_elo_chart_label: 'ELO Rating',
         
         // Badge categories
         badge_cat_all: 'All',
@@ -493,6 +515,12 @@ const translations = {
         admin_period_this_quarter: 'This Quarter',
         admin_period_this_year: 'This Year',
         admin_select_period_loading: 'Select a period to view ranking',
+        admin_no_data: 'No data for this period',
+        admin_wins_suffix: 'wins',
+        
+        // Notifications
+        popup_new_achievements: 'New Achievements!',
+        popup_accept: 'Accept',
         
         // Toast notifications
         toast_success_title: 'Success!',
@@ -512,7 +540,7 @@ const translations = {
         elo_novice: 'Novice',
         
         // Badges - Names
-        badge_debut: 'Debut',
+        badge_first_match: 'Debut',
         badge_first_victory: 'First Victory',
         badge_rookie: 'Rookie',
         badge_getting_started: 'Getting Started',
@@ -564,7 +592,7 @@ const translations = {
         badge_billiard_god: 'Billiard God',
         
         // Badges - Descriptions
-        badge_desc_debut: 'Play your first match',
+        badge_desc_first_match: 'Play your first match',
         badge_desc_first_victory: 'Win your first match',
         badge_desc_rookie: 'Complete 5 matches',
         badge_desc_getting_started: 'Win 3 matches',

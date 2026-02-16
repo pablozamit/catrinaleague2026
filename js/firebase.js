@@ -103,6 +103,26 @@ function getPendingMatches(uid) {
         });
 }
 
+// Obtener historial de partidos de un usuario
+function getUserHistory(uid) {
+    return database.ref('matches')
+        .orderByChild('created_at')
+        .once('value')
+        .then(snap => {
+            const matches = snap.val();
+            if (!matches) return [];
+            
+            return Object.entries(matches)
+                .filter(([key, match]) => 
+                    match.status === 'confirmed' && 
+                    (match.player1_id === uid || match.player2_id === uid)
+                )
+                .map(([key, match]) => ({ ...match, key }))
+                .sort((a, b) => b.created_at - a.created_at) // Orden descendente (más reciente primero)
+                .slice(0, 20); // Limitar a los últimos 20
+        });
+}
+
 // Confirmar partido
 async function confirmMatch(matchId, eloChanges) {
     try {
@@ -154,6 +174,14 @@ async function confirmMatch(matchId, eloChanges) {
         updates[`matches/${matchId}/confirmed_minute`] = now.getMinutes();
         updates[`matches/${matchId}/confirmed_day_of_week`] = now.getDay();
         updates[`matches/${matchId}/is_weekend`] = now.getDay() === 0 || now.getDay() === 6;
+        
+        // Save ELO changes to match record for history tracking
+        if (eloChanges.winnerChange !== undefined) {
+            updates[`matches/${matchId}/winner_elo_change`] = eloChanges.winnerChange;
+            updates[`matches/${matchId}/loser_elo_change`] = eloChanges.loserChange;
+            updates[`matches/${matchId}/winner_new_elo`] = eloChanges.winnerElo;
+            updates[`matches/${matchId}/loser_new_elo`] = eloChanges.loserElo;
+        }
         
         // Update both players' stats
         const winnerUpdates = updatePlayerStats(winnerStats, loserStats, matchData, true, eloChanges.winnerElo, eloChanges.winnerMatches, eloChanges.winnerWins, now);
@@ -851,6 +879,7 @@ if (typeof window !== 'undefined') {
     window.updateUserElo = updateUserElo;
     window.createMatch = createMatch;
     window.getPendingMatches = getPendingMatches;
+    window.getUserHistory = getUserHistory;
     window.confirmMatch = confirmMatch;
     window.declineMatch = declineMatch;
     window.getAllUsers = getAllUsers;

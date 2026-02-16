@@ -545,7 +545,7 @@
         success(message, title, options = {}) {
             return show({
                 type: 'success',
-                title: title || '¡Éxito!',
+                title: title || (typeof t !== 'undefined' ? t('toast_success_title') : '¡Éxito!'),
                 message,
                 ...options
             });
@@ -554,7 +554,7 @@
         error(message, title, options = {}) {
             return show({
                 type: 'error',
-                title: title || 'Error',
+                title: title || (typeof t !== 'undefined' ? t('toast_error_title') : 'Error'),
                 message,
                 duration: options.duration || 8000, // Más tiempo para errores
                 ...options
@@ -564,7 +564,7 @@
         warning(message, title, options = {}) {
             return show({
                 type: 'warning',
-                title: title || 'Advertencia',
+                title: title || (typeof t !== 'undefined' ? t('toast_warning_title') : 'Advertencia'),
                 message,
                 ...options
             });
@@ -573,7 +573,7 @@
         info(message, title, options = {}) {
             return show({
                 type: 'info',
-                title: title || 'Información',
+                title: title || (typeof t !== 'undefined' ? t('toast_info_title') : 'Información'),
                 message,
                 ...options
             });
@@ -581,10 +581,18 @@
 
         // Toast especial para badges
         badge(badgeName, badgeIcon, points, options = {}) {
+            const title = typeof t !== 'undefined' 
+                ? t('toast_badge_title', {name: badgeName}) 
+                : `🏆 ${badgeName}`;
+                
+            const message = typeof t !== 'undefined'
+                ? t('toast_badge_message', {points: points})
+                : `¡Nuevo logro desbloqueado! +${points} XP`;
+
             return show({
                 type: 'default',
-                title: `🏆 ${badgeName}`,
-                message: `¡Nuevo logro desbloqueado! +${points} XP`,
+                title: title,
+                message: message,
                 icon: badgeIcon || '🏆',
                 duration: options.duration || 6000,
                 ...options
@@ -593,9 +601,13 @@
 
         // Toast para partidos
         match(message, title, type = 'success', options = {}) {
+            const defaultTitle = type === 'success' 
+                ? (typeof t !== 'undefined' ? t('toast_match_confirmed') : 'Partido Confirmado')
+                : (typeof t !== 'undefined' ? t('toast_error_title') : 'Error');
+
             return show({
                 type,
-                title: title || (type === 'success' ? 'Partido Confirmado' : 'Error'),
+                title: title || defaultTitle,
                 message,
                 icon: type === 'success' ? '🎱' : '⚠',
                 ...options

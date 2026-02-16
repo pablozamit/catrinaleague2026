@@ -90,12 +90,14 @@ function getAverageElo(players) {
  * @returns {object} - Categoría con nombre y color
  */
 function getEloCategory(elo) {
-    if (elo >= 2100) return { name: 'Gran Maestro', color: '#EF4444', icon: '💎' };
-    if (elo >= 1900) return { name: 'Maestro', color: '#F59E0B', icon: '👑' };
-    if (elo >= 1700) return { name: 'Experto', color: '#8B5CF6', icon: '🎓' };
-    if (elo >= 1500) return { name: 'Jugador Hábil', color: '#3B82F6', icon: '🎯' };
-    if (elo >= 1300) return { name: 'Estrella Emergente', color: '#10B981', icon: '⭐' };
-    return { name: 'Novato', color: '#9CA3AF', icon: '🌱' };
+    const getName = (key, defaultName) => typeof t !== 'undefined' ? t(key) : defaultName;
+
+    if (elo >= 2100) return { name: getName('elo_grandmaster', 'Gran Maestro'), color: '#EF4444', icon: '💎' };
+    if (elo >= 1900) return { name: getName('elo_master', 'Maestro'), color: '#F59E0B', icon: '👑' };
+    if (elo >= 1700) return { name: getName('elo_expert', 'Experto'), color: '#8B5CF6', icon: '🎓' };
+    if (elo >= 1500) return { name: getName('elo_skilled', 'Jugador Hábil'), color: '#3B82F6', icon: '🎯' };
+    if (elo >= 1300) return { name: getName('elo_rising_star', 'Estrella Emergente'), color: '#10B981', icon: '⭐' };
+    return { name: getName('elo_novice', 'Novato'), color: '#9CA3AF', icon: '🌱' };
 }
 
 // Exportar funciones

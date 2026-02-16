@@ -166,12 +166,7 @@
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
         }
 
-        .player-name.new {
-            position: relative;
-        }
-
-        .player-name.new::after {
-            content: 'NUEVO';
+        .new-badge {
             font-size: 0.6rem;
             background: var(--color-gold);
             color: var(--color-bg);
@@ -179,6 +174,8 @@
             border-radius: 10px;
             margin-left: 8px;
             font-weight: 700;
+            display: inline-block;
+            vertical-align: middle;
         }
 
         /* ELO */
@@ -258,29 +255,35 @@
 </head>
 <body>
     <div class="header">
-        <a href="../" class="back-link">← Volver a la mesa</a>
-        <h1>RANKING ELO</h1>
-        <p>La Catrina Pool League</p>
+        <a href="../" class="back-link">
+            <span>←</span>
+            <span data-i18n="back_to_table">Volver a la mesa</span>
+        </a>
+        <div style="position: absolute; top: 2rem; right: 2rem;">
+            <div id="langSelectorContainer"></div>
+        </div>
+        <h1 data-i18n="ranking_title">RANKING ELO</h1>
+        <p data-i18n="app_name">La Catrina Pool League</p>
     </div>
 
     <div class="container">
         <div class="update-info">
-            <p id="updateTime">🎱 Última actualización: Cargando...</p>
+            <p id="updateTime"><span data-i18n="ranking_update">🎱 Última actualización</span>: <span data-i18n="loading">Cargando...</span></p>
         </div>
 
         <table class="ranking-table">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Jugador</th>
-                    <th>Partidos</th>
-                    <th style="text-align: right;">ELO</th>
+                    <th data-i18n="ranking_position">#</th>
+                    <th data-i18n="ranking_player">Jugador</th>
+                    <th data-i18n="ranking_matches">Partidos</th>
+                    <th style="text-align: right;" data-i18n="ranking_elo">ELO</th>
                 </tr>
             </thead>
             <tbody id="rankingTableBody">
                 <tr>
                     <td colspan="4" style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
-                        Cargando ranking...
+                        <span data-i18n="ranking_loading">Cargando ranking...</span>
                     </td>
                 </tr>
             </tbody>
@@ -288,7 +291,7 @@
     </div>
 
     <div class="footer">
-        <p>La Catrina Pool League © 2025</p>
+        <p data-i18n="ranking_footer">La Catrina Pool League © 2025</p>
     </div>
 
     <!-- Firebase -->
@@ -297,6 +300,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <!-- App Scripts -->
+    <script src="../js/translations.js"></script>
     <script src="../js/firebase.js"></script>
 
     <script>
@@ -321,7 +325,7 @@
                     document.getElementById('rankingTableBody').innerHTML = `
                         <tr>
                             <td colspan="4" style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
-                                No hay datos disponibles
+                                ${t('ranking_loading')}
                             </td>
                         </tr>
                     `;
@@ -346,10 +350,11 @@
                     return `
                         <tr>
                             <td class="${positionClass}">${position}</td>
-                            <td class="player-name ${isNew ? 'new' : ''}">
+                            <td class="player-name">
                                 <a href="../perfil/?u=${encodeURIComponent(user.username)}" class="player-link">
                                     ${user.username}
                                 </a>
+                                ${isNew ? `<span class="new-badge" data-i18n="label_new">NUEVO</span>` : ''}
                             </td>
                             <td>${matches}</td>
                             <td class="elo">${elo}</td>
@@ -359,19 +364,27 @@
                 
                 // Update timestamp
                 const now = new Date();
-                const dateStr = now.toLocaleDateString('es-ES', { 
+                const currentLang = getCurrentLanguage();
+                const locale = currentLang === 'en' ? 'en-US' : 'es-ES';
+                
+                const dateStr = now.toLocaleDateString(locale, { 
                     day: 'numeric', 
                     month: 'long', 
                     year: 'numeric' 
                 });
-                document.getElementById('updateTime').textContent = `🎱 Última actualización: ${dateStr}`;
+                
+                const updateLabel = t('ranking_update');
+                document.getElementById('updateTime').innerHTML = `${updateLabel}: ${dateStr}`;
+                
+                // Run updatePageLanguage to catch newly added elements (like the NEW badge)
+                updatePageLanguage();
                 
             } catch (error) {
                 console.error('Error loading ranking:', error);
                 document.getElementById('rankingTableBody').innerHTML = `
                     <tr>
                         <td colspan="4" style="text-align: center; padding: 2rem; color: #f87171;">
-                            Error al cargar el ranking: ${error.message}
+                            ${t('error_loading_data')}: ${error.message}
                         </td>
                     </tr>
                 `;
@@ -380,6 +393,18 @@
 
         // Initialize
         waitForFirebase().then(async () => {
+            // Initialize language selector
+            const selectorContainer = document.getElementById('langSelectorContainer');
+            if (selectorContainer) {
+                selectorContainer.innerHTML = createLanguageSelector();
+                // Override selector style to fit header
+                const selector = document.getElementById('languageSelector');
+                if (selector) {
+                    selector.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+                    selector.style.background = 'rgba(0, 0, 0, 0.3)';
+                }
+            }
+            
             initFirebase();
             await loadRanking();
         });

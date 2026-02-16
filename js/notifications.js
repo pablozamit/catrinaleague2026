@@ -121,7 +121,7 @@ async function showBadgePopup(userId) {
     
     // Create heading
     const heading = document.createElement('h2');
-    heading.textContent = '¡Nuevos Logros!';
+    heading.textContent = typeof t !== 'undefined' ? t('popup_new_achievements') : '¡Nuevos Logros!';
     content.appendChild(heading);
     
     // Create badge list
@@ -149,13 +149,13 @@ async function showBadgePopup(userId) {
         // Badge name
         const nameDiv = document.createElement('div');
         nameDiv.className = 'badge-name';
-        nameDiv.textContent = badge.name; // Escaped automatically
+        nameDiv.textContent = typeof t !== 'undefined' ? t('badge_' + badge.id) : badge.name;
         infoDiv.appendChild(nameDiv);
         
         // Badge description
         const descDiv = document.createElement('div');
         descDiv.className = 'badge-description';
-        descDiv.textContent = badge.description; // Escaped automatically
+        descDiv.textContent = typeof t !== 'undefined' ? t('badge_desc_' + badge.id) : badge.description;
         infoDiv.appendChild(descDiv);
         
         // Badge points
@@ -173,7 +173,7 @@ async function showBadgePopup(userId) {
     // Create close button
     const closeBtn = document.createElement('button');
     closeBtn.className = 'badge-popup-close';
-    closeBtn.textContent = 'Aceptar';
+    closeBtn.textContent = typeof t !== 'undefined' ? t('popup_accept') : 'Aceptar';
     closeBtn.type = 'button';
     closeBtn.addEventListener('click', closeBadgePopup); // Use addEventListener instead of onclick
     content.appendChild(closeBtn);

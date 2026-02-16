@@ -253,11 +253,67 @@
             transition: all 0.3s ease;
         }
 
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: rgba(212, 175, 55, 0.3);
-            border-color: #d4af37;
+        .match-history {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
+
+        .match-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .match-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(4px);
+        }
+
+        .match-item.win {
+            border-left: 4px solid #4ade80;
+        }
+
+        .match-item.loss {
+            border-left: 4px solid #ef4444;
+        }
+
+        .match-result {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .match-result.win { color: #4ade80; }
+        .match-result.loss { color: #ef4444; }
+
+        .match-opponent {
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .match-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .match-date {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .match-elo {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .match-elo.positive { color: #4ade80; }
+        .match-elo.negative { color: #ef4444; }
     </style>
 </head>
 <body>
@@ -265,13 +321,16 @@
         <header>
             <a href="../elo/" class="back-btn">
                 <span>←</span>
-                <span>Volver al Ranking</span>
+                <span data-i18n="back_to_ranking">Volver al Ranking</span>
             </a>
-            <div id="notificationBellContainer"></div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div id="langSelectorContainer"></div>
+                <div id="notificationBellContainer"></div>
+            </div>
         </header>
 
         <div id="profileContent">
-            <div class="loading">Cargando perfil...</div>
+            <div class="loading" data-i18n="profile_loading">Cargando perfil...</div>
         </div>
     </div>
 
@@ -281,9 +340,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
     <!-- App Scripts -->
+    <script src="../js/translations.js"></script>
     <script src="../js/firebase.js"></script>
     <script src="../js/badges.js"></script>
     <script src="../js/notifications.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         // Wait for Firebase to load
@@ -330,7 +391,7 @@
                 }
                 
                 if (!userData) {
-                    container.innerHTML = '<div class="error">Usuario no encontrado</div>';
+                    container.innerHTML = '<div class="error" data-i18n="profile_not_found">Usuario no encontrado</div>';
                     return;
                 }
                 
@@ -352,33 +413,49 @@
                 
                 const lockedBadges = BADGE_CATALOG.filter(b => !earnedBadgeIds.includes(b.id) && !b.secret);
                 
+                // Get translations for badge categories
+                const getCategoryTranslation = (cat) => {
+                    const cats = {
+                        'ALL': 'badge_cat_all',
+                        'BEGINNER': 'badge_cat_beginner',
+                        'SKILL': 'badge_cat_skill',
+                        'CONSISTENCY': 'badge_cat_consistency',
+                        'SOCIAL': 'badge_cat_social',
+                        'ACHIEVEMENT': 'badge_cat_achievement',
+                        'STREAK': 'badge_cat_streak',
+                        'SPECIAL': 'badge_cat_special',
+                        'LEGENDARY': 'badge_cat_legendary'
+                    };
+                    return typeof t !== 'undefined' ? t(cats[cat] || cat) : cat;
+                };
+
                 // Render HTML
                 container.innerHTML = `
                     <div class="profile-header">
                         <div class="profile-avatar">${username.substring(0, 2).toUpperCase()}</div>
                         <div class="profile-info">
                             <div class="profile-username">${username}</div>
-                            <div class="level-badge">Nivel ${levelData.level} - ${exp} XP</div>
+                            <div class="level-badge">${typeof t !== 'undefined' ? t('profile_level', {level: levelData.level, exp: exp}) : `Nivel ${levelData.level} - ${exp} XP`}</div>
                             <div class="profile-stats">
                                 <div class="stat-item">
                                     <div class="stat-value">${userData.elo_rating || 1200}</div>
-                                    <div class="stat-label">ELO Rating</div>
+                                    <div class="stat-label" data-i18n="profile_stat_elo">ELO Rating</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-value">${userData.matches_played || 0}</div>
-                                    <div class="stat-label">Partidos Jugados</div>
+                                    <div class="stat-label" data-i18n="profile_stat_matches_played">Partidos Jugados</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-value">${userData.matches_won || 0}</div>
-                                    <div class="stat-label">Partidos Ganados</div>
+                                    <div class="stat-label" data-i18n="profile_stat_matches_won">Partidos Ganados</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-value">${winRate}%</div>
-                                    <div class="stat-label">% Victorias</div>
+                                    <div class="stat-label" data-i18n="profile_stat_win_rate">% Victorias</div>
                                 </div>
                                 <div class="stat-item">
                                     <div class="stat-value">${earnedBadges.length}/50</div>
-                                    <div class="stat-label">Badges</div>
+                                    <div class="stat-label" data-i18n="profile_stat_badges">Badges</div>
                                 </div>
                             </div>
                         </div>
@@ -386,49 +463,69 @@
 
                     <div class="section">
                         <div class="section-title">
+                            <span>📈</span>
+                            <span>${typeof t !== 'undefined' ? t('profile_elo_chart_title') : 'Progreso ELO'}</span>
+                        </div>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="eloChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">
                             <span>🏆</span>
-                            <span>Badges Obtenidos (${earnedBadges.length})</span>
+                            <span>${typeof t !== 'undefined' ? t('profile_badges_earned') : 'Badges Obtenidos'} (${earnedBadges.length})</span>
                         </div>
                         
                         <div class="category-filter">
-                            <button class="filter-btn active" onclick="filterBadges('ALL')">Todos</button>
-                            <button class="filter-btn" onclick="filterBadges('BEGINNER')">Principiante</button>
-                            <button class="filter-btn" onclick="filterBadges('SKILL')">Habilidad</button>
-                            <button class="filter-btn" onclick="filterBadges('CONSISTENCY')">Constancia</button>
-                            <button class="filter-btn" onclick="filterBadges('SOCIAL')">Social</button>
-                            <button class="filter-btn" onclick="filterBadges('ACHIEVEMENT')">Logros</button>
-                            <button class="filter-btn" onclick="filterBadges('STREAK')">Rachas</button>
-                            <button class="filter-btn" onclick="filterBadges('SPECIAL')">Especial</button>
-                            <button class="filter-btn" onclick="filterBadges('LEGENDARY')">Legendario</button>
+                            <button class="filter-btn active" onclick="filterBadges('ALL')">${getCategoryTranslation('ALL')}</button>
+                            <button class="filter-btn" onclick="filterBadges('BEGINNER')">${getCategoryTranslation('BEGINNER')}</button>
+                            <button class="filter-btn" onclick="filterBadges('SKILL')">${getCategoryTranslation('SKILL')}</button>
+                            <button class="filter-btn" onclick="filterBadges('CONSISTENCY')">${getCategoryTranslation('CONSISTENCY')}</button>
+                            <button class="filter-btn" onclick="filterBadges('SOCIAL')">${getCategoryTranslation('SOCIAL')}</button>
+                            <button class="filter-btn" onclick="filterBadges('ACHIEVEMENT')">${getCategoryTranslation('ACHIEVEMENT')}</button>
+                            <button class="filter-btn" onclick="filterBadges('STREAK')">${getCategoryTranslation('STREAK')}</button>
+                            <button class="filter-btn" onclick="filterBadges('SPECIAL')">${getCategoryTranslation('SPECIAL')}</button>
+                            <button class="filter-btn" onclick="filterBadges('LEGENDARY')">${getCategoryTranslation('LEGENDARY')}</button>
                         </div>
 
                         <div class="badges-grid" id="earnedBadgesGrid">
                             ${earnedBadges.map(badge => `
                                 <div class="badge-card" data-category="${badge.category}" style="border-color: ${RARITY_COLORS[badge.rarity]}">
                                     <div class="badge-icon">${badge.icon}</div>
-                                    <div class="badge-name">${badge.name}</div>
-                                    <div class="badge-description">${badge.description}</div>
+                                    <div class="badge-name">${typeof t !== 'undefined' ? t('badge_' + badge.id) : badge.name}</div>
+                                    <div class="badge-description">${typeof t !== 'undefined' ? t('badge_desc_' + badge.id) : badge.description}</div>
                                     <div class="badge-points">+${badge.points} XP</div>
-                                    <div class="badge-earned-date">Obtenido: ${formatDate(badge.earned_at)}</div>
+                                    <div class="badge-earned-date">${typeof t !== 'undefined' ? t('profile_earned_date', {date: formatDate(badge.earned_at)}) : 'Obtenido: ' + formatDate(badge.earned_at)}</div>
                                 </div>
                             `).join('')}
                         </div>
 
-                        ${earnedBadges.length === 0 ? '<p style="text-align: center; color: #aaa; padding: 20px;">Aún no has obtenido ningún badge. ¡Empieza a jugar!</p>' : ''}
+                        ${earnedBadges.length === 0 ? `<p style="text-align: center; color: #aaa; padding: 20px;">${typeof t !== 'undefined' ? t('profile_no_badges') : 'Aún no has obtenido ningún badge. ¡Empieza a jugar!'}</p>` : ''}
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">
+                            <span>📜</span>
+                            <span>${typeof t !== 'undefined' ? t('profile_history_title') : 'Historial de Partidos'}</span>
+                        </div>
+                        <div id="matchHistoryList" class="match-history">
+                            <div class="loading">${typeof t !== 'undefined' ? t('loading') : 'Cargando...'}</div>
+                        </div>
                     </div>
 
                     <div class="section">
                         <div class="section-title">
                             <span>🔒</span>
-                            <span>Badges Bloqueados (${lockedBadges.length})</span>
+                            <span>${typeof t !== 'undefined' ? t('profile_badges_locked') : 'Badges Bloqueados'} (${lockedBadges.length})</span>
                         </div>
                         
                         <div class="badges-grid" id="lockedBadgesGrid">
                             ${lockedBadges.map(badge => `
                                 <div class="badge-card locked" data-category="${badge.category}" style="border-color: ${RARITY_COLORS[badge.rarity]}">
                                     <div class="badge-icon">${badge.icon}</div>
-                                    <div class="badge-name">${badge.name}</div>
-                                    <div class="badge-description">${badge.description}</div>
+                                    <div class="badge-name">${typeof t !== 'undefined' ? t('badge_' + badge.id) : badge.name}</div>
+                                    <div class="badge-description">${typeof t !== 'undefined' ? t('badge_desc_' + badge.id) : badge.description}</div>
                                     <div class="badge-points">+${badge.points} XP</div>
                                 </div>
                             `).join('')}
@@ -436,10 +533,137 @@
                     </div>
                 `;
                 
+                // Render history and chart
+                const historyMatches = await renderMatchHistory(userId, container.querySelector('#matchHistoryList'));
+                renderEloChart(userData.elo_rating || 1200, historyMatches, userId);
+                
             } catch (error) {
                 console.error('Error loading profile:', error);
-                container.innerHTML = `<div class="error">Error al cargar el perfil: ${error.message}</div>`;
+                container.innerHTML = `<div class="error">${t('profile_error')}: ${error.message}</div>`;
             }
+        }
+
+        async function renderMatchHistory(userId, historyContainer) {
+            try {
+                const matches = await getUserHistory(userId);
+                
+                if (matches.length === 0) {
+                    historyContainer.innerHTML = `<p style="text-align: center; color: #aaa; padding: 20px;">${t('profile_no_history')}</p>`;
+                    return [];
+                }
+                
+                const html = matches.map(match => {
+                    // ... existing map code ...
+                    const isPlayer1 = match.player1_id === userId;
+                    const isWinner = match.winner_id === userId;
+                    const opponentName = isPlayer1 ? match.player2_name : match.player1_name;
+                    const eloChange = isWinner ? (match.winner_elo_change || 0) : (match.loser_elo_change || 0);
+                    
+                    const resultText = isWinner ? t('profile_history_win') : t('profile_history_loss');
+                    const resultClass = isWinner ? 'win' : 'loss';
+                    const eloClass = eloChange >= 0 ? 'positive' : 'negative';
+                    const eloSign = eloChange >= 0 ? '+' : '';
+                    
+                    return `
+                        <div class="match-item ${resultClass}">
+                            <div class="match-details">
+                                <div class="match-opponent">${t('profile_history_vs')} ${opponentName}</div>
+                                <div class="match-date">${formatDate(match.created_at)}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="match-result ${resultClass}">${resultText}</div>
+                                <div class="match-elo ${eloClass}">${eloSign}${eloChange} ELO</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                historyContainer.innerHTML = html;
+                return matches;
+                
+            } catch (error) {
+                console.error('Error rendering history:', error);
+                historyContainer.innerHTML = '<div class="error">Error loading history</div>';
+                return [];
+            }
+        }
+
+        function renderEloChart(currentElo, matches, userId) {
+            const ctx = document.getElementById('eloChart');
+            if (!ctx || !matches || matches.length === 0) return;
+
+            // Reconstruct ELO history
+            // Start with current ELO and work backwards
+            const historyPoints = [];
+            let elo = currentElo;
+            
+            // Add current state (after last match)
+            historyPoints.push({
+                elo: elo,
+                date: 'Actual'
+            });
+
+            // Iterate backwards (matches are sorted by date desc)
+            for (const match of matches) {
+                const isWinner = match.winner_id === userId;
+                // If I won, I gained points. So previous was elo - gain
+                // If I lost, I lost points (negative). So previous was elo - (loss) = elo + abs(loss)
+                const change = isWinner ? (match.winner_elo_change || 0) : (match.loser_elo_change || 0);
+                
+                elo = elo - change;
+                
+                historyPoints.push({
+                    elo: elo,
+                    date: formatDate(match.created_at)
+                });
+            }
+
+            // Reverse to get chronological order
+            historyPoints.reverse();
+
+            const labels = historyPoints.map(p => p.date);
+            const data = historyPoints.map(p => p.elo);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: t('profile_elo_chart_label'),
+                        data: data,
+                        borderColor: '#d4af37',
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointBackgroundColor: '#f4d03f',
+                        pointRadius: 4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#fff' }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#aaa', maxTicksLimit: 6 },
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                        },
+                        y: {
+                            ticks: { color: '#aaa' },
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                        }
+                    }
+                }
+            });
         }
 
         // Filter badges by category
@@ -472,27 +696,30 @@
         }
 
         function getCategoryName(category) {
-            const names = {
-                'ALL': 'Todos',
-                'BEGINNER': 'Principiante',
-                'SKILL': 'Habilidad',
-                'CONSISTENCY': 'Constancia',
-                'SOCIAL': 'Social',
-                'ACHIEVEMENT': 'Logros',
-                'STREAK': 'Rachas',
-                'SPECIAL': 'Especial',
-                'LEGENDARY': 'Legendario'
+            const cats = {
+                'ALL': 'badge_cat_all',
+                'BEGINNER': 'badge_cat_beginner',
+                'SKILL': 'badge_cat_skill',
+                'CONSISTENCY': 'badge_cat_consistency',
+                'SOCIAL': 'badge_cat_social',
+                'ACHIEVEMENT': 'badge_cat_achievement',
+                'STREAK': 'badge_cat_streak',
+                'SPECIAL': 'badge_cat_special',
+                'LEGENDARY': 'badge_cat_legendary'
             };
-            return names[category] || category;
+            return t(cats[category] || category);
         }
 
         // Initialize
         waitForFirebase().then(async () => {
+            // Initialize language selector
+            document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
+            
             initFirebase();
             
             const username = getUsernameFromUrl();
             if (!username) {
-                document.getElementById('profileContent').innerHTML = '<div class="error">Usuario no especificado</div>';
+                document.getElementById('profileContent').innerHTML = `<div class="error">${t('profile_not_specified')}</div>`;
                 return;
             }
             
