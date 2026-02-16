@@ -237,6 +237,8 @@
     </div>
 
     <script src="js/firebase.js"></script>
+    <script src="js/badges.js"></script>
+    <script src="js/notifications.js"></script>
     <script>
         async function waitForFirebase() {
             let attempts = 0;
@@ -285,7 +287,32 @@
 
             try {
                 // Intentar login
-                await signIn(email, password);
+                const userCredential = await signIn(email, password);
+                const user = userCredential.user;
+                
+                // Verificar si hay badges nuevos
+                const newBadges = await getNewBadges(user.uid);
+                
+                if (newBadges.length > 0) {
+                    // Mostrar popup de badges
+                    await showBadgePopup(user.uid);
+                    
+                    // Esperar a que el usuario cierre el popup (o timeout de 5 segundos)
+                    await new Promise(resolve => {
+                        const checkClosed = setInterval(() => {
+                            if (!document.querySelector('.badge-popup')) {
+                                clearInterval(checkClosed);
+                                resolve();
+                            }
+                        }, 100);
+                        
+                        // Timeout de 5 segundos
+                        setTimeout(() => {
+                            clearInterval(checkClosed);
+                            resolve();
+                        }, 5000);
+                    });
+                }
                 
                 // Login exitoso, redirigir
                 window.location.href = 'resultados/';

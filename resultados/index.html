@@ -68,10 +68,16 @@
             gap: 0.5rem;
         }
 
-        .logout-btn {
+        .header-right {
             position: absolute;
             top: 2rem;
             right: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
             background: transparent;
             border: 1px solid var(--color-gold);
             color: var(--color-gold);
@@ -297,7 +303,10 @@
 <body>
     <div class="header">
         <a href="../" class="back-link">← Volver</a>
-        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        <div class="header-right">
+            <div id="notificationBellContainer"></div>
+            <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        </div>
         <h1>INTRODUCIR RESULTADO</h1>
         <div class="user-info">Usuario: <span id="currentUsername">-</span></div>
     </div>
@@ -379,6 +388,8 @@
     </div>
 
     <script src="../js/firebase.js"></script>
+    <script src="../js/badges.js"></script>
+    <script src="../js/notifications.js"></script>
     <script>
         // Variables globales
         let currentUserData = null;
@@ -443,6 +454,11 @@
 
                 // Cargar todos los usuarios
                 await loadAllUsers();
+                
+                // Inicializar notificaciones
+                const bellContainer = document.getElementById('notificationBellContainer');
+                bellContainer.innerHTML = createNotificationBell();
+                await updateNotificationBell(user.uid);
                 
                 // Mostrar formulario
                 document.getElementById('loadingScreen').classList.add('hidden');

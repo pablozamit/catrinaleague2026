@@ -62,10 +62,16 @@
             font-size: 0.9rem;
         }
 
-        .logout-btn {
+        .header-right {
             position: absolute;
             top: 2rem;
             right: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
             background: transparent;
             border: 1px solid var(--color-gold);
             color: var(--color-gold);
@@ -265,7 +271,10 @@
 <body>
     <div class="header">
         <a href="../" class="back-link">← Volver</a>
-        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        <div class="header-right">
+            <div id="notificationBellContainer"></div>
+            <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        </div>
         <h1>CONFIRMAR RESULTADOS</h1>
         <div class="user-info">Usuario: <span id="currentUsername">-</span></div>
     </div>
@@ -296,6 +305,8 @@
     </div>
 
     <script src="../js/firebase.js"></script>
+    <script src="../js/badges.js"></script>
+    <script src="../js/notifications.js"></script>
     <script>
         let currentUserData = null;
         let pendingMatches = [];
@@ -345,6 +356,11 @@
                 // Cargar usuarios y partidos
                 allUsers = await getAllUsers();
                 await loadPendingMatches();
+                
+                // Inicializar notificaciones
+                const bellContainer = document.getElementById('notificationBellContainer');
+                bellContainer.innerHTML = createNotificationBell();
+                await updateNotificationBell(user.uid);
                 
                 document.getElementById('loadingScreen').classList.add('hidden');
                 
@@ -461,10 +477,10 @@
                     </div>
 
                     <div class="actions">
-                        <button class="btn btn-confirm" onclick="confirmMatch('${match.key}')">
+                        <button class="btn btn-confirm" onclick="confirmMatchHandler('${match.key}')">
                             ✅ Confirmar
                         </button>
-                        <button class="btn btn-decline" onclick="declineMatch('${match.key}')">
+                        <button class="btn btn-decline" onclick="declineMatchHandler('${match.key}')">
                             ❌ Rechazar
                         </button>
                     </div>
@@ -474,7 +490,7 @@
             });
         }
 
-        async function confirmMatch(matchId) {
+        async function confirmMatchHandler(matchId) {
             const match = pendingMatches.find(m => m.key === matchId);
             if (!match) return;
 
@@ -509,6 +525,9 @@
                 await confirmMatch(matchId, eloChanges);
                 showMessage('✅ Resultado confirmado', 'success');
                 
+                // Actualizar notificaciones
+                await updateNotificationBell(currentUser.uid);
+                
                 // Recargar
                 await loadPendingMatches();
             } catch (error) {
@@ -516,10 +535,13 @@
             }
         }
 
-        async function declineMatch(matchId) {
+        async function declineMatchHandler(matchId) {
             try {
                 await declineMatch(matchId);
                 showMessage('❌ Partido rechazado', 'success');
+                
+                // Actualizar notificaciones
+                await updateNotificationBell(currentUser.uid);
                 
                 // Recargar
                 await loadPendingMatches();
