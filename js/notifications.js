@@ -112,28 +112,73 @@ async function showBadgePopup(userId) {
     
     if (newBadges.length === 0) return;
     
-    // Create popup
+    // Create popup using safe DOM methods (XSS prevention)
     const popup = document.createElement('div');
     popup.className = 'badge-popup';
-    popup.innerHTML = `
-        <div class="badge-popup-content">
-            <h2>¡Nuevos Logros!</h2>
-            <div class="badge-list">
-                ${newBadges.map(badge => `
-                    <div class="badge-item" style="border-color: ${RARITY_COLORS[badge.rarity]}">
-                        <div class="badge-icon">${badge.icon}</div>
-                        <div class="badge-info">
-                            <div class="badge-name">${badge.name}</div>
-                            <div class="badge-description">${badge.description}</div>
-                            <div class="badge-points">+${badge.points} XP</div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-            <button class="badge-popup-close" onclick="closeBadgePopup()">Aceptar</button>
-        </div>
-    `;
     
+    const content = document.createElement('div');
+    content.className = 'badge-popup-content';
+    
+    // Create heading
+    const heading = document.createElement('h2');
+    heading.textContent = '¡Nuevos Logros!';
+    content.appendChild(heading);
+    
+    // Create badge list
+    const badgeList = document.createElement('div');
+    badgeList.className = 'badge-list';
+    
+    // Add each badge safely
+    newBadges.forEach(badge => {
+        const badgeItem = document.createElement('div');
+        badgeItem.className = 'badge-item';
+        // Validate rarity before using
+        const borderColor = RARITY_COLORS[badge.rarity] || '#9CA3AF';
+        badgeItem.style.borderColor = borderColor;
+        
+        // Badge icon (safe - emojis are safe text)
+        const iconDiv = document.createElement('div');
+        iconDiv.className = 'badge-icon';
+        iconDiv.textContent = badge.icon; // Use textContent, not innerHTML
+        badgeItem.appendChild(iconDiv);
+        
+        // Badge info container
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'badge-info';
+        
+        // Badge name
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'badge-name';
+        nameDiv.textContent = badge.name; // Escaped automatically
+        infoDiv.appendChild(nameDiv);
+        
+        // Badge description
+        const descDiv = document.createElement('div');
+        descDiv.className = 'badge-description';
+        descDiv.textContent = badge.description; // Escaped automatically
+        infoDiv.appendChild(descDiv);
+        
+        // Badge points
+        const pointsDiv = document.createElement('div');
+        pointsDiv.className = 'badge-points';
+        pointsDiv.textContent = `+${badge.points} XP`; // Safe - number to string
+        infoDiv.appendChild(pointsDiv);
+        
+        badgeItem.appendChild(infoDiv);
+        badgeList.appendChild(badgeItem);
+    });
+    
+    content.appendChild(badgeList);
+    
+    // Create close button
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'badge-popup-close';
+    closeBtn.textContent = 'Aceptar';
+    closeBtn.type = 'button';
+    closeBtn.addEventListener('click', closeBadgePopup); // Use addEventListener instead of onclick
+    content.appendChild(closeBtn);
+    
+    popup.appendChild(content);
     document.body.appendChild(popup);
     
     // Add styles if not already present

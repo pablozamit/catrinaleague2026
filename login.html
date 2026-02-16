@@ -268,14 +268,75 @@
             });
         });
 
+        // Rate limiting variables
+        let lastLoginAttempt = 0;
+        const LOGIN_COOLDOWN = 2000; // 2 seconds between attempts
+        let loginAttempts = 0;
+        const MAX_LOGIN_ATTEMPTS = 5;
+
+        // Input validation functions
+        function validateUsername(username) {
+            // Only allow alphanumeric characters, underscores, and hyphens
+            const validPattern = /^[a-zA-Z0-9_-]+$/;
+            if (!validPattern.test(username)) {
+                return { valid: false, error: 'El usuario solo puede contener letras, números, guiones y guiones bajos' };
+            }
+            if (username.length < 3) {
+                return { valid: false, error: 'El usuario debe tener al menos 3 caracteres' };
+            }
+            if (username.length > 20) {
+                return { valid: false, error: 'El usuario no puede tener más de 20 caracteres' };
+            }
+            return { valid: true };
+        }
+
+        function validatePassword(password) {
+            if (password.length < 6) {
+                return { valid: false, error: 'La contraseña debe tener al menos 6 caracteres' };
+            }
+            if (password.length > 100) {
+                return { valid: false, error: 'La contraseña es demasiado larga' };
+            }
+            return { valid: true };
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Rate limiting check
+            const now = Date.now();
+            if (now - lastLoginAttempt < LOGIN_COOLDOWN) {
+                showError('Por favor espera un momento antes de intentar de nuevo');
+                return;
+            }
+            
+            if (loginAttempts >= MAX_LOGIN_ATTEMPTS) {
+                showError('Demasiados intentos fallidos. Por favor espera unos minutos.');
+                return;
+            }
+            
+            lastLoginAttempt = now;
             
             const username = document.getElementById('username').value.trim().toLowerCase();
             const password = document.getElementById('password').value;
             
-            if (!username || !password) {
-                showError('Por favor completa todos los campos');
+            // Validate inputs
+            const usernameValidation = validateUsername(username);
+            if (!usernameValidation.valid) {
+                showError(usernameValidation.error);
+                return;
+            }
+            
+            const passwordValidation = validatePassword(password);
+            if (!passwordValidation.valid) {
+                showError(passwordValidation.error);
                 return;
             }
 
@@ -289,6 +350,9 @@
                 // Intentar login
                 const userCredential = await signIn(email, password);
                 const user = userCredential.user;
+                
+                // Reset login attempts on success
+                loginAttempts = 0;
                 
                 // Verificar si hay badges nuevos
                 const newBadges = await getNewBadges(user.uid);
@@ -319,22 +383,28 @@
                 
             } catch (error) {
                 console.error('Login error:', error);
+                loginAttempts++;
                 
-                // Si el error es "no existe usuario", crear uno nuevo
+                // Sanitize error message before displaying
+                let errorMessage = 'Error al iniciar sesión';
+                
                 if (error.code === 'auth/user-not-found') {
-                    // Crear usuario en Firebase Auth
-                    try {
-                        // Nota: Esto requiere Firebase Auth habilitado
-                        // Por ahora, mostrar error
-                        showError('Usuario no encontrado. Contacta al administrador.');
-                    } catch (createError) {
-                        showError('Error: ' + createError.message);
-                    }
+                    errorMessage = 'Usuario no encontrado. Contacta al administrador.';
                 } else if (error.code === 'auth/wrong-password') {
-                    showError('Contraseña incorrecta');
-                } else {
-                    showError('Error al iniciar sesión: ' + error.message);
+                    errorMessage = 'Contraseña incorrecta';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Formato de usuario inválido';
+                } else if (error.code === 'auth/user-disabled') {
+                    errorMessage = 'Esta cuenta ha sido desactivada';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage = 'Demasiados intentos fallidos. Por favor espera unos minutos.';
+                    loginAttempts = MAX_LOGIN_ATTEMPTS; // Force cooldown
+                } else if (error.message) {
+                    // Only show generic message for unknown errors, never expose internal details
+                    errorMessage = 'Error al iniciar sesión. Por favor intenta de nuevo.';
                 }
+                
+                showError(errorMessage);
             } finally {
                 showLoading(false);
             }

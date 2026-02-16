@@ -552,9 +552,18 @@
 
         function showMessage(text, type) {
             const container = document.getElementById('messageArea');
-            container.innerHTML = `
-                <div class="${type}" style="display:block">${text}</div>
-            `;
+            
+            // Clear previous messages
+            container.innerHTML = '';
+            
+            // Create message element safely
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type;
+            messageDiv.style.display = 'block';
+            messageDiv.textContent = text; // Use textContent to prevent XSS
+            
+            container.appendChild(messageDiv);
+            
             setTimeout(() => {
                 container.innerHTML = '';
             }, 3000);

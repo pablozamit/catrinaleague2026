@@ -105,64 +105,109 @@ function getPendingMatches(uid) {
 
 // Confirmar partido
 async function confirmMatch(matchId, eloChanges) {
-    const updates = {};
-    const now = new Date();
-    
-    // Get match data first
-    const matchSnap = await database.ref(`matches/${matchId}`).once('value');
-    const matchData = matchSnap.val();
-    
-    // Get current stats for both players
-    const winnerSnap = await database.ref(`users/${eloChanges.winnerId}`).once('value');
-    const loserSnap = await database.ref(`users/${eloChanges.loserId}`).once('value');
-    const winnerStats = winnerSnap.val() || {};
-    const loserStats = loserSnap.val() || {};
-    
-    // Actualizar partido con timestamp
-    updates[`matches/${matchId}/status`] = 'confirmed';
-    updates[`matches/${matchId}/confirmed_at`] = firebase.database.ServerValue.TIMESTAMP;
-    updates[`matches/${matchId}/confirmed_hour`] = now.getHours();
-    updates[`matches/${matchId}/confirmed_minute`] = now.getMinutes();
-    updates[`matches/${matchId}/confirmed_day_of_week`] = now.getDay();
-    updates[`matches/${matchId}/is_weekend`] = now.getDay() === 0 || now.getDay() === 6;
-    
-    // Update both players' stats
-    const winnerUpdates = updatePlayerStats(winnerStats, loserStats, matchData, true, eloChanges.winnerElo, eloChanges.winnerMatches, eloChanges.winnerWins, now);
-    const loserUpdates = updatePlayerStats(loserStats, winnerStats, matchData, false, eloChanges.loserElo, eloChanges.loserMatches, eloChanges.loserMatches, now);
-    
-    // Merge updates
-    Object.entries(winnerUpdates).forEach(([key, val]) => {
-        updates[`users/${eloChanges.winnerId}/${key}`] = val;
-    });
-    Object.entries(loserUpdates).forEach(([key, val]) => {
-        updates[`users/${eloChanges.loserId}/${key}`] = val;
-    });
-    
-    // Apply updates
-    await database.ref().update(updates);
-    
-    // Update global leaderboards
-    const winnerUsername = winnerStats.username || 'Unknown';
-    await updateGlobalLeaderboards(eloChanges.winnerId, winnerUsername, now);
-    
-    // Check badges for both players
-    const winnerNewStats = { ...winnerStats, ...winnerUpdates };
-    const loserNewStats = { ...loserStats, ...loserUpdates };
-    
-    if (typeof checkBadges !== 'undefined') {
-        const winnerNewBadges = checkBadges(winnerNewStats);
-        const loserNewBadges = checkBadges(loserNewStats);
+    try {
+        // Validate inputs
+        if (!matchId || !eloChanges) {
+            throw new Error('Missing required parameters');
+        }
         
-        // Award new badges
-        if (winnerNewBadges.length > 0) {
-            await awardBadges(eloChanges.winnerId, winnerNewStats, winnerNewBadges);
+        if (!eloChanges.winnerId || !eloChanges.loserId) {
+            throw new Error('Invalid player IDs');
         }
-        if (loserNewBadges.length > 0) {
-            await awardBadges(eloChanges.loserId, loserNewStats, loserNewBadges);
+        
+        if (typeof eloChanges.winnerElo !== 'number' || typeof eloChanges.loserElo !== 'number') {
+            throw new Error('Invalid ELO values');
         }
+        
+        const updates = {};
+        const now = new Date();
+        
+        // Get match data first
+        const matchSnap = await database.ref(`matches/${matchId}`).once('value');
+        const matchData = matchSnap.val();
+        
+        if (!matchData) {
+            throw new Error('Match not found');
+        }
+        
+        if (matchData.status === 'confirmed') {
+            throw new Error('Match already confirmed');
+        }
+        
+        // Get current stats for both players - use Promise.all for parallel reads
+        const [winnerSnap, loserSnap] = await Promise.all([
+            database.ref(`users/${eloChanges.winnerId}`).once('value'),
+            database.ref(`users/${eloChanges.loserId}`).once('value')
+        ]);
+        
+        const winnerStats = winnerSnap.val();
+        const loserStats = loserSnap.val();
+        
+        if (!winnerStats || !loserStats) {
+            throw new Error('Player data not found');
+        }
+        
+        // Actualizar partido con timestamp
+        updates[`matches/${matchId}/status`] = 'confirmed';
+        updates[`matches/${matchId}/confirmed_at`] = firebase.database.ServerValue.TIMESTAMP;
+        updates[`matches/${matchId}/confirmed_hour`] = now.getHours();
+        updates[`matches/${matchId}/confirmed_minute`] = now.getMinutes();
+        updates[`matches/${matchId}/confirmed_day_of_week`] = now.getDay();
+        updates[`matches/${matchId}/is_weekend`] = now.getDay() === 0 || now.getDay() === 6;
+        
+        // Update both players' stats
+        const winnerUpdates = updatePlayerStats(winnerStats, loserStats, matchData, true, eloChanges.winnerElo, eloChanges.winnerMatches, eloChanges.winnerWins, now);
+        // BUG FIX: loserWins should be passed, not loserMatches twice
+        const loserWins = (loserStats.matches_won || 0); // Loser doesn't gain wins, stays the same
+        const loserUpdates = updatePlayerStats(loserStats, winnerStats, matchData, false, eloChanges.loserElo, eloChanges.loserMatches, loserWins, now);
+        
+        // Merge updates
+        Object.entries(winnerUpdates).forEach(([key, val]) => {
+            updates[`users/${eloChanges.winnerId}/${key}`] = val;
+        });
+        Object.entries(loserUpdates).forEach(([key, val]) => {
+            updates[`users/${eloChanges.loserId}/${key}`] = val;
+        });
+        
+        // Apply all updates atomically
+        await database.ref().update(updates);
+        
+        // Update global leaderboards (in try-catch to not fail entire operation)
+        try {
+            const winnerUsername = winnerStats.username || 'Unknown';
+            await updateGlobalLeaderboards(eloChanges.winnerId, winnerUsername, now);
+        } catch (leaderboardError) {
+            console.error('Leaderboard update failed:', leaderboardError);
+            // Don't throw - leaderboard is non-critical
+        }
+        
+        // Check badges for both players
+        const winnerNewStats = { ...winnerStats, ...winnerUpdates };
+        const loserNewStats = { ...loserStats, ...loserUpdates };
+        
+        if (typeof checkBadges !== 'undefined') {
+            try {
+                const winnerNewBadges = checkBadges(winnerNewStats);
+                const loserNewBadges = checkBadges(loserNewStats);
+                
+                // Award new badges
+                if (winnerNewBadges.length > 0) {
+                    await awardBadges(eloChanges.winnerId, winnerNewStats, winnerNewBadges);
+                }
+                if (loserNewBadges.length > 0) {
+                    await awardBadges(eloChanges.loserId, loserNewStats, loserNewBadges);
+                }
+            } catch (badgeError) {
+                console.error('Badge check/award failed:', badgeError);
+                // Don't throw - badges are non-critical
+            }
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error confirming match:', error);
+        throw new Error(`Failed to confirm match: ${error.message}`);
     }
-    
-    return true;
 }
 
 // Helper function to update player statistics

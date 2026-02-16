@@ -566,28 +566,80 @@
             document.getElementById('submitBtn').disabled = false;
         }
 
+        // Rate limiting for submissions
+        let lastSubmissionTime = 0;
+        const SUBMISSION_COOLDOWN = 5000; // 5 seconds between submissions
+
         async function submitResult() {
-            const opponentUid = document.getElementById('opponent').value;
-            const matchType = document.getElementById('matchType').value;
-
-            if (!opponentUid || !selectedWinner) {
-                showError('Por favor completa todos los campos');
-                return;
-            }
-
-            const opponent = allUsers.find(u => u.uid === opponentUid);
-            
-            const matchData = {
-                player1_id: currentUser.uid,
-                player1_username: currentUserData.username,
-                player2_id: opponent.uid,
-                player2_username: opponent.username,
-                winner_id: selectedWinner === 'me' ? currentUser.uid : opponent.uid,
-                match_type: matchType,
-                submitted_by: currentUser.uid
-            };
-
             try {
+                // Rate limiting check
+                const now = Date.now();
+                if (now - lastSubmissionTime < SUBMISSION_COOLDOWN) {
+                    showError('Por favor espera unos segundos antes de enviar otro resultado');
+                    return;
+                }
+
+                const opponentUid = document.getElementById('opponent').value;
+                const matchType = document.getElementById('matchType').value;
+
+                // Validation
+                if (!opponentUid) {
+                    showError('Por favor selecciona un oponente');
+                    return;
+                }
+
+                if (!selectedWinner) {
+                    showError('Por favor selecciona quién ganó el partido');
+                    return;
+                }
+
+                if (!matchType) {
+                    showError('Por favor selecciona el tipo de partido');
+                    return;
+                }
+
+                // Validate match type is valid
+                const validMatchTypes = ['rey_mesa', 'torneo', 'liga_grupos', 'liga_finales'];
+                if (!validMatchTypes.includes(matchType)) {
+                    showError('Tipo de partido inválido');
+                    return;
+                }
+
+                const opponent = allUsers.find(u => u.uid === opponentUid);
+                
+                if (!opponent) {
+                    showError('Oponente no encontrado');
+                    return;
+                }
+
+                // Security: Prevent playing against yourself
+                if (opponent.uid === currentUser.uid) {
+                    showError('No puedes jugar contra ti mismo');
+                    return;
+                }
+
+                // Validate usernames (prevent injection)
+                const usernamePattern = /^[a-zA-Z0-9_-]+$/;
+                if (!usernamePattern.test(currentUserData.username) || !usernamePattern.test(opponent.username)) {
+                    showError('Nombre de usuario inválido');
+                    return;
+                }
+
+                // Sanitize usernames
+                const sanitizeUsername = (name) => name.replace(/[<>"'&]/g, '');
+
+                const matchData = {
+                    player1_id: currentUser.uid,
+                    player1_username: sanitizeUsername(currentUserData.username),
+                    player2_id: opponent.uid,
+                    player2_username: sanitizeUsername(opponent.username),
+                    winner_id: selectedWinner === 'me' ? currentUser.uid : opponent.uid,
+                    match_type: matchType,
+                    submitted_by: currentUser.uid,
+                    submitted_at: Date.now()
+                };
+
+                lastSubmissionTime = now;
                 await createMatch(matchData);
                 
                 document.getElementById('resultSuccess').style.display = 'block';
@@ -605,12 +657,15 @@
                 }, 3000);
                 
             } catch (error) {
-                showError('Error al enviar resultado: ' + error.message);
+                console.error('Error submitting result:', error);
+                // Don't expose internal error details
+                showError('Error al enviar resultado. Por favor intenta de nuevo.');
             }
         }
 
         function showError(message) {
             const errorEl = document.getElementById('resultError');
+            // Use textContent to prevent XSS
             errorEl.textContent = message;
             errorEl.style.display = 'block';
         }
