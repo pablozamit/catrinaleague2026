@@ -190,8 +190,21 @@ async function confirmMatch(matchId, eloChanges) {
         }
         
         // Check badges for both players
-        const winnerNewStats = { ...winnerStats, ...winnerUpdates };
-        const loserNewStats = { ...loserStats, ...loserUpdates };
+        // IMPORTANT: Reload user data from database to include ranking badge updates (reached_rank_1, etc.)
+        let winnerNewStats, loserNewStats;
+        try {
+            const [updatedWinnerSnap, updatedLoserSnap] = await Promise.all([
+                database.ref(`users/${eloChanges.winnerId}`).once('value'),
+                database.ref(`users/${eloChanges.loserId}`).once('value')
+            ]);
+            winnerNewStats = updatedWinnerSnap.val();
+            loserNewStats = updatedLoserSnap.val();
+        } catch (reloadError) {
+            console.error('Failed to reload user stats:', reloadError);
+            // Fallback to local stats if reload fails
+            winnerNewStats = { ...winnerStats, ...winnerUpdates };
+            loserNewStats = { ...loserStats, ...loserUpdates };
+        }
         
         if (typeof checkBadges !== 'undefined') {
             try {
@@ -744,6 +757,57 @@ async function updateRankingBadges() {
     }
 }
 
+// Initialize all ranking badges for existing users
+// Call this function from browser console to fix missing badges: await initializeRankingBadges()
+async function initializeRankingBadges() {
+    console.log('🏆 Inicializando badges de ranking...');
+    
+    const usersSnap = await database.ref('users').once('value');
+    const users = usersSnap.val();
+    
+    if (!users) {
+        console.log('No hay usuarios');
+        return;
+    }
+    
+    // Sort by ELO (descending)
+    const sortedUsers = Object.entries(users)
+        .map(([uid, user]) => ({ uid, ...user }))
+        .sort((a, b) => (b.elo_rating || 1200) - (a.elo_rating || 1200));
+    
+    console.log('\n📊 Ranking actual:');
+    sortedUsers.slice(0, 5).forEach((user, index) => {
+        console.log(`  ${index + 1}. ${user.username} - ELO: ${user.elo_rating || 1200}`);
+    });
+    
+    // Award Leyenda del Club to #1
+    if (sortedUsers.length > 0) {
+        const rank1User = sortedUsers[0];
+        console.log(`\n👑 #1 del ranking: ${rank1User.username}`);
+        
+        if (!rank1User.reached_rank_1) {
+            console.log(`🎉 Otorgando "Leyenda del Club" a ${rank1User.username}`);
+            await database.ref(`users/${rank1User.uid}/reached_rank_1`).set(true);
+            
+            // Check and award the badge
+            if (typeof checkBadges !== 'undefined') {
+                const userSnap = await database.ref(`users/${rank1User.uid}`).once('value');
+                const userData = userSnap.val();
+                const newBadges = checkBadges(userData);
+                
+                if (newBadges.length > 0) {
+                    await awardBadges(rank1User.uid, userData, newBadges);
+                    console.log(`✅ Badge otorgado: ${newBadges.map(b => b.name).join(', ')}`);
+                }
+            }
+        } else {
+            console.log(`✅ ${rank1User.username} ya tiene "Leyenda del Club"`);
+        }
+    }
+    
+    console.log('\n✅ Inicialización completada');
+}
+
 // ===== EXPORTAR =====
 
 if (typeof window !== 'undefined') {
@@ -769,4 +833,5 @@ if (typeof window !== 'undefined') {
     window.awardChampionBadges = awardChampionBadges;
     window.getCurrentLeaderboard = getCurrentLeaderboard;
     window.updateRankingBadges = updateRankingBadges;
+    window.initializeRankingBadges = initializeRankingBadges;
 }
