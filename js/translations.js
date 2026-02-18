@@ -132,6 +132,7 @@ const translations = {
         ranking_player: 'Jugador',
         ranking_matches: 'Partidos',
         ranking_elo: 'ELO',
+        ranking_7day_change: '7 días',
         ranking_footer: 'La Catrina Pool League © 2025',
         
         // Profile
@@ -452,6 +453,7 @@ const translations = {
         ranking_player: 'Player',
         ranking_matches: 'Matches',
         ranking_elo: 'ELO',
+        ranking_7day_change: '7 days',
         ranking_footer: 'La Catrina Pool League © 2025',
         
         // Profile
