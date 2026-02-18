@@ -191,9 +191,9 @@
         <div class="pocket-label" data-i18n="nav_coming_soon">Próximamente</div>
     </div>
     
-    <div class="pocket-marker locked" id="marker-bc" style="left: 50%; top: 75%;">
-        <span style="font-size: 2rem; opacity: 0.6;">🔒</span>
-        <div class="pocket-label" data-i18n="nav_coming_soon">Próximamente</div>
+    <div class="pocket-marker" id="marker-bc" data-target="liga/" data-active="true" style="left: 50%; top: 75%;">
+        <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🏆</span>
+        <div class="pocket-label" data-i18n="nav_league">Liga</div>
     </div>
     
     <div class="pocket-marker locked" id="marker-br" style="left: 80%; top: 70%;">
@@ -507,8 +507,10 @@
                     setTimeout(() => {
                         // Redireccionar según tronera
                         const pocketId = pockets.find(p => p.position.equals(targetPosition))?.userData.id;
-                        if (pocketId === 'tl' || pocketId === 'tc') {
-                            window.location.href = pocketId === 'tl' ? 'reglas/' : 'elo/';
+                        if (pocketId === 'tl' || pocketId === 'tc' || pocketId === 'bc') {
+                            if (pocketId === 'tl') window.location.href = 'reglas/';
+                            else if (pocketId === 'tc') window.location.href = 'elo/';
+                            else if (pocketId === 'bc') window.location.href = 'liga/';
                         }
                     }, 300);
                 }

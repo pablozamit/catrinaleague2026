@@ -19,6 +19,7 @@ const translations = {
         // Navigation/Home
         nav_rules: 'Reglas de la Liga',
         nav_ranking: 'Ranking ELO',
+        nav_league: 'Liga',
         nav_login: 'Login / Resultados',
         nav_coming_soon: 'Próximamente',
         instructions: 'Arrastra para rotar • Haz clic en las troneras',
@@ -341,6 +342,7 @@ const translations = {
         // Navigation/Home
         nav_rules: 'League Rules',
         nav_ranking: 'ELO Ranking',
+        nav_league: 'League',
         nav_login: 'Login / Results',
         nav_coming_soon: 'Coming Soon',
         instructions: 'Drag to rotate • Click on pockets',

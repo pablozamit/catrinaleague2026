@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga - La Catrina Pool League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-gold: #d4af37;
+            --color-gold-light: #f4d03f;
+            --color-white: #f5f5f5;
+            --color-text-muted: #888;
+            --color-success: #4ade80;
+            --color-warning: #fbbf24;
+            --color-danger: #f87171;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--color-bg);
+            color: var(--color-white);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, rgba(26, 74, 46, 0.3) 0%, transparent 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--color-gold);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--color-gold);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Tab de navegación */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-muted);
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--color-gold);
+            border-bottom-color: var(--color-gold);
+        }
+
+        .tab-btn:hover {
+            color: var(--color-gold-light);
+        }
+
+        /* Contenido de tabs */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tarjetas de estado de liga */
+        .league-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .status-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .status-card:hover {
+            border-color: var(--color-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .status-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-gold);
+            margin-bottom: 1rem;
+        }
+
+        .status-description {
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .status-btn {
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            color: var(--color-bg);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .status-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Tablas de liga */
+        .league-table {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .league-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .league-table th {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--color-gold);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-family: 'Cinzel', serif;
+        }
+
+        .league-table td {
+            padding: 1rem;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .league-table tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        /* Estado de temporada */
+        .season-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .season-status.active {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--color-success);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+        }
+
+        .season-status.coming {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--color-warning);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .season-status.finished {
+            background: rgba(248, 113, 113, 0.2);
+            color: var(--color-danger);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+
+        /* Próximos partidos */
+        .upcoming-matches {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .match-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .match-item:last-child {
+            border-bottom: none;
+        }
+
+        .match-teams {
+            font-weight: 600;
+        }
+
+        .match-date {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .back-link {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .league-status {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="../" class="back-link">
+            <span>←</span>
+            <span>Volver a la Mesa</span>
+        </a>
+        <h1>LIGA DE POOL</h1>
+        <p>TEMPORADA 2026 - LA CATRINA POOL LEAGUE</p>
+    </div>
+
+    <div class="container">
+        <!-- Navegación por pestañas -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">Resumen</button>
+            <button class="tab-btn" onclick="switchTab('standings')">Clasificación</button>
+            <button class="tab-btn" onclick="switchTab('schedule')">Calendario</button>
+            <button class="tab-btn" onclick="switchTab('stats')">Estadísticas</button>
+        </div>
+
+        <!-- Tab: Resumen -->
+        <div id="overview" class="tab-content active">
+            <div class="league-status">
+                <div class="status-card">
+                    <div class="status-icon">🏆</div>
+                    <div class="status-title">Liga Principal</div>
+                    <div class="status-description">
+                        La liga principal donde se enfrentan los mejores jugadores por puntos ELO
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span class="season-status active">● ACTIVA</span>
+                    </div>
+                    <div style="color: var(--color-text-muted); margin-bottom: 1rem;">
+                        12 jugadores • 53 partidos jugados
+                    </div>
+                    <button class="status-btn">Ver Clasificación</button>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">🎯</div>
+                    <div class="status-title">Torneo de Primavera</div>
+                    <div class="status-description">
+                        Torneo eliminatorio especial con los mejores jugadores de la temporada
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span class="season-status coming">● PRÓXIMO</span>
+                    </div>
+                    <div style="color: var(--color-text-muted); margin-bottom: 1rem;">
+                        Empieza: 15 de Marzo, 2026
+                    </div>
+                    <button class="status-btn">Información</button>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">⚡</div>
+                    <div class="status-title">Liga Semanal</div>
+                    <div class="status-description">
+                        Competición rápida de una semana con partidas express
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <span class="season-status coming">● PRÓXIMO</span>
+                    </div>
+                    <div style="color: var(--color-text-muted); margin-bottom: 1rem;">
+                        Cada lunes • Formato 8 jugadores
+                    </div>
+                    <button class="status-btn">Reglas</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Clasificación -->
+        <div id="standings" class="tab-content">
+            <div class="league-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Jugador</th>
+                            <th>Partidos</th>
+                            <th>Victorias</th>
+                            <th>Derrotas</th>
+                            <th>% Victorias</th>
+                            <th>ELO</th>
+                            <th>Racha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>🥇 Amauris</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>100%</td>
+                            <td>1200</td>
+                            <td style="color: var(--color-success);">+1</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Johnny</td>
+                            <td>1</td>
+                            <td>0</td>
+                            <td>1</td>
+                            <td>0%</td>
+                            <td>1200</td>
+                            <td style="color: var(--color-danger);">-1</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Pablo</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>-</td>
+                            <td>1200</td>
+                            <td>-</td>
+                        </tr>
+                        <!-- Más jugadores se cargarán desde Firebase -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab: Calendario -->
+        <div id="schedule" class="tab-content">
+            <div class="upcoming-matches">
+                <h3 style="margin-bottom: 1rem; color: var(--color-gold); font-family: 'Cinzel', serif;">
+                    Próximos Partidos
+                </h3>
+                
+                <div class="match-item">
+                    <div class="match-teams">Amauris vs Johnny</div>
+                    <div class="match-date">Completado</div>
+                </div>
+                
+                <div class="match-item">
+                    <div class="match-teams">Pablo vs Angel</div>
+                    <div class="match-date">Pendiente de confirmación</div>
+                </div>
+                
+                <div class="match-item">
+                    <div class="match-teams">Josh vs Jonathan</div>
+                    <div class="match-date">Programado: 20 Feb</div>
+                </div>
+
+                <div class="match-item">
+                    <div class="match-teams">Fer vs Erfan</div>
+                    <div class="match-date">Programado: 22 Feb</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Estadísticas -->
+        <div id="stats" class="tab-content">
+            <div class="league-status">
+                <div class="status-card">
+                    <div class="status-icon">📊</div>
+                    <div class="status-title">Estadísticas Generales</div>
+                    <div class="status-description">
+                        Resumen de toda la actividad de la liga
+                    </div>
+                    <div style="text-align: left; margin-top: 1rem;">
+                        <div style="margin-bottom: 0.5rem;">• Total partidos: <strong>53</strong></div>
+                        <div style="margin-bottom: 0.5rem;">• Jugadores activos: <strong>53</strong></div>
+                        <div style="margin-bottom: 0.5rem;">• Partido promedio ELO: <strong>16.2</strong></div>
+                        <div style="margin-bottom: 0.5rem;">• Victorias de 3-0: <strong>12</strong></div>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">🏆</div>
+                    <div class="status-title">Records de la Liga</div>
+                    <div class="status-description">
+                        Los mejores registros históricos
+                    </div>
+                    <div style="text-align: left; margin-top: 1rem;">
+                        <div style="margin-bottom: 0.5rem;">• Mayor racha de victorias: <strong>TBD</strong></div>
+                        <div style="margin-bottom: 0.5rem;">• Partida más larga: <strong>TBD</strong></div>
+                        <div style="margin-bottom: 0.5rem;">• Mayor upset ELO: <strong>TBD</strong></div>
+                        <div style="margin-bottom: 0.5rem;">• Mejor winrate: <strong>TBD</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navegación por pestañas
+        function switchTab(tabName) {
+            // Ocultar todas las pestañas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Desactivar todos los botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Mostrar la pestaña seleccionada
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activar el botón correspondiente
+            event.target.classList.add('active');
+        }
+
+        // Auto-refresh datos de liga cada 30 segundos
+        setInterval(() => {
+            // Aquí se cargarían datos actualizados desde Firebase
+            console.log('Refreshing league data...');
+        }, 30000);
+    </script>
+</body>
+</html>
