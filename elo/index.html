@@ -95,6 +95,49 @@
             letter-spacing: 1px;
         }
 
+        .loading-7day {
+            color: var(--color-text-muted);
+            font-size: 0.8rem;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        /* 7-day ELO change indicators */
+        .change-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            min-width: 40px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .change-indicator.neutral {
+            background: rgba(136, 136, 136, 0.1);
+            color: var(--color-text-muted);
+            border-color: rgba(136, 136, 136, 0.3);
+        }
+
+        .change-indicator.up {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border-color: rgba(34, 197, 94, 0.4);
+        }
+
+        .change-indicator.down {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .change-indicator .arrow {
+            font-weight: bold;
+        }
+
         /* Tabla de ranking */
         .ranking-table {
             width: 100%;
@@ -147,6 +190,44 @@
         .position.top-3 {
             color: var(--color-gold);
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        /* Captain styling for top 6 players */
+        .ranking-table tr:nth-child(-n+6) {
+            background: linear-gradient(135deg, 
+                rgba(212, 175, 55, 0.08) 0%, 
+                rgba(212, 175, 55, 0.02) 100%);
+            box-shadow: 
+                0 0 20px rgba(212, 175, 55, 0.1),
+                inset 0 1px 0 rgba(212, 175, 55, 0.1);
+        }
+
+        .ranking-table tr:nth-child(-n+6):hover {
+            background: linear-gradient(135deg, 
+                rgba(212, 175, 55, 0.12) 0%, 
+                rgba(212, 175, 55, 0.04) 100%);
+            box-shadow: 
+                0 0 30px rgba(212, 175, 55, 0.2),
+                inset 0 1px 0 rgba(212, 175, 55, 0.15);
+        }
+
+        .captain-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 8px;
+            padding: 2px 6px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%);
+            color: var(--color-gold);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+        }
+
+        .captain-badge .icon {
+            font-size: 0.8rem;
         }
 
         /* Jugador */
@@ -241,6 +322,21 @@
             .elo {
                 font-size: 1.1rem;
             }
+
+            .change-indicator {
+                padding: 2px 4px;
+                font-size: 0.7rem;
+                min-width: 35px;
+            }
+
+            .captain-badge {
+                padding: 1px 4px;
+                font-size: 0.6rem;
+            }
+
+            .captain-badge .icon {
+                font-size: 0.7rem;
+            }
         }
 
         /* Footer */
@@ -269,6 +365,7 @@
     <div class="container">
         <div class="update-info">
             <p id="updateTime"><span data-i18n="ranking_update">🎱 Última actualización</span>: <span data-i18n="loading">Cargando...</span></p>
+            <p class="loading-7day" id="sevenDayLoading" style="display: none;" data-i18n="ranking_7day_calculating">📊 Calculando cambios de 7 días...</p>
         </div>
 
         <table class="ranking-table">
@@ -316,6 +413,150 @@
             });
         }
 
+        // Calculate ELO 7 days ago for each player
+        async function calculateSevenDayEloChanges(currentUsers) {
+            console.log('🎯 Calculating 7-day ELO changes...');
+            
+            try {
+                // Calculate the timestamp for 7 days ago
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                const sevenDaysAgoTimestamp = sevenDaysAgo.getTime();
+
+                console.log('🔍 Calculating from:', sevenDaysAgo.toISOString());
+
+                // Initialize all players with neutral changes
+                const eloChanges = {};
+                currentUsers.forEach(user => {
+                    eloChanges[user.uid] = {
+                        change: 0,
+                        currentElo: user.elo_rating || 1200,
+                        historicalElo: user.elo_rating || 1200
+                    };
+                });
+
+                // Get all confirmed matches
+                const matchesSnap = await database.ref('matches').orderByChild('confirmed_at').once('value');
+                const matches = matchesSnap.val();
+
+                if (!matches) {
+                    console.log('📊 No matches found, returning neutral changes');
+                    return eloChanges;
+                }
+
+                console.log(`📈 Found ${Object.keys(matches).length} total matches`);
+
+                // Filter and process matches from last 7 days
+                const recentMatches = Object.entries(matches)
+                    .map(([id, match]) => ({ id, ...match }))
+                    .filter(match => {
+                        return match.status === 'confirmed' &&
+                               match.confirmed_at &&
+                               match.confirmed_at >= sevenDaysAgoTimestamp &&
+                               match.confirmed_at <= Date.now();
+                    })
+                    .sort((a, b) => a.confirmed_at - b.confirmed_at);
+
+                console.log(`🎯 Found ${recentMatches.length} matches from last 7 days`);
+
+                if (recentMatches.length === 0) {
+                    console.log('📊 No recent matches, returning neutral changes');
+                    return eloChanges;
+                }
+
+                // Calculate historical ELO by replaying matches
+                const historicalElo = {};
+                currentUsers.forEach(user => {
+                    historicalElo[user.uid] = user.elo_rating || 1200;
+                });
+
+                // Process each match chronologically
+                let processedCount = 0;
+                for (const match of recentMatches) {
+                    try {
+                        if (match.winner_id && match.player1_id && match.player2_id) {
+                            const winnerId = match.winner_id;
+                            const loserId = match.winner_id === match.player1_id ? match.player2_id : match.player1_id;
+
+                            if (historicalElo[winnerId] !== undefined && historicalElo[loserId] !== undefined) {
+                                const winnerCurrentElo = historicalElo[winnerId];
+                                const loserCurrentElo = historicalElo[loserId];
+
+                                // Calculate ELO change for this match
+                                const eloChange = calculateMatchEloChange(
+                                    winnerCurrentElo,
+                                    loserCurrentElo,
+                                    0,
+                                    0,
+                                    match.match_type || 'rey_mesa'
+                                );
+
+                                // Update historical ELOs
+                                historicalElo[winnerId] = eloChange.winnerElo;
+                                historicalElo[loserId] = eloChange.loserElo;
+                                processedCount++;
+                            }
+                        }
+                    } catch (matchError) {
+                        console.error('Error processing match:', match.id, matchError);
+                    }
+                }
+
+                console.log(`✅ Processed ${processedCount} matches successfully`);
+
+                // Calculate final changes
+                currentUsers.forEach(user => {
+                    const currentElo = user.elo_rating || 1200;
+                    const historicalEloValue = historicalElo[user.uid] || currentElo;
+                    const change = currentElo - historicalEloValue;
+
+                    eloChanges[user.uid] = {
+                        change: change,
+                        currentElo: currentElo,
+                        historicalElo: historicalEloValue
+                    };
+                });
+
+                console.log('📊 Final 7-day ELO changes calculated');
+                return eloChanges;
+
+            } catch (error) {
+                console.error('❌ Critical error in 7-day ELO calculation:', error);
+
+                // Return neutral changes for all players
+                const neutralChanges = {};
+                currentUsers.forEach(user => {
+                    neutralChanges[user.uid] = {
+                        change: 0,
+                        currentElo: user.elo_rating || 1200,
+                        historicalElo: user.elo_rating || 1200
+                    };
+                });
+                return neutralChanges;
+            }
+        }
+
+        // Calculate ELO change for a single match
+        function calculateMatchEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType) {
+            const K = matchType === 'torneo' ? 32 : (matchType === 'liga_finales' ? 24 : 16);
+            
+            const expectedWinner = 1 / (1 + Math.pow(10, (loserElo - winnerElo) / 400));
+            const expectedLoser = 1 / (1 + Math.pow(10, (winnerElo - loserElo) / 400));
+            
+            const actualWinner = 1;
+            const actualLoser = 0;
+            
+            const winnerChange = Math.round(K * (actualWinner - expectedWinner));
+            const loserChange = Math.round(K * (actualLoser - expectedLoser));
+            
+            return {
+                winnerElo: winnerElo + winnerChange,
+                loserElo: loserElo + loserChange,
+                winnerChange,
+                loserChange
+            };
+        }
+
         // Load and display ranking
         async function loadRanking() {
             try {
@@ -325,9 +566,9 @@
                 if (!users) {
                     document.getElementById('rankingTableBody').innerHTML = `
                         <tr>
-                            <td colspan="4" style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
-                                ${t('ranking_loading')}
-                            </td>
+                    <td colspan="5" style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
+                        ${t('ranking_loading')}
+                    </td>
                         </tr>
                     `;
                     return;
@@ -338,6 +579,38 @@
                     uid,
                     ...user
                 })).sort((a, b) => (b.elo_rating || 1200) - (a.elo_rating || 1200));
+
+                // Calculate 7-day ELO changes
+                console.log('🎯 Loading ranking with 7-day change tracking...');
+                
+                // Show loading indicator
+                const loadingEl = document.getElementById('sevenDayLoading');
+                if (loadingEl) {
+                    loadingEl.style.display = 'block';
+                    loadingEl.textContent = t('ranking_7day_calculating') || '📊 Calculating 7-day changes...';
+                }
+                
+                let eloChanges = {};
+                try {
+                    eloChanges = await calculateSevenDayEloChanges(userArray);
+                    console.log('✅ 7-day calculation completed');
+                } catch (calcError) {
+                    console.error('❌ Calculation failed, using neutral:', calcError);
+                    // Use neutral changes if calculation fails
+                    userArray.forEach(user => {
+                        eloChanges[user.uid] = {
+                            change: 0,
+                            currentElo: user.elo_rating || 1200,
+                            historicalElo: user.elo_rating || 1200
+                        };
+                    });
+                    console.log('🎭 Using neutral changes');
+                }
+                
+                // Hide loading indicator
+                if (loadingEl) {
+                    loadingEl.style.display = 'none';
+                }
                 
                 // Render table
                 const tbody = document.getElementById('rankingTableBody');
@@ -348,6 +621,27 @@
                     const matches = user.matches_played || 0;
                     const isNew = matches === 0;
                     
+                    // Get 7-day change
+                    const changeData = eloChanges[user.uid] || { change: 0 };
+                    const change = changeData.change || 0;
+                    
+                    // Determine change indicator
+                    let changeClass = 'neutral';
+                    let changeSymbol = '→';
+                    let changeText = '0';
+                    
+                    if (change > 0) {
+                        changeClass = 'up';
+                        changeSymbol = '↗';
+                        changeText = `+${change}`;
+                    } else if (change < 0) {
+                        changeClass = 'down';
+                        changeSymbol = '↘';
+                        changeText = `${change}`;
+                    }
+                    
+                    console.log(`${user.username}: ELO ${elo}, 7-day change: ${change}`);
+                    
                     return `
                         <tr>
                             <td class="${positionClass}">${position}</td>
@@ -356,9 +650,16 @@
                                     ${user.username}
                                 </a>
                                 ${isNew ? `<span class="new-badge" data-i18n="label_new">NUEVO</span>` : ''}
+                                ${position <= 6 ? `<span class="captain-badge"><span class="icon">🏴‍☠️</span><span>?</span></span>` : ''}
                             </td>
                             <td>${matches}</td>
                             <td class="elo">${elo}</td>
+                            <td style="text-align: center;">
+                                <div class="change-indicator ${changeClass}">
+                                    <span class="arrow">${changeSymbol}</span>
+                                    <span>${changeText}</span>
+                                </div>
+                            </td>
                         </tr>
                     `;
                 }).join('');
@@ -384,7 +685,7 @@
                 console.error('Error loading ranking:', error);
                 document.getElementById('rankingTableBody').innerHTML = `
                     <tr>
-                        <td colspan="4" style="text-align: center; padding: 2rem; color: #f87171;">
+                        <td colspan="5" style="text-align: center; padding: 2rem; color: #f87171;">
                             ${t('error_loading_data')}: ${error.message}
                         </td>
                     </tr>
