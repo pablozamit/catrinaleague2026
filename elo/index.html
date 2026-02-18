@@ -693,23 +693,64 @@
             }
         }
 
-        // Initialize
-        waitForFirebase().then(async () => {
-            // Initialize language selector
-            const selectorContainer = document.getElementById('langSelectorContainer');
-            if (selectorContainer) {
-                selectorContainer.innerHTML = createLanguageSelector();
-                // Override selector style to fit header
-                const selector = document.getElementById('languageSelector');
-                if (selector) {
-                    selector.style.borderColor = 'rgba(212, 175, 55, 0.5)';
-                    selector.style.background = 'rgba(0, 0, 0, 0.3)';
+        // Initialize with timeout protection
+        function initializeApp() {
+            try {
+                // Initialize language selector
+                if (typeof createLanguageSelector === 'function') {
+                    const selectorContainer = document.getElementById('langSelectorContainer');
+                    if (selectorContainer) {
+                        selectorContainer.innerHTML = createLanguageSelector();
+                        const selector = document.getElementById('languageSelector');
+                        if (selector) {
+                            selector.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+                            selector.style.background = 'rgba(0, 0, 0, 0.3)';
+                        }
+                    }
                 }
+            } catch (error) {
+                console.warn('Language selector init failed:', error);
             }
-            
-            initFirebase();
-            await loadRanking();
+
+            // Initialize Firebase
+            try {
+                if (typeof initFirebase === 'function') {
+                    initFirebase();
+                }
+            } catch (error) {
+                console.warn('Firebase init failed:', error);
+            }
+
+            // Load ranking with error handling
+            loadRanking().catch(error => {
+                console.error('Ranking load failed:', error);
+                // Show fallback message
+                const tbody = document.getElementById('rankingTableBody');
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: var(--color-text-muted);">
+                                Error loading data. Please refresh the page.
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+        }
+
+        // Initialize immediately and also wait for Firebase
+        initializeApp();
+
+        waitForFirebase().then(() => {
+            console.log('Firebase loaded, retrying...');
+            initializeApp();
         });
+
+        // Force retry after 10 seconds
+        setTimeout(() => {
+            console.log('Force retry after timeout...');
+            initializeApp();
+        }, 10000);
     </script>
 </body>
 </html>
