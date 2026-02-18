@@ -507,12 +507,12 @@ async function awardBadges(userId, userStats, newBadges) {
     }
     
     // Calculate new experience and level
-    const currentExp = userStats.experience_points || 0;
+    const currentExp = userStats.xp || 0;
     const badgePoints = newBadges.reduce((sum, b) => sum + b.points, 0);
     const newExp = currentExp + badgePoints;
     
     updates[`users/${userId}/badges`] = badges;
-    updates[`users/${userId}/experience_points`] = newExp;
+    updates[`users/${userId}/xp`] = newExp;
     
     // Calculate level
     const level = Math.floor(Math.sqrt(newExp / 100)) + 1;
@@ -844,9 +844,9 @@ async function initializeRankingBadges() {
             badgeUpdate[`users/${rank1User.uid}/reached_rank_1`] = true;
             
             // Actualizar XP y nivel
-            const currentExp = userData.experience_points || 0;
+            const currentExp = userData.xp || 0;
             const newExp = currentExp + 1000; // 1000 puntos por Leyenda del Club
-            badgeUpdate[`users/${rank1User.uid}/experience_points`] = newExp;
+            badgeUpdate[`users/${rank1User.uid}/xp`] = newExp;
             
             const level = Math.floor(Math.sqrt(newExp / 100)) + 1;
             badgeUpdate[`users/${rank1User.uid}/level`] = level;

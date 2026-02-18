@@ -396,7 +396,7 @@
                 }
                 
                 // Calculate level
-                const exp = userData.experience_points || 0;
+                const exp = userData.xp || 0;
                 const levelData = calculateLevel(exp);
                 const winRate = userData.matches_played > 0 
                     ? ((userData.matches_won / userData.matches_played) * 100).toFixed(1)
