@@ -866,6 +866,99 @@ async function initializeRankingBadges() {
     console.log('Recarga la página del perfil para ver los cambios');
 }
 
+// ===== VERIFICACIÓN RETROACTIVA DE BADGES =====
+
+// Función para verificar y otorgar badges faltantes a usuarios existentes
+async function retroactivelyAwardBadges() {
+    console.log('🎖️ Iniciando verificación retroactiva de badges...');
+    
+    try {
+        // Verificar que checkBadges está disponible
+        if (typeof checkBadges === 'undefined') {
+            throw new Error('checkBadges no está disponible. Asegúrate de cargar badges.js');
+        }
+
+        if (typeof awardBadges === 'undefined') {
+            throw new Error('awardBadges no está disponible. Asegúrate de cargar firebase.js');
+        }
+
+        if (typeof database === 'undefined') {
+            throw new Error('Firebase database no está disponible. Inicializa Firebase primero.');
+        }
+
+        console.log('✅ Todas las dependencias están disponibles');
+
+        // Obtener todos los usuarios
+        const usersSnap = await database.ref('users').once('value');
+        const users = usersSnap.val();
+
+        if (!users) {
+            console.log('❌ No se encontraron usuarios');
+            return {
+                success: false,
+                error: 'No users found'
+            };
+        }
+
+        console.log(`📊 Encontrados ${Object.keys(users).length} usuarios`);
+
+        let totalBadgesAwarded = 0;
+        const userResults = {};
+
+        // Verificar cada usuario
+        for (const [userId, userData] of Object.entries(users)) {
+            console.log(`🔍 Verificando badges para ${userData.username}...`);
+            
+            try {
+                // Verificar qué badges debería tener
+                const missingBadges = checkBadges(userData);
+                
+                if (missingBadges.length > 0) {
+                    console.log(`🎖️ ${userData.username} debería obtener ${missingBadges.length} badges:`, missingBadges.map(b => b.name));
+                    
+                    // Otorgar badges faltantes
+                    await awardBadges(userId, userData, missingBadges);
+                    totalBadgesAwarded += missingBadges.length;
+                    
+                    userResults[userData.username] = {
+                        awarded: missingBadges.length,
+                        badges: missingBadges.map(b => b.name)
+                    };
+                    
+                    console.log(`✅ ${userData.username} recibió ${missingBadges.length} badges`);
+                } else {
+                    console.log(`✅ ${userData.username} ya tiene todos los badges que le corresponden`);
+                    userResults[userData.username] = { awarded: 0 };
+                }
+                
+                // Pequeña pausa para no sobrecargar Firebase
+                await new Promise(resolve => setTimeout(resolve, 200));
+                
+            } catch (userError) {
+                console.error(`❌ Error verificando badges para ${userData.username}:`, userError);
+                userResults[userData.username] = { error: userError.message };
+            }
+        }
+
+        console.log('\n🎉 VERIFICACIÓN RETROACTIVA COMPLETADA');
+        console.log(`📊 Total de badges otorgados: ${totalBadgesAwarded}`);
+        console.log('📋 Resumen por usuario:', userResults);
+        
+        return {
+            success: true,
+            totalBadgesAwarded,
+            userResults
+        };
+
+    } catch (error) {
+        console.error('❌ Error en verificación retroactiva:', error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
 // ===== EXPORTAR =====
 
 if (typeof window !== 'undefined') {
@@ -893,4 +986,5 @@ if (typeof window !== 'undefined') {
     window.getCurrentLeaderboard = getCurrentLeaderboard;
     window.updateRankingBadges = updateRankingBadges;
     window.initializeRankingBadges = initializeRankingBadges;
+    window.retroactivelyAwardBadges = retroactivelyAwardBadges;
 }

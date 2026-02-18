@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Badges - La Catrina</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #000; 
+            color: #fff;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+        }
+        .log { 
+            background: #222; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+        .warning { color: #fbbf24; }
+        button { 
+            background: #d4af37; 
+            color: #000; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin: 10px 5px;
+        }
+        button:hover { background: #f4d03f; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎖️ Verificación Retroactiva de Badges</h1>
+        <p>Esta página otorgará badges faltantes a todos los usuarios existentes.</p>
+        
+        <button onclick="runBadgeFix()">🚀 Ejecutar Verificación de Badges</button>
+        <button onclick="clearLog()">🧹 Limpiar Log</button>
+        
+        <div id="log" class="log">Esperando instrucciones...</div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="../js/translations.js"></script>
+    <script src="../js/badges.js"></script>
+    <script src="../js/firebase.js"></script>
+
+    <script>
+        function log(message, type = 'info') {
+            const logEl = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : 
+                             type === 'error' ? 'error' : 
+                             type === 'warning' ? 'warning' : '';
+            logEl.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = 'Log limpiado.\n';
+        }
+
+        async function runBadgeFix() {
+            log('🚀 Iniciando verificación de badges...', 'info');
+            
+            try {
+                // Wait for Firebase to load
+                if (typeof firebase === 'undefined') {
+                    throw new Error('Firebase no está cargado');
+                }
+
+                log('✅ Firebase cargado', 'success');
+                
+                // Initialize Firebase
+                initFirebase();
+                log('✅ Firebase inicializado', 'success');
+
+                // Wait a moment for initialization
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Run the retroactive badge award function
+                log('🎖️ Ejecutando verificación retroactiva...', 'info');
+                const result = await retroactivelyAwardBadges();
+
+                if (result && result.success) {
+                    log(`🎉 ¡ÉXITO! Se otorgaron ${result.totalBadgesAwarded} badges`, 'success');
+                    
+                    if (result.userResults) {
+                        log('📊 Resumen por usuario:', 'info');
+                        Object.entries(result.userResults).forEach(([username, data]) => {
+                            if (data.awarded) {
+                                log(`  ✅ ${username}: ${data.awarded} badges - ${data.badges.join(', ')}`, 'success');
+                            } else if (data.error) {
+                                log(`  ❌ ${username}: Error - ${data.error}`, 'error');
+                            } else {
+                                log(`  ℹ️ ${username}: No necesita badges adicionales`, 'info');
+                            }
+                        });
+                    }
+                    
+                    log('\n💡 INSTRUCCIONES:', 'info');
+                    log('1. Ve al perfil de cualquier usuario para ver sus nuevos badges', 'info');
+                    log('2. Los badges aparecerán en la sección "Badges Obtenidos"', 'info');
+                    log('3. Los puntos de experiencia y nivel se han actualizado automáticamente', 'info');
+                } else {
+                    log(`❌ Error: ${result ? result.error : 'Resultado desconocido'}`, 'error');
+                }
+
+            } catch (error) {
+                log(`❌ Error crítico: ${error.message}`, 'error');
+                log(`Stack trace: ${error.stack}`, 'error');
+            }
+        }
+
+        // Auto-run when page loads
+        window.addEventListener('load', () => {
+            log('📄 Página de verificación de badges cargada', 'info');
+            log('ℹ️ Haz clic en "Ejecutar Verificación de Badges" para comenzar', 'info');
+        });
+    </script>
+</body>
+</html>
