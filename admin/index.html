@@ -77,6 +77,242 @@
             cursor: not-allowed;
         }
 
+        /* Login form */
+        .login-protected {
+            display: none;
+        }
+
+        .login-form {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .login-form h2 {
+            color: #d4af37;
+            margin-bottom: 24px;
+            font-size: 24px;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .login-form input:focus {
+            outline: none;
+            border-color: #d4af37;
+        }
+
+        /* Admin content sections - only visible when authenticated */
+        .admin-only {
+            display: none;
+        }
+
+        .admin-visible {
+            display: block;
+        }
+
+        /* Admin match form styles */
+        .admin-match-section {
+            display: none;
+        }
+
+        .admin-match-section.visible {
+            display: block;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d4af37;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px;
+            background: #0a0a0a;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #d4af37;
+            background: #0a0a0a;
+        }
+
+        .form-group select option {
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        /* Winner selection with radio buttons */
+        .winner-selection {
+            margin-top: 16px;
+        }
+
+        .winner-option {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+        }
+
+        .winner-option:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.5);
+        }
+
+        .winner-option.selected {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: #d4af37;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .winner-option input[type="radio"] {
+            margin-right: 12px;
+            accent-color: #d4af37;
+            transform: scale(1.2);
+        }
+
+        .winner-info {
+            margin-left: 8px;
+        }
+
+        .winner-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .winner-elo {
+            font-size: 14px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        /* Preview section */
+        .preview-section {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .preview-section.visible {
+            display: block;
+        }
+
+        .preview-title {
+            color: #d4af37;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        /* Status */
+        .status {
+            padding: 12px 16px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 16px;
+        }
+
+        .status.success {
+            background: rgba(74, 222, 128, 0.2);
+            border: 1px solid #4ade80;
+        }
+
+        .status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+        }
+
+        .status.info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+        }
+
+        /* Logout button */
+        .logout-btn {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: transparent;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        /* Leaderboard styles */
+        .period-select {
+            margin-bottom: 16px;
+        }
+
+        .period-select label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d4af37;
+        }
+
+        .period-select select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: #fff;
+        }
+
         .leaderboard-container {
             margin-top: 20px;
         }
@@ -113,165 +349,125 @@
             color: #4ade80;
             font-weight: bold;
         }
-
-        .status {
-            padding: 8px 16px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            margin-bottom: 16px;
-        }
-
-        .status.success {
-            background: rgba(74, 222, 128, 0.2);
-            border: 1px solid #4ade80;
-        }
-
-        .status.error {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid #ef4444;
-        }
-
-        .status.info {
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid #3b82f6;
-        }
-
-        .period-select {
-            margin-bottom: 16px;
-        }
-
-        .period-select label {
-            display: block;
-            margin-bottom: 8px;
-            color: #d4af37;
-        }
-
-        .period-select select {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 16px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #aaa;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
+            <a href="../" class="logout-btn">← Volver</a>
             <div style="position: absolute; top: 2rem; right: 2rem; display: flex; align-items: center; gap: 15px;">
                 <div id="langSelectorContainer"></div>
                 <div id="notificationBellContainer"></div>
             </div>
-            <h1 data-i18n="admin_title">Panel de Administración</h1>
-            <p class="subtitle" data-i18n="admin_subtitle">Sistema de Campeones - La Catrina Pool League</p>
-        </header>
-
-        <div class="section">
-            <div class="section-title" data-i18n="admin_calculate_champions">🏆 Calcular y Otorgar Campeones</div>
-            <p style="color: #aaa; margin-bottom: 16px;" data-i18n="admin_champions_desc">
-                Estos botones calculan los campeones del período anterior y otorgan los badges correspondientes.
-            </p>
-            
-            <button class="btn" onclick="awardChampions('daily')" data-i18n="admin_champion_daily">Campeón del Día (Ayer)</button>
-            <button class="btn" onclick="awardChampions('weekly')" data-i18n="admin_champion_weekly">Campeón de la Semana (Semana Pasada)</button>
-            <button class="btn" onclick="awardChampions('monthly')" data-i18n="admin_champion_monthly">Campeón del Mes (Mes Pasado)</button>
-            <button class="btn" onclick="awardChampions('quarterly')" data-i18n="admin_champion_quarterly">Campeón del Trimestre (Trimestre Pasado)</button>
-            <button class="btn" onclick="awardChampions('yearly')" data-i18n="admin_champion_yearly">Campeón del Año (Año Pasado)</button>
-            
-            <div id="awardStatus"></div>
+            <h1>Panel de Administración</h1>
+            <p class="subtitle">Sistema de Campeones - La Catrina Pool League</p>
         </div>
 
-        <div class="section">
-            <div class="section-title" data-i18n="admin_add_match">➕ Añadir Partido Manualmente</div>
-            <p style="color: #aaa; margin-bottom: 16px;">
-                Añade partidos manualmente sin límites. Sistema admin.
-            </p>
-            
-            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 250px;">
-                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Jugador 1:</label>
-                    <select id="player1" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
-                        <option value="">Seleccionar...</option>
-                    </select>
-                </div>
-                
-                <div style="flex: 1; min-width: 250px;">
-                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Jugador 2:</label>
-                    <select id="player2" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
-                        <option value="">Seleccionar...</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px;">
-                <div style="flex: 1; min-width: 250px;">
-                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Ganador:</label>
-                    <select id="winner" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
-                        <option value="">Seleccionar ganador...</option>
-                    </select>
-                </div>
-                
-                <div style="flex: 1; min-width: 250px;">
-                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Tipo de Partido:</label>
-                    <select id="matchType" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
-                        <option value="rey_mesa">Rey de la Mesa (×1.0)</option>
-                        <option value="torneo">Torneo (×1.5)</option>
-                        <option value="liga_grupos">Liga - Fase de Grupos (×2.0)</option>
-                        <option value="liga_finales">Liga - Playoffs (×2.5)</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px;">
-                <div style="flex: 1; min-width: 200px;">
-                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Puntos Ganador:</label>
-                    <input type="number" id="winnerScore" value="3" min="1" max="3" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
-                </div>
-                
-                <div style="flex: 1; min-width: 200px;">
-                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Puntos Perdedor:</label>
-                    <input type="number" id="loserScore" value="0" min="0" max="2" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
-                </div>
-            </div>
-            
-            <div id="adminMatchPreview" style="background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; padding: 12px; margin-top: 16px; display: none;">
-                <div style="color: #d4af37; font-weight: bold; margin-bottom: 8px;">📊 Previsualización ELO:</div>
-                <div id="adminMatchPreviewContent"></div>
-            </div>
-            
-            <button class="btn" onclick="addAdminMatch()" data-i18n="admin_add_match_btn">➕ Añadir Partido</button>
-            <div id="adminMatchStatus"></div>
+        <!-- Login Section - Only visible when not authenticated -->
+        <div id="loginSection" class="login-form">
+            <h2>🔐 Acceso Admin</h2>
+            <input type="email" id="adminEmail" placeholder="Email" />
+            <input type="password" id="adminPassword" placeholder="Contraseña" />
+            <button class="btn" onclick="adminLogin()">Entrar</button>
+            <div id="loginStatus"></div>
         </div>
 
-        <div class="section">
-            <div class="section-title" data-i18n="admin_view_ranking">📊 Ver Ranking Actual</div>
-            
-            <div class="period-select">
-                <label for="periodType" data-i18n="admin_select_period">Seleccionar período:</label>
-                <select id="periodType" onchange="loadCurrentLeaderboard()">
-                    <option value="daily" data-i18n="admin_period_today">Hoy</option>
-                    <option value="weekly" data-i18n="admin_period_this_week">Esta Semana</option>
-                    <option value="monthly" selected data-i18n="admin_period_this_month">Este Mes</option>
-                    <option value="quarterly" data-i18n="admin_period_this_quarter">Este Trimestre</option>
-                    <option value="yearly" data-i18n="admin_period_this_year">Este Año</option>
-                </select>
+        <!-- Admin Content - Only visible when authenticated -->
+        <div id="adminContent" class="admin-only">
+
+            <div class="section">
+                <div class="section-title">👑 Campeones</div>
+                <button class="btn" onclick="awardChampions('daily')">Campeón del Día (Ayer)</button>
+                <button class="btn" onclick="awardChampions('weekly')">Campeón de la Semana (Semana Pasada)</button>
+                <button class="btn" onclick="awardChampions('monthly')">Campeón del Mes (Mes Pasado)</button>
+                <button class="btn" onclick="awardChampions('quarterly')">Campeón del Trimestre (Trimestre Pasado)</button>
+                <button class="btn" onclick="awardChampions('yearly')">Campeón del Año (Año Pasado)</button>
+                <div id="awardStatus"></div>
             </div>
-            
-            <div id="leaderboardContainer">
-                <div class="loading" data-i18n="admin_select_period_loading">Selecciona un período para ver el ranking</div>
+
+            <div class="section">
+                <div class="section-title">➕ Añadir Partido Manualmente</div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Jugador 1:</label>
+                        <select id="player1" onchange="updateWinnerOptions()">
+                            <option value="">Seleccionar...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Jugador 2:</label>
+                        <select id="player2" onchange="updateWinnerOptions()">
+                            <option value="">Seleccionar...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tipo de Partido:</label>
+                        <select id="matchType" onchange="updatePreview()">
+                            <option value="rey_mesa">Rey de la Mesa (×1.0)</option>
+                            <option value="torneo">Torneo (×1.5)</option>
+                            <option value="liga_grupos">Liga - Fase de Grupos (×2.0)</option>
+                            <option value="liga_finales">Liga - Playoffs (×2.5)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Marcador Final:</label>
+                        <div style="display: flex; gap: 8px;">
+                            <div style="flex: 1;">
+                                <label style="font-size: 12px; color: #888;">Ganador</label>
+                                <input type="number" id="winnerScore" value="3" min="1" max="3" onchange="updatePreview()">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="font-size: 12px; color: #888;">Perdedor</label>
+                                <input type="number" id="loserScore" value="0" min="0" max="2" onchange="updatePreview()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="winner-section">
+                    <div style="color: #d4af37; font-weight: 600; margin:16px 0 8px; font-size: 14px;">Ganador:</div>
+                    <div id="winnerOptions">
+                        <div class="status info">Selecciona ambos jugadores primero</div>
+                    </div>
+                </div>
+                
+                <div id="adminMatchPreview" class="preview-section">
+                    <div class="preview-title">📊 Previsualización ELO:</div>
+                    <div id="adminMatchPreviewContent"></div>
+                </div>
+                
+                <button class="btn" onclick="addAdminMatch()">➕ Añadir Partido</button>
+                <div id="adminMatchStatus"></div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📊 Ranking Actual</div>
+                
+                <div class="period-select">
+                    <label for="periodType">Seleccionar período:</label>
+                    <select id="periodType" onchange="loadCurrentLeaderboard()">
+                        <option value="daily">Hoy</option>
+                        <option value="weekly" selected>Esta Semana</option>
+                        <option value="monthly">Este Mes</option>
+                        <option value="quarterly">Este Trimestre</option>
+                        <option value="yearly">Este Año</option>
+                    </select>
+                </div>
+                
+                <div id="leaderboardContainer">
+                    <div class="loading">Selecciona un período para ver el ranking</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Firebase -->
+    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -280,96 +476,86 @@
     <script src="../js/translations.js"></script>
     <script src="../js/firebase.js"></script>
     <script src="../js/badges.js"></script>
+    <script src="../js/notifications.js"></script>
 
     <script>
-        // Wait for Firebase to load
-        function waitForFirebase() {
-            return new Promise((resolve) => {
-                if (typeof firebase !== 'undefined') {
-                    resolve();
-                } else {
-                    setTimeout(() => waitForFirebase().then(resolve), 100);
-                }
-            });
-        }
+        // Admin credentials (in production, these should be stored securely)
+        const ADMIN_USERS = {
+            'pablozamit@gmail.com': 'password123' // TEMPORARY - CHANGE IN PRODUCTION!
+        };
 
-        // Award champions for a specific period
-        async function awardChampions(periodType) {
-            const statusDiv = document.getElementById('awardStatus');
-            statusDiv.innerHTML = `<div class="status info">${t('loading')}</div>`;
-            
-            try {
-                const result = await awardChampionBadges(periodType);
-                
-                if (!result) {
-                    statusDiv.innerHTML = `<div class="status error">${t('admin_no_data')}</div>`;
-                    return;
+        let isAdminAuthenticated = false;
+
+        // Check authentication on page load
+        function checkAdminAuth() {
+            const userStr = localStorage.getItem('adminAuth');
+            if (userStr) {
+                const userData = JSON.parse(userStr);
+                if (userData.isAuthenticated && Date.now() < userData.expiresAt) {
+                    isAdminAuthenticated = true;
+                    showAdminContent();
                 }
-                
-                const championNames = result.champions.map(c => c.username).join(', ');
-                let message = `${championNames} (${result.maxWins} ${t('admin_wins_suffix')})`;
-                
-                statusDiv.innerHTML = `<div class="status success">✅ ${message}</div>`;
-                
-            } catch (error) {
-                console.error('Error awarding champions:', error);
-                statusDiv.innerHTML = `<div class="status error">❌ ${t('toast_error_title')}: ${error.message}</div>`;
             }
         }
 
-        // Load current leaderboard
-        async function loadCurrentLeaderboard() {
-            const periodType = document.getElementById('periodType').value;
-            const container = document.getElementById('leaderboardContainer');
-            
-            container.innerHTML = `<div class="loading">${t('loading')}...</div>`;
-            
-            try {
-                const { leaders, periodKey } = await getCurrentLeaderboard(periodType);
+        // Admin login
+        async function adminLogin() {
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            const statusDiv = document.getElementById('loginStatus');
+
+            if (!email || !password) {
+                statusDiv.innerHTML = '<div class="status error">❌ Ingresa email y contraseña</div>';
+                return;
+            }
+
+            statusDiv.innerHTML = '<div class="status info">⏳ Verificando...</div>';
+
+            // Check credentials
+            if (ADMIN_USERS[email] && ADMIN_USERS[email] === password) {
+                isAdminAuthenticated = true;
                 
-                if (leaders.length === 0) {
-                    container.innerHTML = `<div class="loading">${t('admin_no_data')}</div>`;
-                    return;
-                }
+                // Save auth state
+                const userData = {
+                    isAuthenticated: true,
+                    expiresAt: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
+                    email: email
+                };
+                localStorage.setItem('adminAuth', JSON.stringify(userData));
                 
-                // Find max wins to identify champion(s)
-                const maxWins = Math.max(...leaders.map(l => l.wins));
+                showAdminContent();
+                statusDiv.innerHTML = '<div class="status success">✅ Acceso concedido</div>';
                 
-                const html = `
-                    <div style="margin-bottom: 16px; color: #aaa;">
-                        Period: <strong style="color: #d4af37;">${periodKey}</strong>
-                    </div>
-                    ${leaders.map((leader, index) => `
-                        <div class="leaderboard-item ${leader.wins === maxWins ? 'champion' : ''}">
-                            <div class="player-info">
-                                <span class="rank">#${index + 1}</span>
-                                <span>${leader.username}</span>
-                                ${leader.wins === maxWins ? '<span style="color: #d4af37;">👑</span>' : ''}
-                            </div>
-                            <span class="wins">${leader.wins} ${t('admin_wins_suffix')}</span>
-                        </div>
-                    `).join('')}
-                `;
+                // Clear login form
+                document.getElementById('adminEmail').value = '';
+                document.getElementById('adminPassword').value = '';
                 
-                container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Error loading leaderboard:', error);
-                container.innerHTML = `<div class="status error">${t('toast_error_title')}: ${error.message}</div>`;
+            } else {
+                statusDiv.innerHTML = '<div class="status error">❌ Credenciales incorrectas</div>';
             }
         }
 
-        // Initialize
-        waitForFirebase().then(async () => {
-            document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
-            initFirebase();
-            loadCurrentLeaderboard();
+        // Logout
+        function adminLogout() {
+            isAdminAuthenticated = false;
+            localStorage.removeItem('adminAuth');
+            location.reload();
+        }
+
+        // Show admin content
+        function showAdminContent() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('adminContent').classList.remove('admin-only');
+            document.getElementById('adminContent').classList.add('admin-visible');
             
-            // Load users for manual match addition
+            // Load admin functions from firebase.js
             loadAdminMatchUsers();
-        });
+            loadCurrentLeaderboard();
+        }
 
-        // Load users for manual match
+        // Load users for admin match form
+        let allUsersData = [];
+
         async function loadAdminMatchUsers() {
             try {
                 const usersSnap = await database.ref('users').once('value');
@@ -377,17 +563,20 @@
                 
                 if (!users) return;
                 
-                const player1Select = document.getElementById('player1');
-                const player2Select = document.getElementById('player2');
-                const winnerSelect = document.getElementById('winner');
-                
                 // Sort by username
-                const sortedUsers = Object.entries(users).map(([uid, user]) => ({
+                allUsersData = Object.entries(users).map(([uid, user]) => ({
                     uid,
                     ...user
                 })).sort((a, b) => a.username.localeCompare(b.username));
                 
-                sortedUsers.forEach(user => {
+                // Populate player selects
+                const player1Select = document.getElementById('player1');
+                const player2Select = document.getElementById('player2');
+                
+                player1Select.innerHTML = '<option value="">Seleccionar...</option>';
+                player2Select.innerHTML = '<option value="">Seleccionar...</option>';
+                
+                allUsersData.forEach(user => {
                     const option1 = document.createElement('option');
                     option1.value = user.uid;
                     option1.textContent = user.username;
@@ -397,57 +586,106 @@
                     option2.value = user.uid;
                     option2.textContent = user.username;
                     player2Select.appendChild(option2);
-                    
-                    const optionWinner = document.createElement('option');
-                    optionWinner.value = user.uid;
-                    optionWinner.textContent = user.username;
-                    winnerSelect.appendChild(optionWinner);
                 });
                 
-                // Add event listeners for preview
-                [player1Select, player2Select, winnerSelect].forEach(select => {
-                    select.addEventListener('change', updateAdminMatchPreview);
-                });
-                
-                document.getElementById('matchType').addEventListener('change', updateAdminMatchPreview);
-                document.getElementById('winnerScore').addEventListener('change', updateAdminMatchPreview);
-                document.getElementById('loserScore').addEventListener('change', updateAdminMatchPreview);
+                console.log('✅ Loaded', allUsersData.length, 'users for admin match form');
                 
             } catch (error) {
                 console.error('Error loading users:', error);
             }
         }
 
-        // Update match preview
-        async function updateAdminMatchPreview() {
+        // Update winner options when both players are selected
+        function updateWinnerOptions() {
             const player1Id = document.getElementById('player1').value;
             const player2Id = document.getElementById('player2').value;
-            const winnerId = document.getElementById('winner').value;
-            const matchType = document.getElementById('matchType').value;
-            const winnerScore = parseInt(document.getElementById('winnerScore').value) || 3;
-            const loserScore = parseInt(document.getElementById('loserScore').value) || 0;
+            const winnerContainer = document.getElementById('winnerOptions');
             
-            if (!player1Id || !player2Id || !winnerId) {
-                document.getElementById('adminMatchPreview').style.display = 'none';
+            if (!player1Id || !player2Id) {
+                winnerContainer.innerHTML = '<div class="status info">Selecciona ambos jugadores primero</div>';
                 return;
             }
             
             if (player1Id === player2Id) {
-                return; // Same player
+                winnerContainer.innerHTML = '<div class="status error">Los jugadores deben ser diferentes</div>';
+                return;
+            }
+            
+            // Create radio button options for winner selection
+            const player1 = allUsersData.find(u => u.uid === player1Id);
+            const player2 = allUsersData.find(u => u.uid === player2Id);
+            
+            if (!player1 || !player2) return;
+            
+            winnerContainer.innerHTML = `
+                <div class="winner-option" onclick="selectWinner('${player1.uid}')">
+                    <input type="radio" name="winner" value="${player1.uid}">
+                    <div class="winner-info">
+                        <div class="winner-name">${player1.username}</div>
+                        <div class="winner-elo">ELO: ${player1.elo_rating || 1200}</div>
+                    </div>
+                </div>
+                <div class="winner-option" onclick="selectWinner('${player2.uid}')">
+                    <input type="radio" name="winner" value="${player2.uid}">
+                    <div class="winner-info">
+                        <div class="winner-name">${player2.username}</div>
+                        <div class="winner-elo">ELO: ${player2.elo_rating || 1200}</div>
+                    </div>
+                </div>
+            `;
+            
+            updatePreview();
+        }
+
+        // Select winner
+        function selectWinner(playerId) {
+            // Update visual selection
+            document.querySelectorAll('.winner-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            event.currentTarget.classList.add('selected');
+            
+            // Update selected radio button
+            const radioButton = event.currentTarget.querySelector('input[type="radio"]');
+            radioButton.checked = true;
+            
+            console.log('🎯 Selected winner:', playerId);
+            updatePreview();
+        }
+
+        // Get selected winner
+        function getSelectedWinner() {
+            const selectedRadio = document.querySelector('input[name="winner"]:checked');
+            return selectedRadio ? selectedRadio.value : null;
+        }
+
+        // Update ELO preview
+        async function updatePreview() {
+            const player1Id = document.getElementById('player1').value;
+            const player2Id = document.getElementById('player2').value;
+            const winnerId = getSelectedWinner();
+            const matchType = document.getElementById('matchType').value;
+            const winnerScore = parseInt(document.getElementById('winnerScore').value) || 3;
+            const loserScore = parseInt(document.getElementById('loserScore').value) || 0;
+            const statusDiv = document.getElementById('adminMatchStatus');
+            
+            if (!player1Id || !player2Id || !winnerId) {
+                document.getElementById('adminMatchPreview').classList.remove('visible');
+                return;
+            }
+            
+            if (player1Id === player2Id) {
+                return;
             }
             
             try {
-                const usersSnap = await database.ref('users').once('value');
-                const users = usersSnap.val();
-                
-                const player1 = users[player1Id];
-                const player2 = users[player2Id];
-                const winner = users[winnerId];
+                const player1 = allUsersData.find(u => u.uid === player1Id);
+                const player2 = allUsersData.find(u => u.uid === player2Id);
+                const winner = allUsersData.find(u => u.uid === winnerId);
                 const loser = winnerId === player1Id ? player2 : player1;
                 
-                if (!player1 || !player2 || !winner) {
-                    return;
-                }
+                if (!player1 || !player2 || !winner) return;
                 
                 const winnerElo = winner.elo_rating || 1200;
                 const loserElo = loser.elo_rating || 1200;
@@ -457,20 +695,15 @@
                 // Calculate ELO changes
                 const changes = calculateMatchEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType);
                 
-                const player1Change = winnerId === player1Id ? changes.winnerChange : changes.loserChange;
-                const player2Change = winnerId === player2Id ? changes.winnerChange : changes.loserChange;
-                const player1NewElo = winnerId === player1Id ? changes.winnerElo : changes.loserElo;
-                const player2NewElo = winnerId === player2Id ? changes.winnerElo : changes.loserElo;
-                
-                document.getElementById('adminMatchPreview').style.display = 'block';
+                document.getElementById('adminMatchPreview').classList.add('visible');
                 document.getElementById('adminMatchPreviewContent').innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
                         <div>
-                            <strong>${player1.username}:</strong> ${player1Elo} → ${player1NewElo} (${player1Change >= 0 ? '+' : ''}${player1Change})
+                            <strong>${player1.username}:</strong> ${winnerElo} → ${winnerId === player1Id ? changes.winnerElo : changes.loserElo} (${winnerId === player1Id ? changes.winnerChange : changes.loserChange >= 0 ? '+' : ''}${winnerId === player1Id ? changes.winnerChange : changes.loserChange})
                         </div>
-                        <div style="color: #aaa;">vs</div>
+                        <div style="color: #d4af37;">vs</div>
                         <div>
-                            <strong>${player2.username}:</strong> ${player2Elo} → ${player2NewElo} (${player2Change >= 0 ? '+' : ''}${player2Change})
+                            <strong>${player2.username}:</strong> ${loserElo} → ${winnerId === player2Id ? changes.winnerElo : changes.loserElo} (${winnerId === player2Id ? changes.winnerChange : changes.loserChange >= 0 ? '+' : ''}${winnerId === player2Id ? changes.winnerChange : changes.loserChange})
                         </div>
                     </div>
                 `;
@@ -484,32 +717,34 @@
         async function addAdminMatch() {
             const player1Id = document.getElementById('player1').value;
             const player2Id = document.getElementById('player2').value;
-            const winnerId = document.getElementById('winner').value;
+            const winnerId = getSelectedWinner();
             const matchType = document.getElementById('matchType').value;
             const winnerScore = parseInt(document.getElementById('winnerScore').value) || 3;
             const loserScore = parseInt(document.getElementById('loserScore').value) || 0;
             const statusDiv = document.getElementById('adminMatchStatus');
             
             // Validation
-            if (!player1Id || !player2Id || !winnerId) {
-                statusDiv.innerHTML = `<div class="status error">❌ Selecciona ambos jugadores y ganador</div>`;
+            if (!player1Id || !player2Id) {
+                statusDiv.innerHTML = '<div class="status error">❌ Selecciona ambos jugadores</div>';
                 return;
             }
             
             if (player1Id === player2Id) {
-                statusDiv.innerHTML = `<div class="status error">❌ Los jugadores deben ser diferentes</div>`;
+                statusDiv.innerHTML = '<div class="status error">❌ Los jugadores deben ser diferentes</div>';
                 return;
             }
             
-            statusDiv.innerHTML = `<div class="status info">⏳ Añadiendo partido...</div>`;
+            if (!winnerId) {
+                statusDiv.innerHTML = '<div class="status error">❌ Selecciona el ganador</div>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<div class="status info">⏳ Añadiendo partido...</div>';
             
             try {
-                const usersSnap = await database.ref('users').once('value');
-                const users = usersSnap.val();
-                
-                const player1 = users[player1Id];
-                const player2 = users[player2Id];
-                const winner = users[winnerId];
+                const player1 = allUsersData.find(u => u.uid === player1Id);
+                const player2 = allUsersData.find(u => u.uid === player2Id);
+                const winner = allUsersData.find(u => u.uid === winnerId);
                 const loser = winnerId === player1Id ? player2 : player1;
                 
                 const winnerElo = winner.elo_rating || 1200;
@@ -544,7 +779,8 @@
                     loser_new_elo: changes.loserElo,
                     created_at: Date.now(),
                     submitted_by: 'admin',
-                    submitted_at: Date.now()
+                    submitted_at: Date.now(),
+                    admin_match: true
                 };
                 
                 // Save match to Firebase
@@ -552,7 +788,7 @@
                 
                 // Update both players' stats
                 await database.ref(`users/${winnerId}/elo_rating`).set(changes.winnerElo);
-                await database.ref(`users/${loserId}/elo_rating`).set(changes.looserElo);
+                await database.ref(`users/${loserId}/elo_rating`).set(changes.loserElo);
                 
                 // Update matches played
                 await database.ref(`users/${winnerId}/matches_played`).set(winnerMatches + 1);
@@ -560,13 +796,6 @@
                 
                 // Update matches won for winner
                 await database.ref(`users/${winnerId}/matches_won`).set((winner.matches_won || 0) + 1);
-                
-                // Add admin note
-                const adminMatchNote = {
-                    added_by_admin: true,
-                    added_at: Date.now(),
-                    admin_note: 'Manual admin match'
-                };
                 
                 statusDiv.innerHTML = `
                     <div class="status success">
@@ -580,14 +809,121 @@
                 // Reset form
                 document.getElementById('player1').selectedIndex = 0;
                 document.getElementById('player2').selectedIndex = 0;
-                document.getElementById('winner').selectedIndex = 0;
-                document.getElementById('adminMatchPreview').style.display = 'none';
+                document.getElementById('winnerOptions').innerHTML = '<div class="status info">Selecciona ambos jugadores primero</div>';
+                document.getElementById('adminMatchPreview').classList.remove('visible');
+                document.getElementById('winnerScore').value = 3;
+                document.getElementById('loserScore').value = 0;
+                document.getElementById('matchType').selectedIndex = 0;
+                
+                console.log('✅ Admin match added by admin');
                 
             } catch (error) {
                 console.error('Error adding admin match:', error);
                 statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
             }
         }
+
+        // Award champions
+        async function awardChampions(periodType) {
+            const statusDiv = document.getElementById('awardStatus');
+            statusDiv.innerHTML = '<div class="status info">⏳ Calculando...</div>';
+            
+            try {
+                const result = await awardChampionBadges(periodType);
+                
+                if (!result) {
+                    statusDiv.innerHTML = '<div class="status error">❌ No hay datos para este período</div>';
+                    return;
+                }
+                
+                const championNames = result.champions.map(c => c.username).join(', ');
+                let message = `${championNames} (${result.maxWins} victorias)`;
+                
+                statusDiv.innerHTML = `<div class="status success">✅ ${message}</div>`;
+                
+            } catch (error) {
+                console.error('Error awarding champions:', error);
+                statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        // Load current leaderboard
+        async function loadCurrentLeaderboard() {
+            const periodType = document.getElementById('periodType').value;
+            const container = document.getElementById('leaderboardContainer');
+            
+            container.innerHTML = '<div class="loading">Cargando...</div>';
+            
+            try {
+                const { leaders, periodKey } = await getCurrentLeaderboard(periodType);
+                
+                if (leaders.length === 0) {
+                    container.innerHTML = '<div class="loading">No hay datos para este período</div>';
+                    return;
+                }
+                
+                const maxWins = Math.max(...leaders.map(l => l.wins));
+                
+                const html = `
+                    <div style="margin-bottom: 16px; color: #aaa;">
+                        Periodo: <strong style="color: #d4af37;">${periodKey}</strong>
+                    </div>
+                    ${leaders.map((leader, index) => `
+                        <div class="leaderboard-item ${leader.wins === maxWins ? 'champion' : ''}">
+                            <div class="player-info">
+                                <span class="rank">#${index + 1}</span>
+                                <span>${leader.username}</span>
+                                ${leader.wins === maxWins ? '<span style="color: #d4af37;">👑</span>' : ''}
+                            </div>
+                            <span class="wins">${leader.wins} victorias</span>
+                        </div>
+                    `).join('')}
+                `;
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+                container.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Calculate ELO change for a single match
+        function calculateMatchEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType) {
+            const K = matchType === 'torneo' ? 32 : (matchType === 'liga_finales' ? 24 : 16);
+            
+            const expectedWinner = 1 / (1 + Math.pow(10, (loserElo - winnerElo) / 400));
+            const expectedLoser = 1 / (1 + Math.pow(10, (winnerElo - loserElo) / 400));
+            
+            const actualWinner = 1;
+            const actualLoser = 0;
+            
+            const winnerChange = Math.round(K * (actualWinner - expectedWinner));
+            const loserChange = Math.round(K * (actualLoser - expectedLoser));
+            
+            return {
+                winnerElo: winnerElo + winnerChange,
+                loserElo: loserElo + loserChange,
+                winnerChange,
+                loserChange
+            };
+        }
+
+        // Initialize
+        waitForFirebase().then(async () => {
+            document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
+            initFirebase();
+            
+            // Check admin authentication
+            checkAdminAuth();
+            
+            // Load notifications if admin
+            if (isAdminAuthenticated) {
+                const bellContainer = document.getElementById('notificationBellContainer');
+                bellContainer.innerHTML = createNotificationBell();
+                await updateNotificationBell('admin');
+            }
+        });
     </script>
 </body>
 </html>
