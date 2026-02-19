@@ -342,7 +342,7 @@
             <!-- Tipo de partido -->
             <div class="form-group">
                 <label data-i18n="results_match_type">Tipo de Partido</label>
-                <select id="matchType" onchange="updatePreview()">
+                <select id="matchType" onchange="handleMatchTypeChange()">
                     <option value="rey_mesa" data-i18n="match_type_rey_mesa_full">Rey de la Mesa (×1.0)</option>
                     <option value="torneo" data-i18n="match_type_torneo_full">Torneo (×1.5)</option>
                     <option value="liga_grupos" data-i18n="match_type_liga_grupos_full">Liga - Fase de Grupos (×2.0)</option>
@@ -552,19 +552,40 @@
             }
         }
 
+        function handleMatchTypeChange() {
+            const matchType = document.getElementById('matchType').value;
+
+            // Handle score visibility based on match type
+            if (matchType === 'rey_mesa') {
+                document.getElementById('scoreGroup').style.display = 'none';
+            } else if (selectedWinner) {
+                // Only show if there's a winner selected and it's not rey_mesa
+                document.getElementById('scoreGroup').style.display = 'block';
+            }
+
+            // Update preview with new match type
+            updatePreview();
+        }
+
         function selectWinner(winner) {
             selectedWinner = winner;
             document.querySelectorAll('.result-option').forEach(el => el.classList.remove('selected'));
-            
+
             if (winner === 'me') {
                 document.getElementById('resultMe').classList.add('selected');
             } else {
                 document.getElementById('resultOpponent').classList.add('selected');
             }
-            
-            // Show score inputs
-            document.getElementById('scoreGroup').style.display = 'block';
-            
+
+            const matchType = document.getElementById('matchType').value;
+
+            // Show score inputs ONLY if not "rey_mesa" (single match)
+            if (matchType === 'rey_mesa') {
+                document.getElementById('scoreGroup').style.display = 'none';
+            } else {
+                document.getElementById('scoreGroup').style.display = 'block';
+            }
+
             updatePreview();
         }
 
@@ -595,7 +616,7 @@
             // Calcular cambio ELO
             const winner = selectedWinner === 'me' ? currentUserData : opponent;
             const loser = selectedWinner === 'me' ? opponent : currentUserData;
-            
+
             const winnerElo = selectedWinner === 'me' ? myElo : opponentElo;
             const loserElo = selectedWinner === 'me' ? opponentElo : myElo;
             const winnerMatches = selectedWinner === 'me' ? myMatches : opponentMatches;
@@ -623,6 +644,20 @@
 
             document.getElementById('eloPreview').classList.remove('hidden');
             document.getElementById('submitBtn').disabled = false;
+
+            // Update score info based on match type
+            const scoreInfoEl = document.getElementById('scoreInfo');
+            if (scoreInfoEl) {
+                if (matchType === 'rey_mesa') {
+                    scoreInfoEl.textContent = 'Rey de la Mesa: Un solo partido';
+                } else if (matchType === 'torneo') {
+                    scoreInfoEl.textContent = 'Torneo: Mejor de 3';
+                } else if (matchType === 'liga_grupos') {
+                    scoreInfoEl.textContent = 'Liga - Fase de Grupos: Mejor de 3';
+                } else if (matchType === 'liga_finales') {
+                    scoreInfoEl.textContent = 'Liga - Playoffs: Mejor de 5';
+                }
+            }
         }
 
         // Rate limiting for submissions
@@ -687,9 +722,17 @@
                 // Sanitize usernames
                 const sanitizeUsername = (name) => name.replace(/[<>"'&]/g, '');
 
-                // Get scores
-                const winnerScore = parseInt(document.getElementById('winnerScore').value);
-                const loserScore = parseInt(document.getElementById('loserScore').value);
+                // Get scores based on match type
+                let winnerScore, loserScore;
+                if (matchType === 'rey_mesa') {
+                    // For single match "Rey de la Mesa", scores are always 1-0
+                    winnerScore = 1;
+                    loserScore = 0;
+                } else {
+                    // For multi-match types, get scores from inputs
+                    winnerScore = parseInt(document.getElementById('winnerScore').value);
+                    loserScore = parseInt(document.getElementById('loserScore').value);
+                }
 
                 const matchData = {
                     player1_id: currentUser.uid,
