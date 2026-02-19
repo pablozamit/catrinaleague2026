@@ -541,27 +541,6 @@
             }
         }
 
-        // Calculate ELO change for a single match
-        function calculateMatchEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType) {
-            const K = matchType === 'torneo' ? 32 : (matchType === 'liga_finales' ? 24 : 16);
-            
-            const expectedWinner = 1 / (1 + Math.pow(10, (loserElo - winnerElo) / 400));
-            const expectedLoser = 1 / (1 + Math.pow(10, (winnerElo - loserElo) / 400));
-            
-            const actualWinner = 1;
-            const actualLoser = 0;
-            
-            const winnerChange = Math.round(K * (actualWinner - expectedWinner));
-            const loserChange = Math.round(K * (actualLoser - expectedLoser));
-            
-            return {
-                winnerElo: winnerElo + winnerChange,
-                loserElo: loserElo + loserChange,
-                winnerChange,
-                loserChange
-            };
-        }
-
         // Current ranking type: 'elo' or 'xp'
         let currentRankingType = 'elo';
 
@@ -577,6 +556,27 @@
 
             // Reload ranking
             loadRanking();
+        }
+
+        // Calculate ELO change for a single match
+        function calculateMatchEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType) {
+            const K = matchType === 'torneo' ? 32 : (matchType === 'liga_finales' ? 24 : 16);
+
+            const expectedWinner = 1 / (1 + Math.pow(10, (loserElo - winnerElo) / 400));
+            const expectedLoser = 1 / (1 + Math.pow(10, (winnerElo - loserElo) / 400));
+
+            const actualWinner = 1;
+            const actualLoser = 0;
+
+            const winnerChange = Math.round(K * (actualWinner - expectedWinner));
+            const loserChange = Math.round(K * (actualLoser - expectedLoser));
+
+            return {
+                winnerElo: winnerElo + winnerChange,
+                loserElo: loserElo + loserChange,
+                winnerChange,
+                loserChange
+            };
         }
 
         // Load and display ranking
@@ -647,29 +647,7 @@
                         loadingEl.style.display = 'none';
                     }
                 }
-                
-                let eloChanges = {};
-                try {
-                    eloChanges = await calculateSevenDayEloChanges(userArray);
-                    console.log('✅ 7-day calculation completed');
-                } catch (calcError) {
-                    console.error('❌ Calculation failed, using neutral:', calcError);
-                    // Use neutral changes if calculation fails
-                    userArray.forEach(user => {
-                        eloChanges[user.uid] = {
-                            change: 0,
-                            currentElo: user.elo_rating || 1200,
-                            historicalElo: user.elo_rating || 1200
-                        };
-                    });
-                    console.log('🎭 Using neutral changes');
-                }
-                
-                // Hide loading indicator
-                if (loadingEl) {
-                    loadingEl.style.display = 'none';
-                }
-                
+
                 // Update table headers based on ranking type
                 const positionHeader = document.querySelector('th[data-i18n="ranking_position"]');
                 const playerHeader = document.querySelector('th[data-i18n="ranking_player"]');
