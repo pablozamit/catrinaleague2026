@@ -190,6 +190,68 @@
         </div>
 
         <div class="section">
+            <div class="section-title" data-i18n="admin_add_match">➕ Añadir Partido Manualmente</div>
+            <p style="color: #aaa; margin-bottom: 16px;">
+                Añade partidos manualmente sin límites. Sistema admin.
+            </p>
+            
+            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 250px;">
+                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Jugador 1:</label>
+                    <select id="player1" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
+                        <option value="">Seleccionar...</option>
+                    </select>
+                </div>
+                
+                <div style="flex: 1; min-width: 250px;">
+                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Jugador 2:</label>
+                    <select id="player2" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
+                        <option value="">Seleccionar...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px;">
+                <div style="flex: 1; min-width: 250px;">
+                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Ganador:</label>
+                    <select id="winner" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
+                        <option value="">Seleccionar ganador...</option>
+                    </select>
+                </div>
+                
+                <div style="flex: 1; min-width: 250px;">
+                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Tipo de Partido:</label>
+                    <select id="matchType" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
+                        <option value="rey_mesa">Rey de la Mesa (×1.0)</option>
+                        <option value="torneo">Torneo (×1.5)</option>
+                        <option value="liga_grupos">Liga - Fase de Grupos (×2.0)</option>
+                        <option value="liga_finales">Liga - Playoffs (×2.5)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 16px;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Puntos Ganador:</label>
+                    <input type="number" id="winnerScore" value="3" min="1" max="3" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
+                </div>
+                
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="color: #d4af37; margin-bottom: 8px; display: block;">Puntos Perdedor:</label>
+                    <input type="number" id="loserScore" value="0" min="0" max="2" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; color: #fff;">
+                </div>
+            </div>
+            
+            <div id="adminMatchPreview" style="background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3); border-radius: 8px; padding: 12px; margin-top: 16px; display: none;">
+                <div style="color: #d4af37; font-weight: bold; margin-bottom: 8px;">📊 Previsualización ELO:</div>
+                <div id="adminMatchPreviewContent"></div>
+            </div>
+            
+            <button class="btn" onclick="addAdminMatch()" data-i18n="admin_add_match_btn">➕ Añadir Partido</button>
+            <div id="adminMatchStatus"></div>
+        </div>
+
+        <div class="section">
             <div class="section-title" data-i18n="admin_view_ranking">📊 Ver Ranking Actual</div>
             
             <div class="period-select">
@@ -302,7 +364,230 @@
             document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
             initFirebase();
             loadCurrentLeaderboard();
+            
+            // Load users for manual match addition
+            loadAdminMatchUsers();
         });
+
+        // Load users for manual match
+        async function loadAdminMatchUsers() {
+            try {
+                const usersSnap = await database.ref('users').once('value');
+                const users = usersSnap.val();
+                
+                if (!users) return;
+                
+                const player1Select = document.getElementById('player1');
+                const player2Select = document.getElementById('player2');
+                const winnerSelect = document.getElementById('winner');
+                
+                // Sort by username
+                const sortedUsers = Object.entries(users).map(([uid, user]) => ({
+                    uid,
+                    ...user
+                })).sort((a, b) => a.username.localeCompare(b.username));
+                
+                sortedUsers.forEach(user => {
+                    const option1 = document.createElement('option');
+                    option1.value = user.uid;
+                    option1.textContent = user.username;
+                    player1Select.appendChild(option1);
+                    
+                    const option2 = document.createElement('option');
+                    option2.value = user.uid;
+                    option2.textContent = user.username;
+                    player2Select.appendChild(option2);
+                    
+                    const optionWinner = document.createElement('option');
+                    optionWinner.value = user.uid;
+                    optionWinner.textContent = user.username;
+                    winnerSelect.appendChild(optionWinner);
+                });
+                
+                // Add event listeners for preview
+                [player1Select, player2Select, winnerSelect].forEach(select => {
+                    select.addEventListener('change', updateAdminMatchPreview);
+                });
+                
+                document.getElementById('matchType').addEventListener('change', updateAdminMatchPreview);
+                document.getElementById('winnerScore').addEventListener('change', updateAdminMatchPreview);
+                document.getElementById('loserScore').addEventListener('change', updateAdminMatchPreview);
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        // Update match preview
+        async function updateAdminMatchPreview() {
+            const player1Id = document.getElementById('player1').value;
+            const player2Id = document.getElementById('player2').value;
+            const winnerId = document.getElementById('winner').value;
+            const matchType = document.getElementById('matchType').value;
+            const winnerScore = parseInt(document.getElementById('winnerScore').value) || 3;
+            const loserScore = parseInt(document.getElementById('loserScore').value) || 0;
+            
+            if (!player1Id || !player2Id || !winnerId) {
+                document.getElementById('adminMatchPreview').style.display = 'none';
+                return;
+            }
+            
+            if (player1Id === player2Id) {
+                return; // Same player
+            }
+            
+            try {
+                const usersSnap = await database.ref('users').once('value');
+                const users = usersSnap.val();
+                
+                const player1 = users[player1Id];
+                const player2 = users[player2Id];
+                const winner = users[winnerId];
+                const loser = winnerId === player1Id ? player2 : player1;
+                
+                if (!player1 || !player2 || !winner) {
+                    return;
+                }
+                
+                const winnerElo = winner.elo_rating || 1200;
+                const loserElo = loser.elo_rating || 1200;
+                const winnerMatches = winner.matches_played || 0;
+                const loserMatches = loser.matches_played || 0;
+                
+                // Calculate ELO changes
+                const changes = calculateMatchEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType);
+                
+                const player1Change = winnerId === player1Id ? changes.winnerChange : changes.loserChange;
+                const player2Change = winnerId === player2Id ? changes.winnerChange : changes.loserChange;
+                const player1NewElo = winnerId === player1Id ? changes.winnerElo : changes.loserElo;
+                const player2NewElo = winnerId === player2Id ? changes.winnerElo : changes.loserElo;
+                
+                document.getElementById('adminMatchPreview').style.display = 'block';
+                document.getElementById('adminMatchPreviewContent').innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${player1.username}:</strong> ${player1Elo} → ${player1NewElo} (${player1Change >= 0 ? '+' : ''}${player1Change})
+                        </div>
+                        <div style="color: #aaa;">vs</div>
+                        <div>
+                            <strong>${player2.username}:</strong> ${player2Elo} → ${player2NewElo} (${player2Change >= 0 ? '+' : ''}${player2Change})
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error updating preview:', error);
+            }
+        }
+
+        // Add admin match
+        async function addAdminMatch() {
+            const player1Id = document.getElementById('player1').value;
+            const player2Id = document.getElementById('player2').value;
+            const winnerId = document.getElementById('winner').value;
+            const matchType = document.getElementById('matchType').value;
+            const winnerScore = parseInt(document.getElementById('winnerScore').value) || 3;
+            const loserScore = parseInt(document.getElementById('loserScore').value) || 0;
+            const statusDiv = document.getElementById('adminMatchStatus');
+            
+            // Validation
+            if (!player1Id || !player2Id || !winnerId) {
+                statusDiv.innerHTML = `<div class="status error">❌ Selecciona ambos jugadores y ganador</div>`;
+                return;
+            }
+            
+            if (player1Id === player2Id) {
+                statusDiv.innerHTML = `<div class="status error">❌ Los jugadores deben ser diferentes</div>`;
+                return;
+            }
+            
+            statusDiv.innerHTML = `<div class="status info">⏳ Añadiendo partido...</div>`;
+            
+            try {
+                const usersSnap = await database.ref('users').once('value');
+                const users = usersSnap.val();
+                
+                const player1 = users[player1Id];
+                const player2 = users[player2Id];
+                const winner = users[winnerId];
+                const loser = winnerId === player1Id ? player2 : player1;
+                
+                const winnerElo = winner.elo_rating || 1200;
+                const loserElo = loser.elo_rating || 1200;
+                const winnerMatches = winner.matches_played || 0;
+                const loserMatches = loser.matches_played || 0;
+                
+                // Calculate ELO changes
+                const changes = calculateMatchEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType);
+                
+                // Create match data
+                const matchData = {
+                    player1_id: player1Id,
+                    player1_username: player1.username,
+                    player2_id: player2Id,
+                    player2_username: player2.username,
+                    winner_id: winnerId,
+                    match_type: matchType,
+                    status: 'confirmed',
+                    confirmed_at: Date.now(),
+                    confirmed_hour: new Date().getHours(),
+                    confirmed_minute: new Date().getMinutes(),
+                    confirmed_day_of_week: new Date().getDay(),
+                    is_weekend: new Date().getDay() === 0 || new Date().getDay() === 6,
+                    player1_score: winnerId === player1Id ? winnerScore : loserScore,
+                    player2_score: winnerId === player2Id ? winnerScore : loserScore,
+                    winner_score: winnerScore,
+                    loser_score: loserScore,
+                    winner_elo_change: changes.winnerChange,
+                    loser_elo_change: changes.loserChange,
+                    winner_new_elo: changes.winnerElo,
+                    loser_new_elo: changes.loserElo,
+                    created_at: Date.now(),
+                    submitted_by: 'admin',
+                    submitted_at: Date.now()
+                };
+                
+                // Save match to Firebase
+                const matchRef = await database.ref('matches').push(matchData);
+                
+                // Update both players' stats
+                await database.ref(`users/${winnerId}/elo_rating`).set(changes.winnerElo);
+                await database.ref(`users/${loserId}/elo_rating`).set(changes.looserElo);
+                
+                // Update matches played
+                await database.ref(`users/${winnerId}/matches_played`).set(winnerMatches + 1);
+                await database.ref(`users/${loserId}/matches_played`).set(loserMatches + 1);
+                
+                // Update matches won for winner
+                await database.ref(`users/${winnerId}/matches_won`).set((winner.matches_won || 0) + 1);
+                
+                // Add admin note
+                const adminMatchNote = {
+                    added_by_admin: true,
+                    added_at: Date.now(),
+                    admin_note: 'Manual admin match'
+                };
+                
+                statusDiv.innerHTML = `
+                    <div class="status success">
+                        ✅ Partido añadido: ${player1.username} vs ${player2.username}
+                        <br>Resultado: ${winnerScore}-${loserScore}, Ganador: ${winner.username}
+                        <br>${winner.username}: ${winnerElo} → ${changes.winnerElo} (${changes.winnerChange >= 0 ? '+' : ''}${changes.winnerChange})
+                        <br>${loser.username}: ${loserElo} → ${changes.loserElo} (${changes.loserChange >= 0 ? '+' : ''}${changes.loserChange})
+                    </div>
+                `;
+                
+                // Reset form
+                document.getElementById('player1').selectedIndex = 0;
+                document.getElementById('player2').selectedIndex = 0;
+                document.getElementById('winner').selectedIndex = 0;
+                document.getElementById('adminMatchPreview').style.display = 'none';
+                
+            } catch (error) {
+                console.error('Error adding admin match:', error);
+                statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
+            }
+        }
     </script>
 </body>
 </html>
