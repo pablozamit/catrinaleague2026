@@ -102,40 +102,38 @@
             margin-top: 0.5rem;
         }
 
-        /* 7-day ELO change indicators */
-        .change-indicator {
-            display: inline-flex;
-            align-items: center;
+        /* Ranking Tabs */
+        .ranking-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
             justify-content: center;
-            gap: 2px;
-            min-width: 40px;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1px solid;
         }
 
-        .change-indicator.neutral {
-            background: rgba(136, 136, 136, 0.1);
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.3);
             color: var(--color-text-muted);
-            border-color: rgba(136, 136, 136, 0.3);
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
         }
 
-        .change-indicator.up {
-            background: rgba(34, 197, 94, 0.15);
-            color: #22c55e;
-            border-color: rgba(34, 197, 94, 0.4);
+        .tab-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--color-gold);
+            border-color: rgba(212, 175, 55, 0.5);
         }
 
-        .change-indicator.down {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            border-color: rgba(239, 68, 68, 0.4);
-        }
-
-        .change-indicator .arrow {
-            font-weight: bold;
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%);
+            border-color: var(--color-gold);
+            color: var(--color-gold);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
         }
 
         /* Tabla de ranking */
@@ -369,6 +367,12 @@
             <p class="loading-7day" id="sevenDayLoading" style="display: none;" data-i18n="ranking_7day_calculating">📊 Calculando cambios de 7 días...</p>
         </div>
 
+        <!-- Ranking Tabs -->
+        <div class="ranking-tabs">
+            <button class="tab-btn active" id="eloTab" onclick="switchRankingType('elo')">ELO Ranking</button>
+            <button class="tab-btn" id="xpTab" onclick="switchRankingType('xp')">XP Ranking</button>
+        </div>
+
         <table class="ranking-table">
             <thead>
                 <tr>
@@ -558,6 +562,23 @@
             };
         }
 
+        // Current ranking type: 'elo' or 'xp'
+        let currentRankingType = 'elo';
+
+        // Switch ranking type
+        function switchRankingType(type) {
+            currentRankingType = type;
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`${type}Tab`).classList.add('active');
+
+            // Reload ranking
+            loadRanking();
+        }
+
         // Load and display ranking
         async function loadRanking() {
             try {
@@ -575,20 +596,56 @@
                     return;
                 }
                 
-                // Convert to array and sort by ELO
+                // Convert to array
                 const userArray = Object.entries(users).map(([uid, user]) => ({
                     uid,
                     ...user
-                })).sort((a, b) => (b.elo_rating || 1200) - (a.elo_rating || 1200));
+                }));
 
-                // Calculate 7-day ELO changes
-                console.log('🎯 Loading ranking with 7-day change tracking...');
-                
-                // Show loading indicator
-                const loadingEl = document.getElementById('sevenDayLoading');
-                if (loadingEl) {
-                    loadingEl.style.display = 'block';
-                    loadingEl.textContent = t('ranking_7day_calculating') || '📊 Calculating 7-day changes...';
+                // Filter and sort based on ranking type
+                let sortedUsers;
+                if (currentRankingType === 'elo') {
+                    // Sort by ELO
+                    sortedUsers = userArray.sort((a, b) => (b.elo_rating || 1200) - (a.elo_rating || 1200));
+                } else {
+                    // For XP ranking: filter out users with 0 XP, then sort by XP
+                    sortedUsers = userArray
+                        .filter(user => (user.xp || 0) > 0)
+                        .sort((a, b) => (b.xp || 0) - (a.xp || 0));
+                }
+
+                // Calculate 7-day ELO changes (only for ELO ranking)
+                let eloChanges = {};
+                if (currentRankingType === 'elo') {
+                    console.log('🎯 Loading ranking with 7-day change tracking...');
+
+                    // Show loading indicator
+                    const loadingEl = document.getElementById('sevenDayLoading');
+                    if (loadingEl) {
+                        loadingEl.style.display = 'block';
+                        loadingEl.textContent = t('ranking_7day_calculating') || '📊 Calculating 7-day changes...';
+                    }
+
+                    try {
+                        eloChanges = await calculateSevenDayEloChanges(sortedUsers);
+                        console.log('✅ 7-day calculation completed');
+                    } catch (calcError) {
+                        console.error('❌ Calculation failed, using neutral:', calcError);
+                        // Use neutral changes if calculation fails
+                        sortedUsers.forEach(user => {
+                            eloChanges[user.uid] = {
+                                change: 0,
+                                currentElo: user.elo_rating || 1200,
+                                historicalElo: user.elo_rating || 1200
+                            };
+                        });
+                        console.log('🎭 Using neutral changes');
+                    }
+
+                    // Hide loading indicator
+                    if (loadingEl) {
+                        loadingEl.style.display = 'none';
+                    }
                 }
                 
                 let eloChanges = {};
@@ -613,36 +670,75 @@
                     loadingEl.style.display = 'none';
                 }
                 
+                // Update table headers based on ranking type
+                const positionHeader = document.querySelector('th[data-i18n="ranking_position"]');
+                const playerHeader = document.querySelector('th[data-i18n="ranking_player"]');
+                const matchesHeader = document.querySelector('th[data-i18n="ranking_matches"]');
+                const valueHeader = document.querySelector('th[data-i18n="ranking_elo"]');
+                const changeHeader = document.querySelector('th[data-i18n="ranking_7day_change"]');
+
+                if (currentRankingType === 'elo') {
+                    positionHeader.textContent = '#';
+                    playerHeader.textContent = 'Jugador';
+                    matchesHeader.textContent = 'Partidos';
+                    valueHeader.textContent = 'ELO';
+                    valueHeader.style.textAlign = 'right';
+                    changeHeader.textContent = '7 días';
+                    changeHeader.style.display = 'table-cell';
+                } else {
+                    positionHeader.textContent = '#';
+                    playerHeader.textContent = 'Jugador';
+                    matchesHeader.textContent = 'Partidos';
+                    valueHeader.textContent = 'XP';
+                    valueHeader.style.textAlign = 'right';
+                    changeHeader.textContent = 'Nivel';
+                    changeHeader.style.display = 'table-cell';
+                }
+
                 // Render table
                 const tbody = document.getElementById('rankingTableBody');
-                tbody.innerHTML = userArray.map((user, index) => {
+                tbody.innerHTML = sortedUsers.map((user, index) => {
                     const position = index + 1;
                     const positionClass = position <= 3 ? 'position top-3' : 'position';
                     const elo = user.elo_rating || 1200;
                     const matches = user.matches_played || 0;
+                    const xp = user.xp || 0;
+                    const level = user.level || 1;
                     const isNew = matches === 0;
-                    
-                    // Get 7-day change
-                    const changeData = eloChanges[user.uid] || { change: 0 };
-                    const change = changeData.change || 0;
-                    
-                    // Determine change indicator
-                    let changeClass = 'neutral';
-                    let changeSymbol = '→';
-                    let changeText = '0';
-                    
-                    if (change > 0) {
-                        changeClass = 'up';
-                        changeSymbol = '↗';
-                        changeText = `+${change}`;
-                    } else if (change < 0) {
-                        changeClass = 'down';
-                        changeSymbol = '↘';
-                        changeText = `${change}`;
+
+                    // Get 7-day change (only for ELO ranking)
+                    let changeDisplay = '';
+                    if (currentRankingType === 'elo') {
+                        const changeData = eloChanges[user.uid] || { change: 0 };
+                        const change = changeData.change || 0;
+
+                        let changeClass = 'neutral';
+                        let changeSymbol = '→';
+                        let changeText = '0';
+
+                        if (change > 0) {
+                            changeClass = 'up';
+                            changeSymbol = '↗';
+                            changeText = `+${change}`;
+                        } else if (change < 0) {
+                            changeClass = 'down';
+                            changeSymbol = '↘';
+                            changeText = `${change}`;
+                        }
+
+                        changeDisplay = `
+                            <div class="change-indicator ${changeClass}">
+                                <span class="arrow">${changeSymbol}</span>
+                                <span>${changeText}</span>
+                            </div>
+                        `;
+
+                        console.log(`${user.username}: ELO ${elo}, 7-day change: ${change}`);
+                    } else {
+                        // For XP ranking, show level instead of ELO change
+                        changeDisplay = `<span style="color: var(--color-gold); font-weight: 600;">Nivel ${level}</span>`;
                     }
-                    
-                    console.log(`${user.username}: ELO ${elo}, 7-day change: ${change}`);
-                    
+
                     return `
                         <tr>
                             <td class="${positionClass}">${position}</td>
@@ -654,12 +750,9 @@
                                 ${position <= 6 ? `<span class="captain-badge"><span class="icon">🏴‍☠️</span><span>?</span></span>` : ''}
                             </td>
                             <td>${matches}</td>
-                            <td class="elo">${elo}</td>
+                            <td class="elo" style="text-align: right;">${currentRankingType === 'elo' ? elo : xp}</td>
                             <td style="text-align: center;">
-                                <div class="change-indicator ${changeClass}">
-                                    <span class="arrow">${changeSymbol}</span>
-                                    <span>${changeText}</span>
-                                </div>
+                                ${changeDisplay}
                             </td>
                         </tr>
                     `;
@@ -752,6 +845,9 @@
             console.log('Force retry after timeout...');
             initializeApp();
         }, 10000);
+
+        // Expose functions to global scope
+        window.switchRankingType = switchRankingType;
     </script>
 </body>
 </html>
