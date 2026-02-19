@@ -110,6 +110,10 @@
             <span>←</span>
             <span>Volver a la Mesa</span>
         </a>
+        <div style="position: absolute; top: 2rem; right: 2rem; display: flex; align-items: center; gap: 15px;">
+            <div id="langSelectorContainer"></div>
+            <div id="notificationBellContainer"></div>
+        </div>
         <h1>LIGA</h1>
         <p>LA CATRINA POOL LEAGUE</p>
     </div>
@@ -121,5 +125,56 @@
             <p>La sección de Liga está siendo desarrollada. Prueba de concepto.</p>
         </div>
     </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="../js/translations.js"></script>
+    <script src="../js/firebase.js"></script>
+    <script src="../js/badges.js"></script>
+    <script src="../js/notifications.js"></script>
+
+    <script>
+        // Initialize Firebase and notifications
+        try {
+            if (typeof initFirebase === 'function') {
+                initFirebase();
+            }
+
+            // Initialize language selector
+            if (typeof createLanguageSelector === 'function') {
+                const langContainer = document.getElementById('langSelectorContainer');
+                if (langContainer) {
+                    langContainer.innerHTML = createLanguageSelector();
+                }
+            }
+
+            // Initialize notification bell
+            if (typeof createNotificationBell === 'function') {
+                const bellContainer = document.getElementById('notificationBellContainer');
+                if (bellContainer) {
+                    bellContainer.innerHTML = createNotificationBell();
+                }
+            }
+
+            // Set up auth state change for notifications
+            if (typeof onAuthStateChanged === 'function') {
+                onAuthStateChanged(async (user) => {
+                    if (user) {
+                        try {
+                            await updateNotificationBell(user.uid);
+                        } catch (error) {
+                            console.error('Error updating notification bell:', error);
+                        }
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error initializing page:', error);
+        }
+    </script>
 </body>
 </html>

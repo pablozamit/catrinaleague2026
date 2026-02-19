@@ -79,6 +79,17 @@ function createNotificationBell() {
                 <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
             <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+            <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
+                <div class="dropdown-content">
+                    <div class="dropdown-header">
+                        <h3>Notificaciones</h3>
+                        <button class="close-dropdown" id="closeNotificationDropdown">✕</button>
+                    </div>
+                    <div id="notificationList" class="notification-list">
+                        <!-- Notifications will be loaded here -->
+                    </div>
+                </div>
+            </div>
         </div>
     `;
 }
@@ -341,6 +352,174 @@ async function showBadgePopup(userId) {
                 font-weight: bold;
                 border: 2px solid #1a1a2e;
             }
+
+            .notification-bell.dropdown-open svg {
+                animation: none;
+            }
+
+            .notification-dropdown {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                margin-top: 8px;
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                border: 1px solid #d4af37;
+                border-radius: 8px;
+                width: 320px;
+                max-height: 400px;
+                overflow-y: auto;
+                z-index: 10001;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            }
+
+            .dropdown-content {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .dropdown-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 16px;
+                border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+                position: sticky;
+                top: 0;
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                z-index: 1;
+            }
+
+            .dropdown-header h3 {
+                color: #d4af37;
+                font-size: 14px;
+                font-weight: bold;
+                margin: 0;
+            }
+
+            .close-dropdown {
+                background: none;
+                border: none;
+                color: #888;
+                font-size: 16px;
+                cursor: pointer;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+
+            .close-dropdown:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #fff;
+            }
+
+            .notification-list {
+                max-height: 350px;
+                overflow-y: auto;
+            }
+
+            .notification-section {
+                padding: 8px 0;
+            }
+
+            .notification-section h4 {
+                color: #888;
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin: 0 16px 8px;
+                padding: 4px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .notification-item {
+                display: flex;
+                align-items: center;
+                padding: 12px 16px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                transition: background 0.2s ease;
+            }
+
+            .notification-item:hover {
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            .notification-item:last-child {
+                border-bottom: none;
+            }
+
+            .notification-icon {
+                font-size: 20px;
+                margin-right: 12px;
+                flex-shrink: 0;
+            }
+
+            .notification-content {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .notification-text {
+                color: #fff;
+                font-size: 13px;
+                margin-bottom: 2px;
+            }
+
+            .notification-time {
+                color: #888;
+                font-size: 11px;
+            }
+
+            .notification-desc {
+                color: #aaa;
+                font-size: 12px;
+            }
+
+            .notification-action {
+                padding: 6px 12px;
+                background: rgba(212, 175, 55, 0.2);
+                border: 1px solid rgba(212, 175, 55, 0.3);
+                border-radius: 4px;
+                color: #d4af37;
+                font-size: 11px;
+                text-decoration: none;
+                white-space: nowrap;
+                margin-left: 12px;
+                transition: all 0.2s ease;
+            }
+
+            .notification-action:hover {
+                background: rgba(212, 175, 55, 0.3);
+                color: #f4d03f;
+            }
+
+            .badge-item .notification-icon {
+                font-size: 24px;
+            }
+
+            .no-notifications {
+                padding: 32px;
+                text-align: center;
+                color: #888;
+                font-size: 13px;
+            }
+
+            .loading-notifications {
+                padding: 32px;
+                text-align: center;
+                color: #888;
+                font-size: 13px;
+            }
+
+            .error-notifications {
+                padding: 16px;
+                text-align: center;
+                color: #ef4444;
+                font-size: 12px;
+            }
+
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
         `;
         document.head.appendChild(styles);
     }
@@ -352,7 +531,7 @@ function closeBadgePopup() {
     if (popup) {
         popup.style.animation = 'fadeOut 0.3s ease';
         setTimeout(() => popup.remove(), 300);
-        
+
         // Mark badges as seen
         const user = getCurrentUser();
         if (user) {
@@ -360,6 +539,97 @@ function closeBadgePopup() {
             updateNotificationBell(user.uid);
         }
     }
+}
+
+// Load notifications into dropdown
+async function loadNotifications(userId) {
+    const list = document.getElementById('notificationList');
+    if (!list) return;
+
+    list.innerHTML = '<div class="loading-notifications">Cargando...</div>';
+
+    try {
+        // Get pending matches
+        const pendingMatches = await getPendingMatches(userId);
+
+        // Get new badges
+        const newBadges = await getNewBadges(userId);
+
+        let html = '';
+
+        // Pending matches section
+        if (pendingMatches.length > 0) {
+            html += '<div class="notification-section"><h4>Partidos Pendientes</h4>';
+            html += pendingMatches.map(match => {
+                const opponentName = match.player1_id === userId ? match.player2_username : match.player1_username;
+                return `
+                    <div class="notification-item">
+                        <div class="notification-icon">🎱</div>
+                        <div class="notification-content">
+                            <div class="notification-text">Confirmar partido contra ${opponentName}</div>
+                            <div class="notification-time">Hace poco tiempo</div>
+                        </div>
+                        <a href="../confirmar/" class="notification-action">Confirmar</a>
+                    </div>
+                `;
+            }).join('');
+            html += '</div>';
+        }
+
+        // Badges section
+        if (newBadges.length > 0) {
+            html += '<div class="notification-section"><h4>Nuevos Badges</h4>';
+            html += newBadges.map(badge => `
+                <div class="notification-item badge-item">
+                    <div class="notification-icon">${badge.icon}</div>
+                    <div class="notification-content">
+                        <div class="notification-text">¡Nuevo badge: ${badge.name}!</div>
+                        <div class="notification-desc">${badge.description}</div>
+                    </div>
+                </div>
+            `).join('');
+            html += '</div>';
+        }
+
+        // No notifications
+        if (html === '') {
+            html = '<div class="no-notifications">No tienes notificaciones</div>';
+        }
+
+        list.innerHTML = html;
+    } catch (error) {
+        console.error('Error loading notifications:', error);
+        list.innerHTML = '<div class="error-notifications">Error cargando notificaciones</div>';
+    }
+}
+
+// Toggle notification dropdown
+function toggleNotificationDropdown() {
+    const bell = document.getElementById('notificationBell');
+    const dropdown = document.getElementById('notificationDropdown');
+    if (!bell || !dropdown) return;
+
+    const isOpen = dropdown.style.display === 'block';
+
+    if (isOpen) {
+        dropdown.style.display = 'none';
+        bell.classList.remove('dropdown-open');
+    } else {
+        const user = getCurrentUser();
+        if (user) {
+            loadNotifications(user.uid);
+            dropdown.style.display = 'block';
+            bell.classList.add('dropdown-open');
+        }
+    }
+}
+
+// Close notification dropdown
+function closeNotificationDropdown() {
+    const dropdown = document.getElementById('notificationDropdown');
+    const bell = document.getElementById('notificationBell');
+    if (dropdown) dropdown.style.display = 'none';
+    if (bell) bell.classList.remove('dropdown-open');
 }
 
 // Initialize notifications on page load
@@ -389,4 +659,43 @@ if (typeof window !== 'undefined') {
     window.showBadgePopup = showBadgePopup;
     window.closeBadgePopup = closeBadgePopup;
     window.initNotifications = initNotifications;
+    window.loadNotifications = loadNotifications;
+    window.toggleNotificationDropdown = toggleNotificationDropdown;
+    window.closeNotificationDropdown = closeNotificationDropdown;
 }
+
+// Auto-initialize when document is ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Add click handler to notification bell
+    setTimeout(() => {
+        const bell = document.getElementById('notificationBell');
+        if (bell && !bell.hasListener) {
+            bell.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleNotificationDropdown();
+            });
+            bell.hasListener = true;
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const bell = document.getElementById('notificationBell');
+            const dropdown = document.getElementById('notificationDropdown');
+            if (bell && dropdown) {
+                if (!bell.contains(e.target) && !dropdown.contains(e.target)) {
+                    closeNotificationDropdown();
+                }
+            }
+        });
+
+        // Close button handler
+        const closeBtn = document.getElementById('closeNotificationDropdown');
+        if (closeBtn && !closeBtn.hasListener) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeNotificationDropdown();
+            });
+            closeBtn.hasListener = true;
+        }
+    }, 1000);
+});
