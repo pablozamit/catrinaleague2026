@@ -143,7 +143,7 @@
         /* Instrucciones */
         .instructions {
             position: fixed;
-            bottom: 2rem;
+            bottom: 4rem;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.8);
@@ -154,6 +154,22 @@
             letter-spacing: 2px;
             border: 1px solid rgba(212, 175, 55, 0.3);
             z-index: 100;
+        }
+
+        /* Footer con versión */
+        .version-footer {
+            position: fixed;
+            bottom: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #444;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            z-index: 100;
+        }
+
+        .version-footer span {
+            color: #666;
         }
     </style>
 </head>
@@ -205,6 +221,10 @@
     </div>
 
     <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras</div>
+
+    <div class="version-footer">
+        La Catrina Pool League <span>v1.0.0</span>
+    </div>
 
     <script>
         // Escena 3D

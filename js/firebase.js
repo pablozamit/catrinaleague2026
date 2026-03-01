@@ -78,14 +78,23 @@ function updateUserElo(uid, elo, matchesPlayed, matchesWon) {
 }
 
 // Crear partido pendientes
-function createMatch(matchData) {
+async function createMatch(matchData) {
     const newMatchRef = database.ref('matches').push();
-    return newMatchRef.set({
+    const matchId = newMatchRef.key;
+
+    await newMatchRef.set({
         ...matchData,
         id: newMatchRef.key,
         status: 'pending',
         created_at: firebase.database.ServerValue.TIMESTAMP
     });
+
+    // Log si el sistema de logging está disponible
+    if (window.MatchLogger) {
+        await MatchLogger.matchCreated(matchData, matchId);
+    }
+
+    return matchId;
 }
 
 // Obtener partidos pendientes de confirmar para un usuario
@@ -125,33 +134,41 @@ function getUserHistory(uid) {
 
 // Confirmar partido
 async function confirmMatch(matchId, eloChanges) {
+    let oldWinnerElo = null;
+    let oldLoserElo = null;
+
     try {
         // Validate inputs
         if (!matchId || !eloChanges) {
             throw new Error('Missing required parameters');
         }
-        
+
         if (!eloChanges.winnerId || !eloChanges.loserId) {
             throw new Error('Invalid player IDs');
         }
-        
+
         if (typeof eloChanges.winnerElo !== 'number' || typeof eloChanges.loserElo !== 'number') {
             throw new Error('Invalid ELO values');
         }
-        
+
         const updates = {};
         const now = new Date();
-        
+
         // Get match data first
         const matchSnap = await database.ref(`matches/${matchId}`).once('value');
         const matchData = matchSnap.val();
-        
+
         if (!matchData) {
             throw new Error('Match not found');
         }
-        
+
         if (matchData.status === 'confirmed') {
             throw new Error('Match already confirmed');
+        }
+
+        // Log intento de confirmación
+        if (window.MatchLogger) {
+            await MatchLogger.confirmationAttempted(matchId, matchData);
         }
         
         // Get current stats for both players - use Promise.all for parallel reads
@@ -159,12 +176,27 @@ async function confirmMatch(matchId, eloChanges) {
             database.ref(`users/${eloChanges.winnerId}`).once('value'),
             database.ref(`users/${eloChanges.loserId}`).once('value')
         ]);
-        
+
         const winnerStats = winnerSnap.val();
         const loserStats = loserSnap.val();
-        
+
         if (!winnerStats || !loserStats) {
             throw new Error('Player data not found');
+        }
+
+        // Guardar ELO antiguos para logging
+        oldWinnerElo = winnerStats.elo_rating || 1200;
+        oldLoserElo = loserStats.elo_rating || 1200;
+
+        // Log cálculo de ELO
+        if (window.EloLogger) {
+            await EloLogger.calculationStarted(
+                oldWinnerElo,
+                oldLoserElo,
+                eloChanges.winnerMatches,
+                eloChanges.loserMatches,
+                matchData.match_type
+            );
         }
         
         // Actualizar partido con timestamp
@@ -199,7 +231,34 @@ async function confirmMatch(matchId, eloChanges) {
         
         // Apply all updates atomically
         await database.ref().update(updates);
-        
+
+        // Log éxito de confirmación y ELO actualizado para ganador
+        if (window.MatchLogger && window.EloLogger) {
+            await MatchLogger.confirmationSuccess(matchId, eloChanges, oldWinnerElo, eloChanges.winnerElo);
+            await EloLogger.eloUpdated(
+                eloChanges.winnerId,
+                winnerStats.username || 'Unknown',
+                oldWinnerElo,
+                eloChanges.winnerElo,
+                eloChanges.winnerMatches,
+                eloChanges.winnerWins
+            );
+            await EloLogger.eloUpdated(
+                eloChanges.loserId,
+                loserStats.username || 'Unknown',
+                oldLoserElo,
+                eloChanges.loserElo,
+                eloChanges.loserMatches,
+                loserStats.matches_won || 0
+            );
+            await EloLogger.calculationCompleted({
+                winnerChange: eloChanges.winnerChange,
+                loserChange: eloChanges.loserChange,
+                winnerElo: eloChanges.winnerElo,
+                loserElo: eloChanges.loserElo
+            });
+        }
+
         // Update global leaderboards (in try-catch to not fail entire operation)
         try {
             const winnerUsername = winnerStats.username || 'Unknown';
@@ -255,6 +314,12 @@ async function confirmMatch(matchId, eloChanges) {
         return true;
     } catch (error) {
         console.error('Error confirming match:', error);
+
+        // Log error de confirmación
+        if (window.MatchLogger) {
+            await MatchLogger.confirmationFailed(matchId, error);
+        }
+
         throw new Error(`Failed to confirm match: ${error.message}`);
     }
 }

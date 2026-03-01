@@ -444,6 +444,7 @@
 
     <script src="../js/firebase.js"></script>
     <script src="../js/badges.js"></script>
+    <script src="../js/logging.js"></script>
     <script src="../js/notifications.js"></script>
     <script src="../js/toast.js"></script>
     <script>
@@ -468,8 +469,13 @@
                 document.getElementById('loadingScreen').innerHTML = '<div class="error" style="display:block">Error cargando Firebase</div>';
                 return;
             }
-            
+
             initFirebase();
+
+            // Inicializar sistema de logging
+            if (window.initLogging) {
+                await initLogging();
+            }
 
             onAuthStateChanged((user) => {
                 if (!user) {
@@ -484,7 +490,7 @@
         async function loadUserData(user) {
             try {
                 currentUser = user;
-                
+
                 // Obtener datos del usuario desde Firebase
                 const userData = await getUserData(user.uid);
                 
@@ -519,7 +525,12 @@
                 // Mostrar formulario
                 document.getElementById('loadingScreen').classList.add('hidden');
                 document.getElementById('resultScreen').classList.remove('hidden');
-                
+
+                // Log de login exitoso
+                if (window.AuthLogger) {
+                    await AuthLogger.loginSuccess(user.uid, currentUserData.username);
+                }
+
             } catch (error) {
                 console.error('Error loading user data:', error);
                 document.getElementById('loadingScreen').innerHTML = `

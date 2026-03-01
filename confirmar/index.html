@@ -339,6 +339,7 @@
 
     <script src="../js/firebase.js"></script>
     <script src="../js/badges.js"></script>
+    <script src="../js/logging.js"></script>
     <script src="../js/notifications.js"></script>
     <script src="../js/toast.js"></script>
     <script>
@@ -361,8 +362,13 @@
                 document.getElementById('loadingScreen').innerHTML = '<div class="error" style="display:block">Error cargando Firebase</div>';
                 return;
             }
-            
+
             initFirebase();
+
+            // Inicializar sistema de logging
+            if (window.initLogging) {
+                await initLogging();
+            }
 
             onAuthStateChanged((user) => {
                 if (!user) {
@@ -395,9 +401,14 @@
                 const bellContainer = document.getElementById('notificationBellContainer');
                 bellContainer.innerHTML = createNotificationBell();
                 await updateNotificationBell(user.uid);
-                
+
                 document.getElementById('loadingScreen').classList.add('hidden');
-                
+
+                // Log de login exitoso
+                if (window.AuthLogger) {
+                    await AuthLogger.loginSuccess(user.uid, currentUserData.username);
+                }
+
             } catch (error) {
                 console.error('Error:', error);
                 document.getElementById('loadingScreen').innerHTML = `
@@ -410,9 +421,14 @@
             try {
                 // Obtener partidos donde el usuario es player2 y están pending
                 pendingMatches = await getPendingMatches(currentUser.uid);
-                
+
                 // Filtrar solo pending
                 pendingMatches = pendingMatches.filter(m => m.status === 'pending');
+
+                // Log visita a página de confirmación
+                if (window.MatchLogger) {
+                    await MatchLogger.confirmationPageVisited(pendingMatches.length, []);
+                }
 
                 if (pendingMatches.length === 0) {
                     document.getElementById('emptyState').classList.remove('hidden');
@@ -421,7 +437,7 @@
 
                 renderMatches();
                 document.getElementById('matchesList').classList.remove('hidden');
-                
+
             } catch (error) {
                 console.error('Error loading matches:', error);
             }
@@ -552,7 +568,7 @@
                 loserElo: changes.loserElo,
                 winnerMatches: (winnerIsMe ? currentUserData.matches_played : opponentData?.matches_played || 0) + 1,
                 loserMatches: (winnerIsMe ? opponentData?.matches_played : currentUserData.matches_played || 0) + 1,
-                winnerWins: (winnerIsMe ? currentUserData.matches_won : 0) + 1
+                winnerWins: (winnerIsMe ? currentUserData.matches_won : opponentData?.matches_won || 0) + 1
             };
 
             try {
