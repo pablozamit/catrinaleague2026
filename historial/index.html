@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Partidos - La Catrina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-felt: #1a4a2e;
+            --color-gold: #d4af37;
+            --color-gold-light: #f4d03f;
+            --color-white: #f5f5f5;
+            --color-text-muted: #888;
+            --color-success: #4ade80;
+            --color-danger: #f87171;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--color-bg);
+            min-height: 100vh;
+            color: var(--color-white);
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+        }
+
+        .header {
+            background: linear-gradient(180deg, rgba(26, 74, 46, 0.3) 0%, transparent 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--color-gold);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info {
+            color: var(--color-white);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: var(--color-gold);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-right {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--color-gold);
+            color: var(--color-gold);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-muted);
+        }
+
+        .match-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .match-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .match-players {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .player-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .winner {
+            color: var(--color-gold);
+        }
+
+        .loser {
+            color: var(--color-text-muted);
+        }
+
+        .match-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .match-type {
+            display: inline-block;
+            padding: 4px 8px;
+            background: rgba(212, 175, 55, 0.2);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 8px;
+        }
+
+        .elo-change {
+            font-weight: 600;
+        }
+
+        .elo-change.positive {
+            color: var(--color-success);
+        }
+
+        .elo-change.negative {
+            color: var(--color-danger);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-muted);
+            font-size: 0.8rem;
+        }
+
+        .no-matches {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--color-text-muted);
+        }
+
+        .no-matches-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="../" class="back-link">← Volver</a>
+        <div class="header-right">
+            <div id="langSelectorContainer" style="margin-right: 15px;"></div>
+            <div id="notificationBellContainer"></div>
+            <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        </div>
+        <h1>HISTORIAL DE PARTIDOS</h1>
+        <div class="user-info"><span>Usuario</span>: <span id="currentUsername">-</span></div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div id="loadingScreen">
+                <div class="loading">Cargando...</div>
+            </div>
+            
+            <div id="matchesScreen" class="hidden">
+                <div id="matchesContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>La Catrina Pool League</p>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="../js/firebase.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/toast.js"></script>
+    
+    <script>
+        // Variables globales
+        let currentUserData = null;
+        let allMatches = [];
+
+        // Esperar a que Firebase esté listo
+        async function waitForFirebase() {
+            let attempts = 0;
+            while (!window.firebase && attempts < 20) {
+                await new Promise(r => setTimeout(r, 100));
+                attempts++;
+            }
+            return !!window.firebase;
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', async () => {
+            const ready = await waitForFirebase();
+            if (!ready) {
+                document.getElementById('loadingScreen').innerHTML = '<div class="loading">Error cargando Firebase</div>';
+                return;
+            }
+
+            initFirebase();
+
+            onAuthStateChanged((user) => {
+                if (!user) {
+                    window.location.href = '../';
+                } else {
+                    loadUserData(user);
+                }
+            });
+        });
+
+        async function loadUserData(user) {
+            try {
+                currentUser = user;
+                const userData = await getUserData(user.uid);
+                
+                if (!userData) {
+                    const username = user.email.split('@')[0];
+                    currentUserData = {
+                        username: username,
+                        elo_rating: 1200,
+                        matches_played: 0,
+                        matches_won: 0,
+                        email: user.email
+                    };
+                } else {
+                    currentUserData = userData;
+                }
+
+                // Actualizar UI
+                document.getElementById('currentUsername').textContent = currentUserData.username;
+                
+                // Inicializar notificaciones
+                const bellContainer = document.getElementById('notificationBellContainer');
+                bellContainer.innerHTML = createNotificationBell();
+                await updateNotificationBell(user.uid);
+                
+                // Cargar partidos
+                await loadAllMatches();
+                
+                // Mostrar contenido
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('matchesScreen').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                document.getElementById('loadingScreen').innerHTML = `
+                    <div class="loading">Error al cargar datos: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function loadAllMatches() {
+            const container = document.getElementById('matchesContainer');
+            container.innerHTML = '<div class="loading">Cargando partidos...</div>';
+            
+            try {
+                if (typeof database === 'undefined' || !database.ref) {
+                    container.innerHTML = '<div class="loading">Firebase no está inicializado</div>';
+                    return;
+                }
+
+                const matchesSnap = await database.ref('matches').orderByChild('timestamp').once('value');
+                const matches = matchesSnap.val();
+                
+                if (!matches) {
+                    container.innerHTML = `
+                        <div class="no-matches">
+                            <div class="no-matches-icon">📋</div>
+                            <div>No hay partidos registrados aún</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Convertir a array y ordenar por timestamp (más recientes primero)
+                allMatches = Object.entries(matches)
+                    .map(([matchId, match]) => ({ matchId, ...match }))
+                    .sort((a, b) => b.timestamp - a.timestamp);
+                
+                const html = allMatches.map(match => {
+                    const date = new Date(match.timestamp);
+                    const confirmDate = match.confirmed_at ? new Date(match.confirmed_at) : null;
+                    
+                    const winner = match.winner_username || 'Desconocido';
+                    const loser = match.player1_username === winner ? match.player2_username : match.player1_username;
+                    
+                    const matchTypeNames = {
+                        'rey_mesa': 'Rey de la Mesa',
+                        'torneo': 'Torneo',
+                        'liga_grupos': 'Liga - Grupos',
+                        'liga_finales': 'Liga - Final'
+                    };
+                    
+                    return `
+                        <div class="match-item">
+                            <div class="match-header">
+                                <span class="match-type">${matchTypeNames[match.match_type] || match.match_type}</span>
+                                <span style="color: #888; font-size: 0.8rem;">${date.toLocaleDateString()}</span>
+                            </div>
+                            <div class="match-players">
+                                <span class="player-name winner">${winner}</span>
+                                <span style="color: #666;">vs</span>
+                                <span class="player-name loser">${loser}</span>
+                            </div>
+                            <div class="match-details">
+                                <span>
+                                    <span class="elo-change ${match.winner_elo_change >= 0 ? 'positive' : 'negative'}">
+                                        ${winner}: ${match.winner_elo_change >= 0 ? '+' : ''}${match.winner_elo_change}
+                                    </span>
+                                    <span class="elo-change ${match.loser_elo_change >= 0 ? 'positive' : 'negative'}" style="margin-left: 10px;">
+                                        ${loser}: ${match.loser_elo_change >= 0 ? '+' : ''}${match.loser_elo_change}
+                                    </span>
+                                </span>
+                                <span style="font-size: 0.8rem;">
+                                    ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                    ${confirmDate ? ` | Confirmado: ${confirmDate.toLocaleDateString()} ${confirmDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}` : ''}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading matches:', error);
+                container.innerHTML = `<div class="loading">Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
