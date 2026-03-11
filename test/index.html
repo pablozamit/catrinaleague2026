@@ -471,9 +471,9 @@ console.log('Luz específica para modelos añadida en (0, -2, 0) con intensidad 
 const manTargetPos = new THREE.Vector3(0, -3.5, 0);
 createHelper(manTargetPos, 0xff0000, 'Posición objetivo hombre');
 
-// Helper para el radio
-const radioTargetPos = new THREE.Vector3(1.5, -3.5, 0.5);
-createHelper(radioTargetPos, 0x00ff00, 'Posición objetivo radio');
+// Helper para el radio (más cerca del hombre)
+const radioTargetPos = new THREE.Vector3(0.7, -3.7, 0.3);
+createHelper(radioTargetPos, 0x00ff00, 'Posición objetivo radio (más pequeño, cerca del hombre)');
 
 // Cargar modelo del hombre con ruta absoluta
 const manUrl = '/test/man.glb';
@@ -504,9 +504,15 @@ loader.load(manUrl, function(gltf) {
     manModel.position.copy(manTargetPos);
     console.log('Posición aplicada:', manTargetPos);
     
-    // Rotar
-    manModel.rotation.y = Math.PI / 6;
-    console.log('Rotación aplicada:', Math.PI / 6, 'radianes (', (Math.PI/6 * 180/Math.PI).toFixed(0), 'grados)');
+    // Rotar para postura de descanso natural
+    // Rotación X: acostar al hombre (horizontal)
+    manModel.rotation.x = -Math.PI / 2 + 0.3; // 90 grados - 0.3 rad para inclinar ligeramente la cabeza
+    // Rotación Y: orientación lateral
+    manModel.rotation.y = Math.PI / 3; // 60 grados
+    // Rotación Z: ligera inclinación para parecer más natural
+    manModel.rotation.z = 0.2; // ligeramente inclinado
+    console.log('Rotación aplicada - X:', (-Math.PI/2 + 0.3).toFixed(2), 'Y:', (Math.PI/3).toFixed(2), 'Z: 0.2');
+    console.log('Postura: tumbado de lado, ligera inclinación natural');
     
     // Añadir a la escena
     scene.add(manModel);
@@ -557,10 +563,10 @@ loader.load(radioUrl, function(gltf) {
     const size = box.getSize(new THREE.Vector3());
     console.log('Tamaño original del radio:', size);
     
-    // Escalar
-    const targetSize = 0.8;
+    // Escalar - radio debe ser mucho más pequeño (tamaño realista)
+    const targetSize = 0.25; // Reducido de 0.8 a 0.25 (aprox 1/3 del tamaño anterior)
     const scaleFactor = targetSize / Math.max(size.x, size.y, size.z);
-    console.log('Factor de escala radio:', scaleFactor);
+    console.log('Factor de escala radio:', scaleFactor, '(tamaño objetivo:', targetSize, ')');
     
     radioModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
     
