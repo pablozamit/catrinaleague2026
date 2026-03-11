@@ -45,6 +45,15 @@ async function markBadgesAsSeen(userId) {
     }
 }
 
+// Mark a single badge as read
+async function markBadgeAsRead(userId, badgeId) {
+    if (!database) return;
+
+    await database.ref(`users/${userId}/badges/${badgeId}/seen`).set(true);
+    await updateNotificationBell(userId);
+    await loadNotifications(userId); // Refresh dropdown
+}
+
 // Get new badges for display
 async function getNewBadges(userId) {
     if (!database) return [];
@@ -306,6 +315,21 @@ async function showBadgePopup(userId) {
             
             .badge-popup-close:hover {
                 transform: scale(1.05);
+            }
+
+            .mark-as-read {
+                background: none;
+                border: none;
+                color: #4ade80;
+                font-size: 18px;
+                cursor: pointer;
+                padding: 4px 8px;
+                border-radius: 4px;
+                transition: background 0.2s;
+            }
+
+            .mark-as-read:hover {
+                background: rgba(74, 222, 128, 0.2);
             }
             
             .notification-bell {
@@ -586,6 +610,9 @@ async function loadNotifications(userId) {
                         <div class="notification-text">¡Nuevo badge: ${badge.name}!</div>
                         <div class="notification-desc">${badge.description}</div>
                     </div>
+                    <button class="mark-as-read" onclick="markBadgeAsRead('${userId}', '${badge.id}')">
+                        ✓
+                    </button>
                 </div>
             `).join('');
             html += '</div>';
@@ -653,6 +680,7 @@ async function initNotifications() {
 if (typeof window !== 'undefined') {
     window.getNotificationCount = getNotificationCount;
     window.markBadgesAsSeen = markBadgesAsSeen;
+    window.markBadgeAsRead = markBadgeAsRead;
     window.getNewBadges = getNewBadges;
     window.createNotificationBell = createNotificationBell;
     window.updateNotificationBell = updateNotificationBell;
