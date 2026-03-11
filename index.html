@@ -244,9 +244,6 @@
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // Eliminar loading
-        document.getElementById('loading').style.display = 'none';
-
         // ILUMINACIÓN
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(ambientLight);
@@ -440,18 +437,20 @@
         const pantsMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
 
         // Torso
-        const torso = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.6, 2), shirtMaterial);
+        const manTorsoGeo = new THREE.BoxGeometry(1.2, 0.6, 2);
+        const torso = new THREE.Mesh(manTorsoGeo, shirtMaterial);
         torso.position.set(0, -3.7, 0);
         manGroup.add(torso);
 
         // Cabeza
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 16, 16), skinMaterial);
+        const manHeadGeo = new THREE.SphereGeometry(0.35, 16, 16);
+        const head = new THREE.Mesh(manHeadGeo, skinMaterial);
         head.position.set(0, -3.7, 1.3);
         manGroup.add(head);
 
         // Piernas (acurrucadas)
-        const legGeometry = new THREE.CylinderGeometry(0.2, 0.2, 1.5, 8);
-        const leg1 = new THREE.Mesh(legGeometry, pantsMaterial);
+        const manLegGeo = new THREE.CylinderGeometry(0.2, 0.2, 1.5, 8);
+        const leg1 = new THREE.Mesh(manLegGeo, pantsMaterial);
         leg1.rotation.z = Math.PI / 2;
         leg1.rotation.y = Math.PI / 4;
         leg1.position.set(0.4, -3.7, -1.2);
@@ -463,8 +462,8 @@
         manGroup.add(leg2);
 
         // Brazos
-        const armGeometry = new THREE.CylinderGeometry(0.15, 0.15, 1.2, 8);
-        const arm1 = new THREE.Mesh(armGeometry, skinMaterial);
+        const manArmGeo = new THREE.CylinderGeometry(0.15, 0.15, 1.2, 8);
+        const arm1 = new THREE.Mesh(manArmGeo, skinMaterial);
         arm1.rotation.z = Math.PI / 2;
         arm1.position.set(0.8, -3.7, 0.3);
         manGroup.add(arm1);
@@ -473,7 +472,7 @@
         arm2.position.set(-0.8, -3.7, 0.3);
         manGroup.add(arm2);
 
-        manGroup.rotation.y = Math.PI / 6; // Un poco inclinado para que parezca más natural
+        manGroup.rotation.y = Math.PI / 6; 
         scene.add(manGroup);
 
         // CONTROLES DE CÁMARA (Mouse)
@@ -509,8 +508,10 @@
 
         // Touch events para móvil
         document.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            if (e.touches && e.touches[0]) {
+                isDragging = true;
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
         });
 
         document.addEventListener('touchend', () => {
@@ -518,7 +519,7 @@
         });
 
         document.addEventListener('touchmove', (e) => {
-            if (isDragging) {
+            if (isDragging && e.touches && e.touches[0]) {
                 const deltaMove = {
                     x: e.touches[0].clientX - previousMousePosition.x,
                     y: e.touches[0].clientY - previousMousePosition.y
@@ -545,9 +546,6 @@
 
             if (intersects.length > 0) {
                 const pocket = intersects[0].object;
-                const pocketId = pocket.userData.id;
-                
-                // Animar bola hacia la tronera
                 animateBallToPocket(pocket.position);
             }
         }
@@ -557,7 +555,7 @@
             const duration = 800;
             const startTime = Date.now();
 
-            function animate() {
+            function animateMatch() {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 const easeProgress = 1 - Math.pow(1 - progress, 3);
@@ -566,24 +564,19 @@
                 cueBall.position.y = 0.4 + Math.sin(progress * Math.PI) * 0.1;
 
                 if (progress < 1) {
-                    requestAnimationFrame(animate);
+                    requestAnimationFrame(animateMatch);
                 } else {
-                    // Caer en la tronera
-                    cueBall.scale.setScalar(1 - progress);
+                    cueBall.scale.setScalar(0);
                     setTimeout(() => {
-                        // Redireccionar según tronera
                         const pocketId = pockets.find(p => p.position.equals(targetPosition))?.userData.id;
-                        if (pocketId === 'tl' || pocketId === 'tc' || pocketId === 'bc' || pocketId === 'br') {
-                            if (pocketId === 'tl') window.location.href = 'reglas/';
-                            else if (pocketId === 'tc') window.location.href = 'elo/';
-                            else if (pocketId === 'bc') window.location.href = 'liga/';
-                            else if (pocketId === 'br') window.location.href = 'historial/';
-                        }
+                        if (pocketId === 'tl') window.location.href = 'reglas/';
+                        else if (pocketId === 'tc') window.location.href = 'elo/';
+                        else if (pocketId === 'bc') window.location.href = 'liga/';
+                        else if (pocketId === 'br') window.location.href = 'historial/';
                     }, 300);
                 }
             }
-
-            animate();
+            animateMatch();
         }
 
         document.addEventListener('click', onMouseClick);
@@ -616,15 +609,11 @@
             pocketPositions.forEach(pocketData => {
                 const marker = markers[pocketData.id];
                 if (marker) {
-                    // Proyectar posición 3D a 2D
                     const pos = new THREE.Vector3(pocketData.pos[0], pocketData.pos[1] + 1, pocketData.pos[2]);
                     pos.project(camera);
-                    
-                    // Convertir a coordenadas de pantalla
                     const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
                     const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
                     
-                    // Solo mostrar si está frente a la cámara
                     if (pos.z < 1) {
                         marker.style.left = x + 'px';
                         marker.style.top = y + 'px';
@@ -637,83 +626,57 @@
             });
         }
 
-        // Click en marcadores HTML
         Object.keys(markers).forEach(id => {
             const marker = markers[id];
             if (marker) {
-                const handleClick = (e) => {
+                marker.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const target = marker.getAttribute('data-target');
-                    const isLocked = marker.classList.contains('locked');
-                    
-                    if (!isLocked && target) {
+                    if (!marker.classList.contains('locked') && target) {
                         const pocketData = pocketPositions.find(p => p.id === id);
                         if (pocketData) {
-                            const pos = new THREE.Vector3(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]);
-                            animateBallToPocket(pos);
-                            setTimeout(() => {
-                                window.location.href = target;
-                            }, 1000);
+                            animateBallToPocket(new THREE.Vector3(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]));
+                            setTimeout(() => { window.location.href = target; }, 1000);
                         }
-                    } else if (isLocked) {
-                        // Efecto de shake para bloqueados
-                        marker.style.transform = 'translate(-50%, -50%) scale(0.9)';
-                        setTimeout(() => {
-                            marker.style.transform = 'translate(-50%, -50%) scale(1)';
-                        }, 150);
                     }
-                };
-                
-                marker.addEventListener('click', handleClick);
-                marker.addEventListener('touchend', handleClick);
+                });
             }
         });
 
-        // ANIMACIÓN
         function animate() {
             requestAnimationFrame(animate);
-
-            // Actualizar posición de cámara
             camera.position.x = Math.sin(cameraAngle) * cameraRadius;
             camera.position.z = Math.cos(cameraAngle) * cameraRadius;
             camera.position.y = cameraHeight;
             camera.lookAt(0, 0, 0);
-
-            // Actualizar posición de marcadores
             updateMarkers();
-
             renderer.render(scene, camera);
         }
 
         animate();
 
-        // Responsive
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // Ocultar loading una vez todo está cargado e inicializado
+        // Ocultar pantalla de carga
         window.addEventListener('load', () => {
-            const loading = document.getElementById('loading');
-            if (loading) loading.style.display = 'none';
+            const l = document.getElementById('loading');
+            if (l) l.style.display = 'none';
         });
-        
-        // Backup para ocultar loading si el evento load ya pasó
         setTimeout(() => {
-            const loading = document.getElementById('loading');
-            if (loading && loading.style.display !== 'none') {
-                loading.style.display = 'none';
-            }
-        }, 1000);
+            const l = document.getElementById('loading');
+            if (l) l.style.display = 'none';
+        }, 1500);
     </script>
     
-    <!-- Translations -->
     <script src="js/translations.js"></script>
     <script>
-        // Add language selector to header
-        document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
+        if (typeof createLanguageSelector === 'function') {
+            document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
+        }
     </script>
 </body>
 </html>
