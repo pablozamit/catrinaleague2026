@@ -437,54 +437,184 @@
 
         scene.add(tableGroup);
 
-// CARGAR MODELOS 3D GLB
-const loader = new THREE.GLTFLoader();
+// SISTEMA DE LOGS EXHAUSTIVO Y CARGA DE MODELOS 3D
+console.log('=== INICIANDO SISTEMA DE CARGA DE MODELOS ===');
+console.log('URL base:', window.location.href);
+console.log('Ruta actual:', window.location.pathname);
 
-// Cargar modelo del hombre
-loader.load('man.glb', function(gltf) {
+// Verificar si THREE está cargado
+console.log('THREE disponible:', typeof THREE !== 'undefined' ? 'SÍ' : 'NO');
+console.log('GLTFLoader disponible:', typeof THREE.GLTFLoader !== 'undefined' ? 'SÍ' : 'NO');
+
+// Crear loader
+const loader = new THREE.GLTFLoader();
+console.log('GLTFLoader instanciado correctamente');
+
+// Función para crear helper visual
+function createHelper(position, color, label) {
+    const geometry = new THREE.SphereGeometry(0.1, 8, 8);
+    const material = new THREE.MeshBasicMaterial({ color: color, wireframe: true });
+    const helper = new THREE.Mesh(geometry, material);
+    helper.position.copy(position);
+    scene.add(helper);
+    console.log('Helper creado:', label, 'en posición', position);
+    return helper;
+}
+
+// Luz específica para modelos (más intensa)
+const modelLight = new THREE.PointLight(0xffffff, 2, 15);
+modelLight.position.set(0, -2, 0);
+scene.add(modelLight);
+console.log('Luz específica para modelos añadida en (0, -2, 0) con intensidad 2');
+
+// Helper para ver dónde debería estar el hombre
+const manTargetPos = new THREE.Vector3(0, -3.5, 0);
+createHelper(manTargetPos, 0xff0000, 'Posición objetivo hombre');
+
+// Helper para el radio
+const radioTargetPos = new THREE.Vector3(1.5, -3.5, 0.5);
+createHelper(radioTargetPos, 0x00ff00, 'Posición objetivo radio');
+
+// Cargar modelo del hombre con ruta absoluta
+const manUrl = '/test/man.glb';
+console.log('Intentando cargar hombre desde:', manUrl);
+
+loader.load(manUrl, function(gltf) {
+    console.log('=== HOMBRE CARGADO EXITOSAMENTE ===');
+    console.log('Estructura del modelo:', gltf);
+    console.log('Escena del modelo:', gltf.scene);
+    console.log('Número de meshes:', gltf.scene.children.length);
+    
     const manModel = gltf.scene;
     
-    // Escalar el modelo para que quepa bajo la mesa
-    manModel.scale.set(0.015, 0.015, 0.015);
+    // Calcular bounding box para escalar correctamente
+    const box = new THREE.Box3().setFromObject(manModel);
+    const size = box.getSize(new THREE.Vector3());
+    console.log('Tamaño original del modelo:', size);
     
-    // Posicionar bajo la mesa (sentado o acostado)
-    manModel.position.set(0, -3.8, 0);
+    // Escalar para que sea aproximadamente 1.5 unidades de alto
+    const targetHeight = 1.5;
+    const scaleFactor = targetHeight / size.y;
+    console.log('Factor de escala calculado:', scaleFactor);
     
-    // Rotar para que mire hacia la mesa
+    manModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    console.log('Escala aplicada:', scaleFactor);
+    
+    // Posicionar
+    manModel.position.copy(manTargetPos);
+    console.log('Posición aplicada:', manTargetPos);
+    
+    // Rotar
     manModel.rotation.y = Math.PI / 6;
+    console.log('Rotación aplicada:', Math.PI / 6, 'radianes (', (Math.PI/6 * 180/Math.PI).toFixed(0), 'grados)');
     
     // Añadir a la escena
     scene.add(manModel);
+    console.log('HOMBRE AÑADIDO A LA ESCENA');
     
-    console.log('Modelo del hombre cargado correctamente');
+    // Verificar que está en la escena
+    console.log('¿Hombre en escena?', scene.children.includes(manModel) ? 'SÍ' : 'NO');
+    
 }, function(xhr) {
-    console.log('Cargando modelo del hombre: ' + (xhr.loaded / xhr.total * 100) + '%');
+    if (xhr.lengthComputable) {
+        const percent = (xhr.loaded / xhr.total * 100).toFixed(2);
+        console.log('Cargando hombre:', percent + '%');
+    } else {
+        console.log('Cargando hombre... (progreso desconocido)');
+    }
 }, function(error) {
-    console.error('Error cargando modelo del hombre:', error);
+    console.error('=== ERROR CARGANDO HOMBRE ===');
+    console.error('Mensaje:', error.message);
+    console.error('Error completo:', error);
+    console.error('URL intentada:', manUrl);
+    
+    // Intentar con URL alternativa
+    const fallbackUrl = 'man.glb';
+    console.log('Intentando URL alternativa:', fallbackUrl);
+    loader.load(fallbackUrl, function(gltf) {
+        console.log('HOMBRE CARGADO CON URL ALTERNATIVA');
+        const manModel = gltf.scene;
+        manModel.scale.set(0.02, 0.02, 0.02);
+        manModel.position.copy(manTargetPos);
+        scene.add(manModel);
+    }, null, function(err) {
+        console.error('También falló la URL alternativa:', err);
+    });
 });
 
-// Cargar modelo del boombox/radio
-loader.load('boombox.glb', function(gltf) {
+// Cargar modelo del radio/boombox con ruta absoluta
+const radioUrl = '/test/boombox.glb';
+console.log('Intentando cargar radio desde:', radioUrl);
+
+loader.load(radioUrl, function(gltf) {
+    console.log('=== RADIO CARGADO EXITOSAMENTE ===');
+    console.log('Estructura del modelo:', gltf);
+    
     const radioModel = gltf.scene;
     
-    // Escalar el modelo
-    radioModel.scale.set(0.008, 0.008, 0.008);
+    // Calcular bounding box
+    const box = new THREE.Box3().setFromObject(radioModel);
+    const size = box.getSize(new THREE.Vector3());
+    console.log('Tamaño original del radio:', size);
     
-    // Posicionar al lado del hombre
-    radioModel.position.set(1.5, -3.7, 0.5);
+    // Escalar
+    const targetSize = 0.8;
+    const scaleFactor = targetSize / Math.max(size.x, size.y, size.z);
+    console.log('Factor de escala radio:', scaleFactor);
     
-    // Rotar para orientación natural
+    radioModel.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    
+    // Posicionar
+    radioModel.position.copy(radioTargetPos);
+    console.log('Posición radio aplicada:', radioTargetPos);
+    
+    // Rotar
     radioModel.rotation.y = -Math.PI / 4;
     
     // Añadir a la escena
     scene.add(radioModel);
+    console.log('RADIO AÑADIDO A LA ESCENA');
     
-    console.log('Modelo del radio cargado correctamente');
 }, function(xhr) {
-    console.log('Cargando modelo del radio: ' + (xhr.loaded / xhr.total * 100) + '%');
+    if (xhr.lengthComputable) {
+        const percent = (xhr.loaded / xhr.total * 100).toFixed(2);
+        console.log('Cargando radio:', percent + '%');
+    } else {
+        console.log('Cargando radio...');
+    }
 }, function(error) {
-    console.error('Error cargando modelo del radio:', error);
+    console.error('=== ERROR CARGANDO RADIO ===');
+    console.error('Mensaje:', error.message);
+    console.error('URL intentada:', radioUrl);
+    
+    // Intentar con URL alternativa
+    const fallbackUrl = 'boombox.glb';
+    console.log('Intentando URL alternativa:', fallbackUrl);
+    loader.load(fallbackUrl, function(gltf) {
+        console.log('RADIO CARGADO CON URL ALTERNATIVA');
+        const radioModel = gltf.scene;
+        radioModel.scale.set(0.01, 0.01, 0.01);
+        radioModel.position.copy(radioTargetPos);
+        scene.add(radioModel);
+    }, null, function(err) {
+        console.error('También falló la URL alternativa:', err);
+    });
 });
+
+// Log del estado final de la escena después de 5 segundos
+setTimeout(function() {
+    console.log('=== ESTADO DE LA ESCENA DESPUÉS DE 5 SEGUNDOS ===');
+    console.log('Total objetos en escena:', scene.children.length);
+    
+    let modelCount = 0;
+    scene.traverse(function(child) {
+        if (child.type === 'Group' || child.type === 'Scene') {
+            console.log('Objeto encontrado:', child.type, child.name || '(sin nombre)', 'en posición', child.position);
+            modelCount++;
+        }
+    });
+    console.log('Número de grupos/escenas:', modelCount);
+}, 5000);
 
 
 
