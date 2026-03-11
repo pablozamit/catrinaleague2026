@@ -549,8 +549,11 @@
             document.getElementById('adminContent').classList.add('admin-visible');
             
             // Load admin functions from firebase.js
-            loadAdminMatchUsers();
-            loadCurrentLeaderboard();
+            // Wait for Firebase to be ready before loading data
+            waitForFirebase().then(() => {
+                loadAdminMatchUsers();
+                loadCurrentLeaderboard();
+            });
         }
 
         // Load users for admin match form
@@ -558,6 +561,12 @@
 
         async function loadAdminMatchUsers() {
             try {
+                // Check if database is available
+                if (typeof database === 'undefined' || !database.ref) {
+                    console.error('Firebase database not initialized');
+                    return;
+                }
+                
                 const usersSnap = await database.ref('users').once('value');
                 const users = usersSnap.val();
                 
@@ -909,6 +918,25 @@
             };
         }
 
+        // Wait for Firebase to be ready
+        async function waitForFirebase() {
+            return new Promise((resolve) => {
+                let attempts = 0;
+                const maxAttempts = 50;
+                const interval = setInterval(() => {
+                    if (typeof firebase !== 'undefined' && firebase.database) {
+                        clearInterval(interval);
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(interval);
+                        console.error('Firebase failed to load');
+                        resolve();
+                    }
+                    attempts++;
+                }, 100);
+            });
+        }
+        
         // Initialize
         waitForFirebase().then(async () => {
             document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
