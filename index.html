@@ -691,6 +691,20 @@
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
+
+        // Ocultar loading una vez todo está cargado e inicializado
+        window.addEventListener('load', () => {
+            const loading = document.getElementById('loading');
+            if (loading) loading.style.display = 'none';
+        });
+        
+        // Backup para ocultar loading si el evento load ya pasó
+        setTimeout(() => {
+            const loading = document.getElementById('loading');
+            if (loading && loading.style.display !== 'none') {
+                loading.style.display = 'none';
+            }
+        }, 1000);
     </script>
     
     <!-- Translations -->
