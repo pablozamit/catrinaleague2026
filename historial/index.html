@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial de Partidos - La Catrina</title>
+    <title data-i18n-title="nav_history">Historial de Partidos - La Catrina</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -37,6 +37,7 @@
             padding: 2rem;
             text-align: center;
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            position: relative;
         }
 
         .header h1 {
@@ -47,6 +48,7 @@
             text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
             letter-spacing: 4px;
             margin-bottom: 0.5rem;
+            text-transform: uppercase;
         }
 
         .user-info {
@@ -65,6 +67,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            z-index: 100;
         }
 
         .header-right {
@@ -74,6 +77,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            z-index: 100;
         }
 
         .logout-btn {
@@ -132,38 +136,58 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
+            gap: 10px;
+        }
+
+        .player-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .player-name {
             font-weight: 600;
             font-size: 1.1rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .winner {
+        .player-info.winner .player-name {
             color: var(--color-gold);
         }
 
-        .loser {
+        .player-info.loser .player-name {
             color: var(--color-text-muted);
+        }
+
+        .winner-tag {
+            font-size: 0.7rem;
+            color: var(--color-gold);
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
         }
 
         .match-details {
             display: flex;
             justify-content: space-between;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--color-text-muted);
             margin-top: 8px;
             padding-top: 8px;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
         }
 
         .match-type {
             display: inline-block;
             padding: 4px 8px;
-            background: rgba(212, 175, 55, 0.2);
+            background: rgba(212, 175, 55, 0.15);
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             margin-right: 8px;
+            color: var(--color-gold);
+            font-weight: 600;
         }
 
         .elo-change {
@@ -195,24 +219,26 @@
             font-size: 4rem;
             margin-bottom: 1rem;
         }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="header">
-        <a href="../" class="back-link">← Volver</a>
+        <a href="../" class="back-link" data-i18n="back">← Volver</a>
         <div class="header-right">
             <div id="langSelectorContainer" style="margin-right: 15px;"></div>
             <div id="notificationBellContainer"></div>
-            <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+            <button class="logout-btn" onclick="logout()" data-i18n="logout">Cerrar Sesión</button>
         </div>
-        <h1>HISTORIAL DE PARTIDOS</h1>
-        <div class="user-info"><span>Usuario</span>: <span id="currentUsername">-</span></div>
+        <h1 data-i18n="nav_history">HISTORIAL DE PARTIDOS</h1>
+        <div class="user-info"><span data-i18n="login_username">Usuario</span>: <span id="currentUsername">-</span></div>
     </div>
 
     <div class="container">
         <div class="card">
             <div id="loadingScreen">
-                <div class="loading">Cargando...</div>
+                <div class="loading" data-i18n="loading">Cargando...</div>
             </div>
             
             <div id="matchesScreen" class="hidden">
@@ -222,13 +248,14 @@
     </div>
 
     <div class="footer">
-        <p>La Catrina Pool League</p>
+        <p>La Catrina Pool League &copy; 2026</p>
     </div>
 
     <!-- Firebase Scripts -->
     <script src="../js/firebase.js"></script>
     <script src="../js/notifications.js"></script>
     <script src="../js/toast.js"></script>
+    <script src="../js/translations.js"></script>
     
     <script>
         // Variables globales
@@ -287,8 +314,16 @@
                 
                 // Inicializar notificaciones
                 const bellContainer = document.getElementById('notificationBellContainer');
-                bellContainer.innerHTML = createNotificationBell();
-                await updateNotificationBell(user.uid);
+                if (bellContainer) {
+                    bellContainer.innerHTML = createNotificationBell();
+                    await updateNotificationBell(user.uid);
+                }
+
+                // Selector de idioma
+                const langContainer = document.getElementById('langSelectorContainer');
+                if (langContainer) {
+                    langContainer.innerHTML = createLanguageSelector();
+                }
                 
                 // Cargar partidos
                 await loadAllMatches();
@@ -305,9 +340,23 @@
             }
         }
 
+        function formatMatchDate(timestamp) {
+            if (!timestamp) return 'Fecha desconocida';
+            const date = new Date(timestamp);
+            if (isNaN(date.getTime())) return 'Fecha inválida';
+            
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
+        }
+
         async function loadAllMatches() {
             const container = document.getElementById('matchesContainer');
-            container.innerHTML = '<div class="loading">Cargando partidos...</div>';
+            container.innerHTML = `<div class="loading">${t('loading')}</div>`;
             
             try {
                 if (typeof database === 'undefined' || !database.ref) {
@@ -315,7 +364,7 @@
                     return;
                 }
 
-                const matchesSnap = await database.ref('matches').orderByChild('timestamp').once('value');
+                const matchesSnap = await database.ref('matches').once('value');
                 const matches = matchesSnap.val();
                 
                 if (!matches) {
@@ -328,49 +377,70 @@
                     return;
                 }
                 
-                // Convertir a array y ordenar por timestamp (más recientes primero)
+                // Convertir a array y ordenar por fecha (más recientes primero)
+                // Usamos timestamp o confirmed_at o created_at
                 allMatches = Object.entries(matches)
-                    .map(([matchId, match]) => ({ matchId, ...match }))
-                    .sort((a, b) => b.timestamp - a.timestamp);
+                    .map(([matchId, match]) => ({ 
+                        matchId, 
+                        ...match,
+                        sortTimestamp: match.timestamp || match.confirmed_at || match.created_at || 0
+                    }))
+                    .filter(match => match.status === 'confirmed') // Solo mostramos los confirmados
+                    .sort((a, b) => b.sortTimestamp - a.sortTimestamp);
                 
                 const html = allMatches.map(match => {
-                    const date = new Date(match.timestamp);
-                    const confirmDate = match.confirmed_at ? new Date(match.confirmed_at) : null;
+                    const matchDate = formatMatchDate(match.sortTimestamp);
+                    const confirmDate = match.confirmed_at ? formatMatchDate(match.confirmed_at) : null;
                     
-                    const winner = match.winner_username || 'Desconocido';
-                    const loser = match.player1_username === winner ? match.player2_username : match.player1_username;
+                    // Lógica robusta de nombres
+                    const winnerId = match.winner_id;
+                    const p1Id = match.player1_id;
+                    const p2Id = match.player2_id;
                     
-                    const matchTypeNames = {
-                        'rey_mesa': 'Rey de la Mesa',
-                        'torneo': 'Torneo',
-                        'liga_grupos': 'Liga - Grupos',
-                        'liga_finales': 'Liga - Final'
-                    };
+                    let winnerName, loserName;
+                    
+                    if (winnerId === p1Id) {
+                        winnerName = match.player1_username || 'Desconocido';
+                        loserName = match.player2_username || 'Desconocido';
+                    } else if (winnerId === p2Id) {
+                        winnerName = match.player2_username || 'Desconocido';
+                        loserName = match.player1_username || 'Desconocido';
+                    } else {
+                        // Si no hay IDs claros, intentar por campos directos
+                        winnerName = match.winner_username || 'Desconocido';
+                        loserName = (match.player1_username === winnerName) ? match.player2_username : match.player1_username;
+                        if (!loserName) loserName = 'Desconocido';
+                    }
+                    
+                    // Cambios de ELO
+                    const winEloChange = match.winner_elo_change !== undefined ? match.winner_elo_change : 0;
+                    const loseEloChange = match.loser_elo_change !== undefined ? match.loser_elo_change : 0;
+                    
+                    const matchTypeKey = `match_type_${match.match_type}`;
+                    const matchTypeName = t(matchTypeKey) !== matchTypeKey ? t(matchTypeKey) : (match.match_type || 'Partido');
                     
                     return `
                         <div class="match-item">
                             <div class="match-header">
-                                <span class="match-type">${matchTypeNames[match.match_type] || match.match_type}</span>
-                                <span style="color: #888; font-size: 0.8rem;">${date.toLocaleDateString()}</span>
+                                <span class="match-type">${matchTypeName}</span>
+                                <span style="color: #888; font-size: 0.75rem;">${matchDate}</span>
                             </div>
                             <div class="match-players">
-                                <span class="player-name winner">${winner}</span>
-                                <span style="color: #666;">vs</span>
-                                <span class="player-name loser">${loser}</span>
+                                <div class="player-info winner">
+                                    <span class="winner-tag">GANADOR</span>
+                                    <span class="player-name">${winnerName}</span>
+                                    <span class="elo-change positive">+${winEloChange} ELO</span>
+                                </div>
+                                <div style="color: #666; font-weight: 900; font-style: italic;">VS</div>
+                                <div class="player-info loser">
+                                    <span class="winner-tag" style="opacity: 0;">-</span>
+                                    <span class="player-name">${loserName}</span>
+                                    <span class="elo-change negative">${loseEloChange >= 0 ? '-' : ''}${Math.abs(loseEloChange)} ELO</span>
+                                </div>
                             </div>
                             <div class="match-details">
-                                <span>
-                                    <span class="elo-change ${match.winner_elo_change >= 0 ? 'positive' : 'negative'}">
-                                        ${winner}: ${match.winner_elo_change >= 0 ? '+' : ''}${match.winner_elo_change}
-                                    </span>
-                                    <span class="elo-change ${match.loser_elo_change >= 0 ? 'positive' : 'negative'}" style="margin-left: 10px;">
-                                        ${loser}: ${match.loser_elo_change >= 0 ? '+' : ''}${match.loser_elo_change}
-                                    </span>
-                                </span>
-                                <span style="font-size: 0.8rem;">
-                                    ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                    ${confirmDate ? ` | Confirmado: ${confirmDate.toLocaleDateString()} ${confirmDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}` : ''}
-                                </span>
+                                <span>ID: ${match.matchId.substring(0, 8)}...</span>
+                                <span>${confirmDate ? `Confirmado: ${confirmDate}` : ''}</span>
                             </div>
                         </div>
                     `;

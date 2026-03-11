@@ -21,6 +21,7 @@ const translations = {
         nav_ranking: 'Ranking ELO',
         nav_league: 'Liga',
         nav_login: 'Login / Resultados',
+        nav_history: 'Historial',
         nav_coming_soon: 'Próximamente',
         instructions: 'Arrastra para rotar • Haz clic en las troneras',
         
