@@ -23,7 +23,22 @@ const translations = {
         nav_login: 'Login / Resultados',
         nav_history: 'Historial',
         nav_coming_soon: 'Próximamente',
+        nav_lab: 'Laboratorio',
         instructions: 'Arrastra para rotar • Haz clic en las troneras',
+        
+        // Laboratorio
+        lab_title: 'Laboratorio',
+        lab_subtitle: '¿Quién es mejor?',
+        lab_description_title: '¿Para qué sirve esto?',
+        lab_description_text: 'Este sistema nos ayuda a tener los rankings actualizados antes del inicio de la liga. Como muchos jugadores no han jugado partidas recientemente, sus ELOs pueden no reflejar su nivel real. Tus votos nos ayudan a crear un ranking más preciso.',
+        lab_how_works_title: '¿Cómo funciona?',
+        lab_how_works_text: 'Se muestran dos jugadores al azar. Tú decides quién es mejor basándote en lo que sepas (partidas observadas, nivel conocido, intuición...). No hace falta que hayas jugado contra ellos. Tus respuestas son anónimas y a ciegas.',
+        lab_question: '¿Quién es mejor?',
+        lab_a_better: 'A es mejor',
+        lab_b_better: 'B es mejor',
+        lab_similar: 'Nivel similar',
+        lab_nsnc: 'NS/NC',
+        lab_back: '← Volver a la mesa',
         
         // Login
         login_title: 'INICIAR SESIÓN',
@@ -346,7 +361,22 @@ const translations = {
         nav_league: 'League',
         nav_login: 'Login / Results',
         nav_coming_soon: 'Coming Soon',
+        nav_lab: 'Laboratory',
         instructions: 'Drag to rotate • Click on pockets',
+        
+        // Laboratory
+        lab_title: 'Laboratory',
+        lab_subtitle: 'Who is better?',
+        lab_description_title: 'What is this for?',
+        lab_description_text: 'This system helps us keep the rankings updated before the league starts. Since many players haven\\'t played matches recently, their ELOs may not reflect their real level. Your votes help us create a more accurate ranking.',
+        lab_how_works_title: 'How does it work?',
+        lab_how_works_text: 'Two random players are shown. You decide who is better based on what you know (watched matches, known level, intuition...). You don\\'t need to have played against them. Your responses are anonymous and blind.',
+        lab_question: 'Who is better?',
+        lab_a_better: 'A is better',
+        lab_b_better: 'B is better',
+        lab_similar: 'Similar level',
+        lab_nsnc: 'DK/NC',
+        lab_back: '← Back to table',
         
         // Login
         login_title: 'LOGIN',

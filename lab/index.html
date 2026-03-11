@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratorio - La Catrina Pool League</title>
+    <title data-i18n-title="lab_title">Laboratorio - La Catrina Pool League</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -30,30 +30,32 @@
 <body class="min-h-screen">
     <header class="bg-gradient-to-r from-slate-900 to-slate-700 text-white py-6 px-4 shadow-lg">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-3xl md:text-4xl font-black mb-1">🔬 LABORATORIO</h1>
-            <p class="text-slate-400 text-sm">¿Quién es mejor?</p>
+            <h1 class="text-3xl md:text-4xl font-black mb-1">🔬 <span data-i18n="lab_title">Laboratorio</span></h1>
+            <p class="text-slate-400 text-sm" data-i18n="lab_subtitle">¿Quién es mejor?</p>
         </div>
     </header>
 
     <main class="max-w-4xl mx-auto px-4 py-8">
         <!-- Explicación -->
         <div class="bg-slate-800 rounded-xl p-6 mb-8 border border-slate-700">
-            <h2 class="text-xl font-bold text-amber-400 mb-3">📊 ¿Para qué sirve esto?</h2>
-            <p class="text-slate-300 mb-4">
+            <h2 class="text-xl font-bold text-amber-400 mb-3" data-i18n="lab_description_title">📊 ¿Para qué sirve esto?</h2>
+            <p class="text-slate-300 mb-4" data-i18n="lab_description_text">
                 Este sistema nos ayuda a tener los <strong>rankings actualizados</strong> antes del inicio de la liga. 
-                Como muchos jugadores no han jugado partidas recientemente, sus ELOs pueden no reflejar su nivel real.
+                Como muchos jugadores no han jouéado partidas recientemente, sus ELOs pueden no reflejar su nivel real.
                 Tus votos nos ayudan a crear un ranking más preciso.
             </p>
-            <h2 class="text-xl font-bold text-amber-400 mb-3">🎮 ¿Cómo funciona?</h2>
-            <p class="text-slate-300">
+            <h2 class="text-xl font-bold text-amber-400 mb-3" data-i18n="lab_how_works_title">🎮 ¿Cómo funciona?</h2>
+            <p class="text-slate-300" data-i18n="lab_how_works_text">
                 Se muestran dos jugadores al azar. <strong>Tú decides</strong> quién es mejor basándote en lo que sepas 
-                (partidas observadas, nivel conocido, intuición...). No hace falta que hayas jugado contra ellos.
+                (partidas observadas, nivel conocido, intuición...). No hace falta que hayas jouéado contra ellos.
                 Tus respuestas son anónimas y a ciegas.
             </p>
         </div>
 
         <!-- Comparison Area -->
-        <p class="text-center text-slate-400 mb-4 text-lg">¿Quién es mejor?</p>
+        <p class="text-center text-slate-400 mb-4 text-lg" data-i18n="lab_question">¿Quién es mejor?</p>
+        
+        <div class="grid grid-cols-2 gap-4 mb-8">
             <!-- Player A -->
             <div id="playerA" class="player-card p-8 text-center" onclick="vote('A')">
                 <p class="text-4xl mb-4">🎱</p>
@@ -69,30 +71,31 @@
 
         <!-- Vote Buttons -->
         <div class="grid grid-cols-2 gap-3 mb-8">
-            <button onclick="vote('A')" class="btn-vote bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-4 rounded-lg text-lg">
+            <button onclick="vote('A')" class="btn-vote bg-green-600 hover:bg-green-500 text-white font-bold py-4 px-4 rounded-lg text-lg" data-i18n="lab_a_better">
                 ⬆️ A es mejor
             </button>
-            <button onclick="vote('B')" class="btn-vote bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-4 rounded-lg text-lg">
+            <button onclick="vote('B')" class="btn-vote bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-4 rounded-lg text-lg" data-i18n="lab_b_better">
                 ⬇️ B es mejor
             </button>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
-            <button onclick="vote('similar')" class="btn-vote bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-4 px-4 rounded-lg text-lg">
+            <button onclick="vote('similar')" class="btn-vote bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-4 px-4 rounded-lg text-lg" data-i18n="lab_similar">
                 🤝 Nivel similar
             </button>
-            <button onclick="vote('nsnc')" class="btn-vote bg-slate-600 hover:bg-slate-500 text-white font-bold py-4 px-4 rounded-lg text-lg">
+            <button onclick="vote('nsnc')" class="btn-vote bg-slate-600 hover:bg-slate-500 text-white font-bold py-4 px-4 rounded-lg text-lg" data-i18n="lab_nsnc">
                 ❓ NS/NC
             </button>
         </div>
     </main>
 
     <footer class="text-center py-6 text-slate-500">
-        <a href="../" class="text-amber-400 hover:underline">← Volver a la mesa</a>
+        <a href="../" class="text-amber-400 hover:underline" data-i18n="lab_back">← Volver a la mesa</a>
     </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="../js/translations.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyC-poobN5s9wPmW-cHddbLVaV7X5U1I",
@@ -119,6 +122,11 @@
         let players = [];
         let currentA = null;
         let currentB = null;
+
+        // Initialize translations
+        const savedLang = localStorage.getItem('catrina_lang') || 'es';
+        window.lang = savedLang;
+        updateTranslations();
 
         db.ref('users').once('value').then(snap => {
             const users = snap.val();
