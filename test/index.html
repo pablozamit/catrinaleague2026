@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Catrina - Pool League 3D</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <link rel="icon" type="image/png" id="favicon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Fondo del bar */
+        .bar-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('material/imagen2.jpeg') center/cover;
+            z-index: -1;
+        }
+
+        /* Canvas 3D */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* UI Overlay */
+        .ui-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+        }
+
+        .header h1 {
+            font-family: 'Georgia', serif;
+            font-size: 3rem;
+            color: #d4af37;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.8);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            margin-top: 0.5rem;
+        }
+
+        /* Marcadores de troneras (posicionados sobre el canvas) */
+        .pocket-marker {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 100;
+            opacity: 0;
+        }
+
+        .pocket-marker:hover {
+            transform: translate(-50%, -50%) scale(1.3) !important;
+            z-index: 200;
+        }
+
+        .pocket-marker.locked:hover {
+            transform: translate(-50%, -50%) scale(1.1) !important;
+        }
+
+        .pocket-label {
+            position: absolute;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            color: #d4af37;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: all 0.3s ease;
+            top: 60px;
+            pointer-events: none;
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+        }
+
+        .pocket-marker:hover .pocket-label {
+            opacity: 1;
+        }
+
+        .pocket-marker.locked .pocket-label {
+            color: #666;
+            border-color: #444;
+        }
+
+        /* Indicador de carga */
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #d4af37;
+            font-size: 1.5rem;
+            z-index: 1000;
+        }
+
+        /* Instrucciones */
+        .instructions {
+            position: fixed;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #888;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            z-index: 100;
+        }
+
+        /* Footer con versión */
+        .version-footer {
+            position: fixed;
+            bottom: 0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #444;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            z-index: 100;
+        }
+
+        .version-footer span {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="bar-bg"></div>
+    <div id="loading" data-i18n="loading">Cargando...</div>
+    <div id="canvas-container"></div>
+
+    <div class="ui-layer">
+        <div class="header">
+            <div style="position: absolute; top: 20px; right: 20px; z-index: 1000; display: flex; align-items: center; gap: 15px;">
+                <div id="langSelectorContainer"></div>
+                <div id="notificationBellContainer"></div>
+            </div>
+            <h1>LA CATRINA</h1>
+            <p data-i18n="app_subtitle">POOL LEAGUE & BILLIARDS</p>
+        </div>
+    </div>
+
+    <!-- Marcadores de troneras -->
+    <div class="pocket-marker" id="marker-tl" data-target="reglas/" data-active="true" style="left: 20%; top: 30%;">
+        <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">📋</span>
+        <div class="pocket-label" data-i18n="nav_rules">Reglas de la Liga</div>
+    </div>
+    
+    <div class="pocket-marker" id="marker-tc" data-target="elo/" data-active="true" style="left: 50%; top: 25%;">
+        <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🏆</span>
+        <div class="pocket-label" data-i18n="nav_ranking">Ranking ELO</div>
+    </div>
+    
+    <div class="pocket-marker" id="marker-tr" data-target="login.html" data-active="true" style="left: 80%; top: 30%;">
+        <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🔐</span>
+        <div class="pocket-label" data-i18n="nav_login">Login / Resultados</div>
+    </div>
+    
+    <div class="pocket-marker locked" id="marker-bl" style="left: 20%; top: 70%;">
+        <span style="font-size: 2rem; opacity: 0.6;">🔒</span>
+        <div class="pocket-label" data-i18n="nav_coming_soon">Próximamente</div>
+    </div>
+    
+    <div class="pocket-marker" id="marker-bc" data-target="liga/" data-active="true" style="left: 50%; top: 75%;">
+        <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🎱</span>
+        <div class="pocket-label" data-i18n="nav_league">Liga</div>
+    </div>
+    
+    <div class="pocket-marker" id="marker-br" data-target="historial/" data-active="true" style="left: 80%; top: 70%;">
+        <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">📜</span>
+        <div class="pocket-label" data-i18n="nav_history">Historial</div>
+    </div>
+
+    <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras</div>
+
+    <div class="version-footer">
+        La Catrina Pool League <span>v1.0.0</span>
+    </div>
+
+    <script>
+        // Escena 3D
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.Fog(0x000000, 10, 50);
+
+        // Cámara
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 12, 18);
+        camera.lookAt(0, 0, 0);
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // ILUMINACIÓN
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(ambientLight);
+
+        const spotLight = new THREE.SpotLight(0xffeebb, 1.5);
+        spotLight.position.set(0, 20, 5);
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.5;
+        spotLight.decay = 2;
+        spotLight.distance = 50;
+        spotLight.castShadow = true;
+        spotLight.shadow.mapSize.width = 2048;
+        spotLight.shadow.mapSize.height = 2048;
+        scene.add(spotLight);
+
+        const rimLight = new THREE.DirectionalLight(0xd4af37, 0.5);
+        rimLight.position.set(-10, 10, -10);
+        scene.add(rimLight);
+
+        // Light for under the table (man and radio)
+        const underTableLight = new THREE.PointLight(0xffffff, 0.5, 10);
+        underTableLight.position.set(0, -2, 0);
+        scene.add(underTableLight);
+
+        // MATERIALES
+        const feltMaterial = new THREE.MeshStandardMaterial({
+            color: 0x1a4d2e,
+            roughness: 0.9,
+            metalness: 0.1,
+        });
+
+        const woodMaterial = new THREE.MeshStandardMaterial({
+            color: 0x3d2817,
+            roughness: 0.7,
+            metalness: 0.2,
+        });
+
+        const rubberMaterial = new THREE.MeshStandardMaterial({
+            color: 0x0a0a0a,
+            roughness: 0.6,
+            metalness: 0.1,
+        });
+
+        const pocketMaterial = new THREE.MeshStandardMaterial({
+            color: 0x1a1a1a,
+            roughness: 0.4,
+            metalness: 0.6,
+        });
+
+        const ballMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            roughness: 0.1,
+            metalness: 0.1,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1,
+        });
+
+        // MESA DE BILLAR
+        const tableGroup = new THREE.Group();
+
+        // Tablero (fieltro)
+        const boardGeometry = new THREE.BoxGeometry(14, 0.3, 7);
+        const board = new THREE.Mesh(boardGeometry, feltMaterial);
+        board.position.y = 0.15;
+        board.receiveShadow = true;
+        tableGroup.add(board);
+
+        // Marco de madera (alrededor)
+        const frameThickness = 0.8;
+        const frameHeight = 0.6;
+
+        // Marco - Lados largos
+        const frameLongGeometry = new THREE.BoxGeometry(15.6, frameHeight, frameThickness);
+        const frameLong1 = new THREE.Mesh(frameLongGeometry, woodMaterial);
+        frameLong1.position.set(0, 0.3, 3.9);
+        frameLong1.castShadow = true;
+        frameLong1.receiveShadow = true;
+        tableGroup.add(frameLong1);
+
+        const frameLong2 = frameLong1.clone();
+        frameLong2.position.set(0, 0.3, -3.9);
+        tableGroup.add(frameLong2);
+
+        // Marco - Lados cortos
+        const frameShortGeometry = new THREE.BoxGeometry(frameThickness, frameHeight, 8.6);
+        const frameShort1 = new THREE.Mesh(frameShortGeometry, woodMaterial);
+        frameShort1.position.set(7.9, 0.3, 0);
+        frameShort1.castShadow = true;
+        frameShort1.receiveShadow = true;
+        tableGroup.add(frameShort1);
+
+        const frameShort2 = frameShort1.clone();
+        frameShort2.position.set(-7.9, 0.3, 0);
+        tableGroup.add(frameShort2);
+
+        // Bandas de goma
+        const cushionHeight = 0.5;
+        const cushionThickness = 0.4;
+
+        // Cojines largos
+        const cushionLongGeometry = new THREE.BoxGeometry(14, cushionHeight, cushionThickness);
+        const cushionLong1 = new THREE.Mesh(cushionLongGeometry, rubberMaterial);
+        cushionLong1.position.set(0, 0.55, 3.5);
+        cushionLong1.castShadow = true;
+        tableGroup.add(cushionLong1);
+
+        const cushionLong2 = cushionLong1.clone();
+        cushionLong2.position.set(0, 0.55, -3.5);
+        tableGroup.add(cushionLong2);
+
+        // Cojines cortos
+        const cushionShortGeometry = new THREE.BoxGeometry(cushionThickness, cushionHeight, 7);
+        const cushionShort1 = new THREE.Mesh(cushionShortGeometry, rubberMaterial);
+        cushionShort1.position.set(7, 0.55, 0);
+        cushionShort1.castShadow = true;
+        tableGroup.add(cushionShort1);
+
+        const cushionShort2 = cushionShort1.clone();
+        cushionShort2.position.set(-7, 0.55, 0);
+        tableGroup.add(cushionShort2);
+
+        // Patas de la mesa
+        const legGeometry = new THREE.CylinderGeometry(0.4, 0.3, 4, 16);
+        const legPositions = [
+            [-6, -2, -2.5], [6, -2, -2.5],
+            [-6, -2, 2.5], [6, -2, 2.5]
+        ];
+
+        legPositions.forEach(pos => {
+            const leg = new THREE.Mesh(legGeometry, woodMaterial);
+            leg.position.set(pos[0], pos[1], pos[2]);
+            leg.castShadow = true;
+            tableGroup.add(leg);
+        });
+
+        // TRONERAS
+        const pocketGeometry = new THREE.CylinderGeometry(0.5, 0.4, 0.6, 16);
+        const pockets = [];
+        const pocketPositions = [
+            { pos: [-7, 0.5, -3.5], id: 'tl' },
+            { pos: [0, 0.5, -3.5], id: 'tc' },
+            { pos: [7, 0.5, -3.5], id: 'tr' },
+            { pos: [-7, 0.5, 3.5], id: 'bl' },
+            { pos: [0, 0.5, 3.5], id: 'bc' },
+            { pos: [7, 0.5, 3.5], id: 'br' }
+        ];
+
+        pocketPositions.forEach((pocketData, index) => {
+            const pocket = new THREE.Mesh(pocketGeometry, pocketMaterial);
+            pocket.position.set(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]);
+            pocket.userData = { id: pocketData.id, index: index };
+            pockets.push(pocket);
+            tableGroup.add(pocket);
+        });
+
+        // BOLA BLANCA
+        const ballGeometry = new THREE.SphereGeometry(0.25, 32, 32);
+        const cueBall = new THREE.Mesh(ballGeometry, ballMaterial);
+        cueBall.position.set(0, 0.4, 0);
+        cueBall.castShadow = true;
+        tableGroup.add(cueBall);
+
+        // Líneas de la mesa
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.3, transparent: true });
+        
+        // Línea central
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0.16, -3.5),
+            new THREE.Vector3(0, 0.16, 3.5)
+        ]);
+        const centerLine = new THREE.Line(lineGeometry, lineMaterial);
+        tableGroup.add(centerLine);
+
+        // Línea horizontal
+        const hLineGeometry = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(-7, 0.16, 0),
+            new THREE.Vector3(7, 0.16, 0)
+        ]);
+        const horizontalLine = new THREE.Line(hLineGeometry, lineMaterial);
+        tableGroup.add(horizontalLine);
+
+        // Círculo central
+        const circleGeometry = new THREE.RingGeometry(0.4, 0.42, 32);
+        const circleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 0.3, transparent: true, side: THREE.DoubleSide });
+        const centerCircle = new THREE.Mesh(circleGeometry, circleMaterial);
+        centerCircle.rotation.x = -Math.PI / 2;
+        centerCircle.position.set(0, 0.16, 0);
+        tableGroup.add(centerCircle);
+
+        scene.add(tableGroup);
+
+// CARGAR MODELOS 3D GLB
+const loader = new THREE.GLTFLoader();
+
+// Cargar modelo del hombre
+loader.load('man.glb', function(gltf) {
+    const manModel = gltf.scene;
+    
+    // Escalar el modelo para que quepa bajo la mesa
+    manModel.scale.set(0.015, 0.015, 0.015);
+    
+    // Posicionar bajo la mesa (sentado o acostado)
+    manModel.position.set(0, -3.8, 0);
+    
+    // Rotar para que mire hacia la mesa
+    manModel.rotation.y = Math.PI / 6;
+    
+    // Añadir a la escena
+    scene.add(manModel);
+    
+    console.log('Modelo del hombre cargado correctamente');
+}, function(xhr) {
+    console.log('Cargando modelo del hombre: ' + (xhr.loaded / xhr.total * 100) + '%');
+}, function(error) {
+    console.error('Error cargando modelo del hombre:', error);
+});
+
+// Cargar modelo del boombox/radio
+loader.load('boombox.glb', function(gltf) {
+    const radioModel = gltf.scene;
+    
+    // Escalar el modelo
+    radioModel.scale.set(0.008, 0.008, 0.008);
+    
+    // Posicionar al lado del hombre
+    radioModel.position.set(1.5, -3.7, 0.5);
+    
+    // Rotar para orientación natural
+    radioModel.rotation.y = -Math.PI / 4;
+    
+    // Añadir a la escena
+    scene.add(radioModel);
+    
+    console.log('Modelo del radio cargado correctamente');
+}, function(xhr) {
+    console.log('Cargando modelo del radio: ' + (xhr.loaded / xhr.total * 100) + '%');
+}, function(error) {
+    console.error('Error cargando modelo del radio:', error);
+});
+
+
+
+        // CONTROLES DE CÁMARA (Mouse)
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let cameraAngle = 0;
+        let cameraHeight = 12;
+        let cameraRadius = 18;
+
+        document.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const deltaMove = {
+                    x: e.clientX - previousMousePosition.x,
+                    y: e.clientY - previousMousePosition.y
+                };
+
+                cameraAngle -= deltaMove.x * 0.01;
+                cameraHeight += deltaMove.y * 0.05;
+                cameraHeight = Math.max(5, Math.min(20, cameraHeight));
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            }
+        });
+
+        // Touch events para móvil
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches && e.touches[0]) {
+                isDragging = true;
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches && e.touches[0]) {
+                const deltaMove = {
+                    x: e.touches[0].clientX - previousMousePosition.x,
+                    y: e.touches[0].clientY - previousMousePosition.y
+                };
+
+                cameraAngle -= deltaMove.x * 0.01;
+                cameraHeight += deltaMove.y * 0.05;
+                cameraHeight = Math.max(5, Math.min(20, cameraHeight));
+
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        // Click en troneras (mantener funcionalidad original)
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        function onMouseClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(pockets);
+
+            if (intersects.length > 0) {
+                const pocket = intersects[0].object;
+                animateBallToPocket(pocket.position);
+            }
+        }
+
+        function animateBallToPocket(targetPosition) {
+            const startPosition = cueBall.position.clone();
+            const duration = 800;
+            const startTime = Date.now();
+
+            function animateMatch() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+
+                cueBall.position.lerpVectors(startPosition, targetPosition, easeProgress);
+                cueBall.position.y = 0.4 + Math.sin(progress * Math.PI) * 0.1;
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateMatch);
+                } else {
+                    cueBall.scale.setScalar(0);
+                    setTimeout(() => {
+                        const pocketId = pockets.find(p => p.position.equals(targetPosition))?.userData.id;
+                        if (pocketId === 'tl') window.location.href = 'reglas/';
+                        else if (pocketId === 'tc') window.location.href = 'elo/';
+                        else if (pocketId === 'bc') window.location.href = 'liga/';
+                        else if (pocketId === 'br') window.location.href = 'historial/';
+                    }, 300);
+                }
+            }
+            animateMatch();
+        }
+
+        document.addEventListener('click', onMouseClick);
+        document.addEventListener('touchend', (e) => {
+            if (e.changedTouches && e.changedTouches[0]) {
+                mouse.x = (e.changedTouches[0].clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
+                
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(pockets);
+
+                if (intersects.length > 0) {
+                    const pocket = intersects[0].object;
+                    animateBallToPocket(pocket.position);
+                }
+            }
+        });
+
+        // ACTUALIZAR POSICIÓN DE MARCADORES HTML
+        const markers = {
+            'tl': document.getElementById('marker-tl'),
+            'tc': document.getElementById('marker-tc'),
+            'tr': document.getElementById('marker-tr'),
+            'bl': document.getElementById('marker-bl'),
+            'bc': document.getElementById('marker-bc'),
+            'br': document.getElementById('marker-br')
+        };
+
+        function updateMarkers() {
+            pocketPositions.forEach(pocketData => {
+                const marker = markers[pocketData.id];
+                if (marker) {
+                    const pos = new THREE.Vector3(pocketData.pos[0], pocketData.pos[1] + 1, pocketData.pos[2]);
+                    pos.project(camera);
+                    const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
+                    const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
+                    
+                    if (pos.z < 1) {
+                        marker.style.left = x + 'px';
+                        marker.style.top = y + 'px';
+                        marker.style.transform = 'translate(-50%, -50%)';
+                        marker.style.opacity = '1';
+                    } else {
+                        marker.style.opacity = '0';
+                    }
+                }
+            });
+        }
+
+        Object.keys(markers).forEach(id => {
+            const marker = markers[id];
+            if (marker) {
+                marker.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const target = marker.getAttribute('data-target');
+                    if (!marker.classList.contains('locked') && target) {
+                        const pocketData = pocketPositions.find(p => p.id === id);
+                        if (pocketData) {
+                            animateBallToPocket(new THREE.Vector3(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]));
+                            setTimeout(() => { window.location.href = target; }, 1000);
+                        }
+                    }
+                });
+            }
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            camera.position.x = Math.sin(cameraAngle) * cameraRadius;
+            camera.position.z = Math.cos(cameraAngle) * cameraRadius;
+            camera.position.y = cameraHeight;
+            camera.lookAt(0, 0, 0);
+            updateMarkers();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Ocultar pantalla de carga
+        window.addEventListener('load', () => {
+            const l = document.getElementById('loading');
+            if (l) l.style.display = 'none';
+        });
+        setTimeout(() => {
+            const l = document.getElementById('loading');
+            if (l) l.style.display = 'none';
+        }, 1500);
+
+        // FAVICON ANIMADO: Bola de billar 8 rotando horizontalmente
+        const faviconCanvas = document.createElement('canvas');
+        faviconCanvas.width = 32;
+        faviconCanvas.height = 32;
+        const faviconCtx = faviconCanvas.getContext('2d');
+
+        function updateFavicon() {
+            const time = Date.now() * 0.005;
+            const rotation = Math.sin(time) * 0.15;
+            
+            // Limpiar canvas
+            faviconCtx.clearRect(0, 0, 32, 32);
+            
+            // Centro del canvas
+            const cx = 16;
+            const cy = 16;
+            const radius = 14;
+            
+            // Gradiente para la bola
+            const gradient = faviconCtx.createRadialGradient(
+                cx - 3, cy - 3, 0,
+                cx, cy, radius
+            );
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(0.3, '#ffffff');
+            gradient.addColorStop(0.5, '#0a0a0a');
+            gradient.addColorStop(1, '#000000');
+            
+            // Dibujar bola
+            faviconCtx.beginPath();
+            faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+            faviconCtx.fillStyle = gradient;
+            faviconCtx.fill();
+            
+            // Dibujar número 8 (con rotación horizontal)
+            faviconCtx.save();
+            faviconCtx.translate(cx, cy);
+            faviconCtx.scale(1 + rotation * 0.5, 1); // Efecto de rotación horizontal
+            faviconCtx.translate(-cx, -cy);
+            
+            faviconCtx.fillStyle = '#ffffff';
+            faviconCtx.font = 'bold 14px Arial';
+            faviconCtx.textAlign = 'center';
+            faviconCtx.textBaseline = 'middle';
+            faviconCtx.fillText('8', cx, cy + 1);
+            
+            faviconCtx.restore();
+            
+            // Borde dorado para la paleta de La Catrina
+            faviconCtx.beginPath();
+            faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+            faviconCtx.strokeStyle = '#d4af37';
+            faviconCtx.lineWidth = 2;
+            faviconCtx.stroke();
+            
+            // Actualizar favicon
+            const link = document.getElementById('favicon');
+            if (link) {
+                link.href = faviconCanvas.toDataURL('image/png');
+            }
+            
+            requestAnimationFrame(updateFavicon);
+        }
+
+        // Iniciar animación del favicon
+        updateFavicon();
+    </script>
+    
+    <script src="js/translations.js"></script>
+    <script>
+        if (typeof createLanguageSelector === 'function') {
+            document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
+        }
+    </script>
+</body>
+</html>
