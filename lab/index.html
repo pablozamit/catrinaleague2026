@@ -107,18 +107,33 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Solo los 36 jugadores de la liga
+        const ligaPlayers = [
+            'fer', 'pablo', 'jack', 'sasa', 'lucas', 'mina', 'johnny', 'angel',
+            'connor', 'damian', 'jonathan', 'artur', 'evodia', 'alexf', 'nino',
+            'ruth', 'amauris', 'nica', 'alvaro', 'erfan', 'katee', 'joel',
+            'david', 'paul', 'lucasc', 'rauls', 'sol', 'karim', 'sergio',
+            'roman', 'favio', 'joe', 'mo', 'danilo', 'manuela'
+        ];
+
         let players = [];
         let currentA = null;
         let currentB = null;
 
         db.ref('users').once('value').then(snap => {
             const users = snap.val();
-            players = Object.entries(users).map(([uid, data]) => ({
-                uid,
-                username: data.username,
-                elo: data.elo_rating || 1200
-            }));
-            loadNextPair();
+            // Filtrar solo jugadores de la liga
+            players = Object.entries(users)
+                .map(([uid, data]) => ({
+                    uid,
+                    username: data.username,
+                    elo: data.elo_rating || 1200
+                }))
+                .filter(p => ligaPlayers.includes(p.username.toLowerCase()));
+            
+            if (players.length > 0) {
+                loadNextPair();
+            }
         });
 
         function loadNextPair() {
