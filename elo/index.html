@@ -456,6 +456,7 @@
                     .map(([id, match]) => ({ id, ...match }))
                     .filter(match => {
                         return match.status === 'confirmed' &&
+                               !match.hidden &&
                                match.confirmed_at &&
                                match.confirmed_at >= sevenDaysAgoTimestamp &&
                                match.confirmed_at <= Date.now();

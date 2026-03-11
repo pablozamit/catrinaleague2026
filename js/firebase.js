@@ -124,6 +124,7 @@ function getUserHistory(uid) {
             return Object.entries(matches)
                 .filter(([key, match]) => 
                     match.status === 'confirmed' && 
+                    !match.hidden && 
                     (match.player1_id === uid || match.player2_id === uid)
                 )
                 .map(([key, match]) => ({ ...match, key }))
@@ -206,6 +207,10 @@ async function confirmMatch(matchId, eloChanges) {
         updates[`matches/${matchId}/confirmed_minute`] = now.getMinutes();
         updates[`matches/${matchId}/confirmed_day_of_week`] = now.getDay();
         updates[`matches/${matchId}/is_weekend`] = now.getDay() === 0 || now.getDay() === 6;
+        
+        // Guardar IDs de ganador y perdedor (para compatibilidad con historial)
+        updates[`matches/${matchId}/winner_id`] = eloChanges.winnerId;
+        updates[`matches/${matchId}/loser_id`] = eloChanges.loserId;
         
         // Save ELO changes to match record for history tracking
         if (eloChanges.winnerChange !== undefined) {

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Catrina - Pool League 3D</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="icon" type="image/png" id="favicon">
     <style>
         * {
             margin: 0;
@@ -430,50 +431,147 @@
 
         scene.add(tableGroup);
 
-        // HOMBRE DURMIENDO DEBAJO DE LA MESA (Easter Egg)
+        // HOMBRE DEBAJO DE LA MESA - DISEÑO REALISTA
         const manGroup = new THREE.Group();
-        const skinMaterial = new THREE.MeshStandardMaterial({ color: 0xffdbac });
-        const shirtMaterial = new THREE.MeshStandardMaterial({ color: 0x2c3e50 });
-        const pantsMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
+        const skinMaterial = new THREE.MeshStandardMaterial({ color: 0xffdbac, roughness: 0.7, metalness: 0.1 });
+        const shirtMaterial = new THREE.MeshStandardMaterial({ color: 0x2c3e50, roughness: 0.8, metalness: 0.1 });
+        const pantsMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.7, metalness: 0.1 });
+        const hairMaterial = new THREE.MeshStandardMaterial({ color: 0x2d1810, roughness: 0.9, metalness: 0.0 });
+        const beltMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.6, metalness: 0.3 });
 
-        // Torso
-        const manTorsoGeo = new THREE.BoxGeometry(1.2, 0.6, 2);
-        const torso = new THREE.Mesh(manTorsoGeo, shirtMaterial);
-        torso.position.set(0, -3.7, 0);
-        manGroup.add(torso);
+        // Torso (más realista, no caja perfecta)
+        const torsoGroup = new THREE.Group();
+        const torsoGeo = new THREE.BoxGeometry(1.1, 0.7, 1.8);
+        const torso = new THREE.Mesh(torsoGeo, shirtMaterial);
+        torso.position.set(0, 0, 0);
+        torsoGroup.add(torso);
+        
+        // Cuello
+        const neckGeo = new THREE.CylinderGeometry(0.12, 0.15, 0.2, 16);
+        const neck = new THREE.Mesh(neckGeo, skinMaterial);
+        neck.position.set(0, 0.45, 0.6);
+        torsoGroup.add(neck);
+        
+        torsoGroup.position.set(0, -3.7, 0);
+        manGroup.add(torsoGroup);
 
-        // Cabeza
-        const manHeadGeo = new THREE.SphereGeometry(0.35, 16, 16);
-        const head = new THREE.Mesh(manHeadGeo, skinMaterial);
-        head.position.set(0, -3.7, 1.3);
-        manGroup.add(head);
+        // Cabeza con detalles
+        const headGroup = new THREE.Group();
+        const headGeo = new THREE.SphereGeometry(0.35, 24, 24);
+        const head = new THREE.Mesh(headGeo, skinMaterial);
+        headGroup.add(head);
+        
+        // Cabello
+        const hairGeo = new THREE.SphereGeometry(0.37, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2);
+        const hair = new THREE.Mesh(hairGeo, hairMaterial);
+        hair.position.y = 0.1;
+        headGroup.add(hair);
+        
+        // Ojos
+        const eyeGeo = new THREE.SphereGeometry(0.05, 12, 12);
+        const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.3, metalness: 0.1 });
+        const eye1 = new THREE.Mesh(eyeGeo, eyeMaterial);
+        eye1.position.set(0.12, 0.05, 0.3);
+        headGroup.add(eye1);
+        
+        const eye2 = eye1.clone();
+        eye2.position.set(-0.12, 0.05, 0.3);
+        headGroup.add(eye2);
+        
+        headGroup.position.set(0, -3.15, 1.0);
+        manGroup.add(headGroup);
 
-        // Piernas (acurrucadas)
-        const manLegGeo = new THREE.CylinderGeometry(0.2, 0.2, 1.5, 8);
-        const leg1 = new THREE.Mesh(manLegGeo, pantsMaterial);
-        leg1.rotation.z = Math.PI / 2;
+        // Piernas con forma más realista
+        const legGeo = new THREE.CylinderGeometry(0.18, 0.15, 1.4, 12);
+        
+        const leg1 = new THREE.Mesh(legGeo, pantsMaterial);
+        leg1.rotation.x = Math.PI / 2;
         leg1.rotation.y = Math.PI / 4;
-        leg1.position.set(0.4, -3.7, -1.2);
+        leg1.position.set(0.35, -3.7, -1.1);
         manGroup.add(leg1);
 
         const leg2 = leg1.clone();
-        leg2.position.set(-0.4, -3.7, -1.2);
+        leg2.position.set(-0.35, -3.7, -1.1);
         leg2.rotation.y = -Math.PI / 4;
         manGroup.add(leg2);
 
-        // Brazos
-        const manArmGeo = new THREE.CylinderGeometry(0.15, 0.15, 1.2, 8);
-        const arm1 = new THREE.Mesh(manArmGeo, skinMaterial);
+        // Brazos con forma más realista
+        const armGeo = new THREE.CylinderGeometry(0.12, 0.1, 1.1, 12);
+        
+        const arm1 = new THREE.Mesh(armGeo, skinMaterial);
         arm1.rotation.z = Math.PI / 2;
-        arm1.position.set(0.8, -3.7, 0.3);
+        arm1.position.set(0.75, -3.7, 0.2);
         manGroup.add(arm1);
 
         const arm2 = arm1.clone();
-        arm2.position.set(-0.8, -3.7, 0.3);
+        arm2.position.set(-0.75, -3.7, 0.2);
         manGroup.add(arm2);
+
+        // Cinturón
+        const beltGeo = new THREE.BoxGeometry(1.15, 0.08, 0.25);
+        const belt = new THREE.Mesh(beltGeo, beltMaterial);
+        belt.position.set(0, -3.5, 0.3);
+        manGroup.add(belt);
 
         manGroup.rotation.y = Math.PI / 6; 
         scene.add(manGroup);
+
+        // RADIO DE PINTOR AÑOS 90
+        const radioGroup = new THREE.Group();
+        const radioBodyMaterial = new THREE.MeshStandardMaterial({ color: 0x3d3d3d, roughness: 0.6, metalness: 0.2 });
+        const radioDetailMaterial = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.5, metalness: 0.3 });
+        const radioAntennaMaterial = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.3, metalness: 0.7 });
+
+        // Cuerpo principal de la radio
+        const radioBodyGeo = new THREE.BoxGeometry(0.35, 0.2, 0.15);
+        const radioBody = new THREE.Mesh(radioBodyGeo, radioBodyMaterial);
+        radioBody.position.set(0, 0, 0);
+        radioGroup.add(radioBody);
+
+        // Parte superior redondeada
+        const radioTopGeo = new THREE.BoxGeometry(0.35, 0.08, 0.15);
+        const radioTop = new THREE.Mesh(radioTopGeo, radioDetailMaterial);
+        radioTop.position.set(0, 0.14, 0);
+        radioGroup.add(radioTop);
+
+        // Dial/número
+        const dialGeo = new THREE.BoxGeometry(0.15, 0.02, 0.08);
+        const dialMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4, metalness: 0.1 });
+        const dial = new THREE.Mesh(dialGeo, dialMaterial);
+        dial.position.set(0.08, 0.18, 0);
+        radioGroup.add(dial);
+
+        // Perilla giratoria
+        const knobGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.02, 16);
+        const knob = new THREE.Mesh(knobGeo, radioDetailMaterial);
+        knob.rotation.x = Math.PI / 2;
+        knob.position.set(-0.08, 0.18, 0.05);
+        radioGroup.add(knob);
+
+        // Antena retráctil
+        const antennaGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.3, 8);
+        const antenna = new THREE.Mesh(antennaGeo, radioAntennaMaterial);
+        antenna.position.set(0.12, 0.35, 0);
+        radioGroup.add(antenna);
+
+        // Base de la antena
+        const antennaBaseGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.03, 16);
+        const antennaBase = new THREE.Mesh(antennaBaseGeo, radioAntennaMaterial);
+        antennaBase.position.set(0.12, 0.2, 0);
+        radioGroup.add(antennaBase);
+
+        // Clip para cinturón
+        const clipGeo = new THREE.BoxGeometry(0.05, 0.15, 0.02);
+        const clip = new THREE.Mesh(clipGeo, radioDetailMaterial);
+        clip.position.set(-0.15, 0, 0.07);
+        radioGroup.add(clip);
+
+        // Posicionar radio al lado del hombre
+        radioGroup.position.set(1.2, -3.6, 0.8);
+        radioGroup.rotation.y = -Math.PI / 4;
+        scene.add(radioGroup);
+
+
 
         // CONTROLES DE CÁMARA (Mouse)
         let isDragging = false;
@@ -533,7 +631,7 @@
             }
         });
 
-        // Click en troneras
+        // Click en troneras (mantener funcionalidad original)
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
@@ -670,6 +768,73 @@
             const l = document.getElementById('loading');
             if (l) l.style.display = 'none';
         }, 1500);
+
+        // FAVICON ANIMADO: Bola de billar 8 rotando horizontalmente
+        const faviconCanvas = document.createElement('canvas');
+        faviconCanvas.width = 32;
+        faviconCanvas.height = 32;
+        const faviconCtx = faviconCanvas.getContext('2d');
+
+        function updateFavicon() {
+            const time = Date.now() * 0.005;
+            const rotation = Math.sin(time) * 0.15;
+            
+            // Limpiar canvas
+            faviconCtx.clearRect(0, 0, 32, 32);
+            
+            // Centro del canvas
+            const cx = 16;
+            const cy = 16;
+            const radius = 14;
+            
+            // Gradiente para la bola
+            const gradient = faviconCtx.createRadialGradient(
+                cx - 3, cy - 3, 0,
+                cx, cy, radius
+            );
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(0.3, '#ffffff');
+            gradient.addColorStop(0.5, '#0a0a0a');
+            gradient.addColorStop(1, '#000000');
+            
+            // Dibujar bola
+            faviconCtx.beginPath();
+            faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+            faviconCtx.fillStyle = gradient;
+            faviconCtx.fill();
+            
+            // Dibujar número 8 (con rotación horizontal)
+            faviconCtx.save();
+            faviconCtx.translate(cx, cy);
+            faviconCtx.scale(1 + rotation * 0.5, 1); // Efecto de rotación horizontal
+            faviconCtx.translate(-cx, -cy);
+            
+            faviconCtx.fillStyle = '#ffffff';
+            faviconCtx.font = 'bold 14px Arial';
+            faviconCtx.textAlign = 'center';
+            faviconCtx.textBaseline = 'middle';
+            faviconCtx.fillText('8', cx, cy + 1);
+            
+            faviconCtx.restore();
+            
+            // Borde dorado para la paleta de La Catrina
+            faviconCtx.beginPath();
+            faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+            faviconCtx.strokeStyle = '#d4af37';
+            faviconCtx.lineWidth = 2;
+            faviconCtx.stroke();
+            
+            // Actualizar favicon
+            const link = document.getElementById('favicon');
+            if (link) {
+                link.href = faviconCanvas.toDataURL('image/png');
+            }
+            
+            requestAnimationFrame(updateFavicon);
+        }
+
+        // Iniciar animación del favicon
+        updateFavicon();
     </script>
     
     <script src="js/translations.js"></script>

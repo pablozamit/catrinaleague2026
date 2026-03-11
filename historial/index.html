@@ -371,7 +371,7 @@
                         ...match,
                         sortTimestamp: match.timestamp || match.confirmed_at || match.created_at || 0
                     }))
-                    .filter(match => match.status === 'confirmed') // Solo mostramos los confirmados
+                    .filter(match => match.status === 'confirmed' && !match.hidden) // Solo mostramos los confirmados y no ocultos
                     .sort((a, b) => b.sortTimestamp - a.sortTimestamp);
                 
                 const html = allMatches.map(match => {
@@ -440,5 +440,7 @@
             }
         }
     </script>
+
+<!-- Force deploy: 2026-03-11 16:15 - Ocultar partidas completado -->
 </body>
 </html>

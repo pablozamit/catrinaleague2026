@@ -926,7 +926,9 @@
                 }
                 
                 // Convert to array and sort by timestamp (newest first)
+                // Filter out hidden matches
                 const matchesArray = Object.entries(matches)
+                    .filter(([matchId, match]) => !match.hidden)
                     .map(([matchId, match]) => ({ matchId, ...match }))
                     .sort((a, b) => b.timestamp - a.timestamp);
                 
