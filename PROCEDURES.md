@@ -107,7 +107,18 @@ cocoindex-code index
 
 ### 1. Modificar el diseño del hombre bajo la mesa
 
-**Ubicación del código**: `index.html` líneas 434-517
+**Ubicación del código**: `index.html` líneas 434-540 (aproximadamente)
+
+**Características actuales**:
+- Cuerpo anatómico con cuello
+- Cabeza con cabello, ojos, nariz, boca
+- Piernas y brazos con forma realista (12 segmentos)
+- Manos con dedos
+- Zapatos
+- Cinturón como accesorio
+- Materiales con roughness/metalness
+- Posición: bajo la mesa (y = -3.7)
+- Rotación: PI/6 (30 grados)
 
 **Cambios permitidos**:
 - Ajustar geometría (más realista)
@@ -119,16 +130,22 @@ cocoindex-code index
 - Cambiar colores (paleta original)
 - Eliminar detalles (cinturón, ojos, etc.)
 
+**Nota**: Se intentó descargar modelos GLB realistas, pero los archivos estaban corruptos. Se optó por mejorar la geometría primitiva existente.
+
 ---
 
 ### 2. Modificar la radio vintage
 
-**Ubicación del código**: `index.html` líneas 519-572
+**Ubicación del código**: `index.html` líneas 519-600 (aproximadamente)
 
 **Características actuales**:
 - Estilo años 90
 - **Apagada** (sin emisión)
 - Al lado del hombre (x=1.2, y=-3.6, z=0.8)
+- Grille/speaker con agujeros
+- Dial con perilla giratoria
+- Antena retráctil
+- Clip para cinturón
 
 **Cambios permitidos**:
 - Detalles visuales
@@ -156,6 +173,35 @@ cocoindex-code index
 **Cambios NO permitidos**:
 - Eliminar animación
 - Cambiar a estático
+
+---
+
+### 4. Mejorar geometría primitiva (cuando no hay modelos GLB)
+
+**Cuándo usar**: Cuando los modelos 3D externos no están disponibles o están corruptos
+
+**Procedimiento**:
+1. **Identificar el objeto**: Hombre bajo la mesa o radio vintage
+2. **Añadir detalles geométricos**:
+   - **Hombre**: Dedos, zapatos, nariz, boca, mejillas
+   - **Radio**: Grille, agujeros, botones adicionales
+3. **Ajustar materiales**: Roughness, metalness, colores
+4. **Probar iluminación**: Añadir luces puntuales si es necesario
+5. **Verificar posición**: Mantener bajo la mesa o al lado del hombre
+6. **Subir a GitHub**: Commit y push con mensaje descriptivo
+
+**Ejemplo de código para añadir dedos**:
+```javascript
+const fingerGeo = new THREE.CylinderGeometry(0.02, 0.015, 0.15, 8);
+for (let i = 0; i < 4; i++) {
+    const finger1 = new THREE.Mesh(fingerGeo, skinMaterial);
+    finger1.rotation.z = Math.PI / 2;
+    finger1.position.set(1.35 + i * 0.05, -3.7, 0.25);
+    manGroup.add(finger1);
+}
+```
+
+**Nota**: Esta solución es temporal. Cuando haya modelos GLB válidos, reemplazar con GLTFLoader.
 
 ---
 
