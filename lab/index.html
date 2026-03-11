@@ -153,7 +153,11 @@
         }
 
         function vote(result) {
-            if (!currentA || !currentB) return;
+            console.log('Votando:', result, currentA, currentB);
+            if (!currentA || !currentB) {
+                alert('Jugadores no cargados');
+                return;
+            }
             
             const voteData = {
                 playerA: currentA.username,
@@ -162,9 +166,17 @@
                 timestamp: Date.now()
             };
             
-            db.ref('lab_votes').push(voteData).then(() => {
-                loadNextPair();
-            });
+            console.log('Guardando voto:', voteData);
+            
+            db.ref('lab_votes').push(voteData)
+                .then(() => {
+                    console.log('Voto guardado');
+                    loadNextPair();
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    alert('Error al guardar: ' + err.message);
+                });
         }
     </script>
 </body>
