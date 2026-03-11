@@ -282,61 +282,47 @@
 
             initFirebase();
 
-            onAuthStateChanged((user) => {
-                if (!user) {
-                    window.location.href = '../';
+            // Cargar partidos inmediatamente (PÚBLICO)
+            await loadAllMatches();
+            
+            // Mostrar contenido tras la primera carga
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('matchesScreen').classList.remove('hidden');
+
+            // Manejar estado de sesión (opcional para el header)
+            onAuthStateChanged(async (user) => {
+                if (user) {
+                    await loadUserData(user);
+                    document.getElementById('logoutBtn').classList.remove('hidden');
+                    document.getElementById('userInfo').classList.remove('hidden');
                 } else {
-                    loadUserData(user);
+                    document.getElementById('logoutBtn').classList.add('hidden');
+                    document.getElementById('userInfo').classList.add('hidden');
                 }
             });
+
+            // Selector de idioma y notificaciones (públicos)
+            const langContainer = document.getElementById('langSelectorContainer');
+            if (langContainer) {
+                langContainer.innerHTML = createLanguageSelector();
+            }
+            
+            const bellContainer = document.getElementById('notificationBellContainer');
+            if (bellContainer) {
+                bellContainer.innerHTML = createNotificationBell();
+            }
         });
 
         async function loadUserData(user) {
             try {
-                currentUser = user;
                 const userData = await getUserData(user.uid);
-                
-                if (!userData) {
-                    const username = user.email.split('@')[0];
-                    currentUserData = {
-                        username: username,
-                        elo_rating: 1200,
-                        matches_played: 0,
-                        matches_won: 0,
-                        email: user.email
-                    };
-                } else {
+                if (userData) {
                     currentUserData = userData;
-                }
-
-                // Actualizar UI
-                document.getElementById('currentUsername').textContent = currentUserData.username;
-                
-                // Inicializar notificaciones
-                const bellContainer = document.getElementById('notificationBellContainer');
-                if (bellContainer) {
-                    bellContainer.innerHTML = createNotificationBell();
+                    document.getElementById('currentUsername').textContent = currentUserData.username;
                     await updateNotificationBell(user.uid);
                 }
-
-                // Selector de idioma
-                const langContainer = document.getElementById('langSelectorContainer');
-                if (langContainer) {
-                    langContainer.innerHTML = createLanguageSelector();
-                }
-                
-                // Cargar partidos
-                await loadAllMatches();
-                
-                // Mostrar contenido
-                document.getElementById('loadingScreen').classList.add('hidden');
-                document.getElementById('matchesScreen').classList.remove('hidden');
-                
             } catch (error) {
                 console.error('Error loading user data:', error);
-                document.getElementById('loadingScreen').innerHTML = `
-                    <div class="loading">Error al cargar datos: ${error.message}</div>
-                `;
             }
         }
 
