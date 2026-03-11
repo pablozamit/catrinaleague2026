@@ -97,14 +97,46 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="../js/translations.js"></script>
     <script>
-        // Los 36 jugadores de la liga
-        const ligaPlayers = [
-            'fer', 'pablo', 'jack', 'sasa', 'lucas', 'mina', 'johnny', 'angel',
-            'connor', 'damian', 'jonathan', 'artur', 'evodia', 'alexf', 'nino',
-            'ruth', 'amauris', 'nica', 'alvaro', 'erfan', 'katee', 'joel',
-            'david', 'paul', 'rauls', 'charles', 'sol', 'karim', 'sergio',
-            'roman', 'favio', 'joe', 'mo', 'danilo', 'manuela'
-        ];
+        // Los 36 jugadores de la liga (username Firebase -> nombre a mostrar)
+        const playerNames = {
+            'fer': 'Fer',
+            'pablo': 'Pablo',
+            'jack': 'Jack',
+            'sasa': 'Sasa',
+            'lucas': 'Luco',
+            'mina': 'Mina',
+            'johnny': 'Johnny',
+            'angel': 'Mr. Angel',
+            'connor': 'Conor',
+            'damian': 'Damian Mascarella',
+            'jonathan': 'Jonathan',
+            'artur': 'ARTUR',
+            'evodia': 'Evo',
+            'alexf': 'Alex Funke',
+            'nino': 'Nino',
+            'ruth': 'Ruth',
+            'amauris': 'Amauris',
+            'nica': 'Nica',
+            'alvaro': 'Alejandro B.',
+            'erfan': 'Erfan',
+            'katee': 'Katee',
+            'joel': 'Joël',
+            'david': 'David',
+            'paul': 'Paul F.',
+            'rauls': 'Raúl S.',
+            'charles': 'Carlos',
+            'sol': 'Sol',
+            'karim': 'Karim',
+            'sergio': 'Sergio L.',
+            'roman': 'Román',
+            'favio': 'Favius',
+            'joe': 'Joe',
+            'mo': 'Mo',
+            'danilo': 'Danilo',
+            'manuela': 'Manuela'
+        };
+
+        const ligaPlayers = Object.keys(playerNames);
 
         let players = [];
         let currentA = null;
@@ -157,10 +189,7 @@
         });
 
         function loadNextPair() {
-            if (players.length < 2) {
-                console.log('No hay suficientes jugadores:', players.length);
-                return;
-            }
+            if (players.length < 2) return;
             
             const idxA = Math.floor(Math.random() * players.length);
             let idxB = Math.floor(Math.random() * players.length);
@@ -171,16 +200,16 @@
             currentA = players[idxA];
             currentB = players[idxB];
             
-            document.getElementById('nameA').textContent = currentA.username;
-            document.getElementById('nameB').textContent = currentB.username;
+            document.getElementById('nameA').textContent = playerNames[currentA.username.toLowerCase()] || currentA.username;
+            document.getElementById('nameB').textContent = playerNames[currentB.username.toLowerCase()] || currentB.username;
         }
 
         function vote(result) {
             if (!currentA || !currentB) return;
             
             const voteData = {
-                playerA: currentA.username,
-                playerB: currentB.username,
+                playerA: playerNames[currentA.username.toLowerCase()] || currentA.username,
+                playerB: playerNames[currentB.username.toLowerCase()] || currentB.username,
                 result: result,
                 timestamp: Date.now()
             };
