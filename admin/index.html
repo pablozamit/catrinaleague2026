@@ -805,11 +805,11 @@
                 
                 // Update both players' stats
                 await database.ref(`users/${winnerId}/elo_rating`).set(changes.winnerElo);
-                await database.ref(`users/${loserId}/elo_rating`).set(changes.loserElo);
+                await database.ref(`users/${loser.uid}/elo_rating`).set(changes.loserElo);
                 
                 // Update matches played
                 await database.ref(`users/${winnerId}/matches_played`).set(winnerMatches + 1);
-                await database.ref(`users/${loserId}/matches_played`).set(loserMatches + 1);
+                await database.ref(`users/${loser.uid}/matches_played`).set(loserMatches + 1);
                 
                 // Update matches won for winner
                 await database.ref(`users/${winnerId}/matches_won`).set((winner.matches_won || 0) + 1);
