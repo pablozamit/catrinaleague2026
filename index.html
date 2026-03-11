@@ -588,15 +588,17 @@
 
         document.addEventListener('click', onMouseClick);
         document.addEventListener('touchend', (e) => {
-            mouse.x = (e.changedTouches[0].clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(e.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
-            
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(pockets);
+            if (e.changedTouches && e.changedTouches[0]) {
+                mouse.x = (e.changedTouches[0].clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
+                
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(pockets);
 
-            if (intersects.length > 0) {
-                const pocket = intersects[0].object;
-                animateBallToPocket(pocket.position);
+                if (intersects.length > 0) {
+                    const pocket = intersects[0].object;
+                    animateBallToPocket(pocket.position);
+                }
             }
         });
 
