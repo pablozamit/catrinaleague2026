@@ -97,19 +97,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="../js/translations.js"></script>
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyC-poobN5s9wPmW-cHddbLVaV7X5U1I",
-            authDomain: "elopool-f1e62.firebaseapp.com",
-            databaseURL: "https://elopool-f1e62-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "elopool-f1e62",
-            storageBucket: "elopool-f1e62.appspot.com",
-            messagingSenderId: "69278393835",
-            appId: "1:69278393835:web:2e7d9a1ef5d3c7a41f1d"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
         // Los 36 jugadores de la liga
         const ligaPlayers = [
             'fer', 'pablo', 'jack', 'sasa', 'lucas', 'mina', 'johnny', 'angel',
@@ -123,14 +110,33 @@
         let currentA = null;
         let currentB = null;
 
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC-poobN5s9wPmW-cHddbLVaV7X5U1I",
+            authDomain: "elopool-f1e62.firebaseapp.com",
+            databaseURL: "https://elopool-f1e62-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "elopool-f1e62",
+            storageBucket: "elopool-f1e62.appspot.com",
+            messagingSenderId: "69278393835",
+            appId: "1:69278393835:web:2e7d9a1ef5d3c7a41f1d"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         // Initialize translations
+        console.log('updatePageLanguage:', typeof updatePageLanguage);
         const savedLang = localStorage.getItem('catrina_language') || 'es';
         localStorage.setItem('catrina_language', savedLang);
-        updatePageLanguage();
+        if (typeof updatePageLanguage === 'function') {
+            updatePageLanguage();
+        }
 
+        // Load players and start
+        console.log('Cargando usuarios...');
         db.ref('users').once('value').then(snap => {
             const users = snap.val();
-            // Filtrar solo jugadores de la liga
+            console.log('Usuarios en Firebase:', Object.keys(users).length);
             players = Object.entries(users)
                 .map(([uid, data]) => ({
                     uid,
@@ -139,13 +145,22 @@
                 }))
                 .filter(p => ligaPlayers.includes(p.username.toLowerCase()));
             
+            console.log('Jugadores de la liga:', players.length);
             if (players.length > 0) {
                 loadNextPair();
+            } else {
+                document.getElementById('nameA').textContent = 'No found';
+                document.getElementById('nameB').textContent = 'No found';
             }
+        }).catch(err => {
+            console.error('Error cargando usuarios:', err);
         });
 
         function loadNextPair() {
-            if (players.length < 2) return;
+            if (players.length < 2) {
+                console.log('No hay suficientes jugadores:', players.length);
+                return;
+            }
             
             const idxA = Math.floor(Math.random() * players.length);
             let idxB = Math.floor(Math.random() * players.length);
@@ -161,10 +176,7 @@
         }
 
         function vote(result) {
-            if (!currentA || !currentB) {
-                alert('Jugadores no cargados');
-                return;
-            }
+            if (!currentA || !currentB) return;
             
             const voteData = {
                 playerA: currentA.username,
@@ -173,14 +185,9 @@
                 timestamp: Date.now()
             };
             
-            db.ref('lab_votes').push(voteData)
-                .then(() => {
-                    loadNextPair();
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                    alert('Error al guardar: ' + err.message);
-                });
+            db.ref('lab_votes').push(voteData).then(() => {
+                loadNextPair();
+            });
         }
     </script>
 </body>
