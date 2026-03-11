@@ -37,27 +37,32 @@ catrinaleague2026/
 - **ELO y badges se mantienen** (solo se oculta el historial visual)
 - Para ver partidas ocultas: usa Firebase Console o scripts en `/c/Users/paulm/Downloads/Apps/catrina2026/catrinaleague2026/`
 
-### 2. Hombre bajo la mesa - Diseño REALISTA
-- **Ubicación**: `index.html` líneas 434-517
+### 2. Hombre bajo la mesa - Diseño REALISTA (Geometría Primitiva Mejorada)
+- **Ubicación**: `index.html` líneas 434-540 (aproximadamente)
 - **Características**:
   - Cuerpo anatómico con cuello
-  - Cabeza con cabello, ojos, expresión
+  - Cabeza con cabello, ojos, nariz, boca
   - Piernas y brazos con forma realista (12 segmentos)
+  - Manos con dedos
+  - Zapatos
   - Cinturón como accesorio
   - Materiales con roughness/metalness
   - Posición: bajo la mesa (y = -3.7)
   - Rotación: PI/6 (30 grados)
+- **Nota**: Se intentó descargar modelos GLB realistas, pero los archivos estaban corruptos (AccessDenied). Se optó por mejorar la geometría primitiva existente.
 
-### 3. Radio vintage años 90
-- **Ubicación**: `index.html` líneas 519-572
+### 3. Radio vintage años 90 (Geometría Primitiva Mejorada)
+- **Ubicación**: `index.html` líneas 519-600 (aproximadamente)
 - **Características**:
   - Estilo pintor de los 90
   - Cuerpo compacto (0.35 x 0.2 x 0.15)
   - Dial con perilla giratoria
   - Antena retráctil
   - Clip para cinturón
+  - Grille/speaker con agujeros
   - **Apagada** (estática, sin emisión)
   - Posición: al lado del hombre (x=1.2, y=-3.6, z=0.8)
+- **Nota**: Se mejoró la geometría añadiendo detalles como grille y agujeros.
 
 ### 4. Favicon animado
 - **Ubicación**: `index.html` líneas 772-837

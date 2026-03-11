@@ -264,6 +264,11 @@
         rimLight.position.set(-10, 10, -10);
         scene.add(rimLight);
 
+        // Light for under the table (man and radio)
+        const underTableLight = new THREE.PointLight(0xffffff, 0.5, 10);
+        underTableLight.position.set(0, -2, 0);
+        scene.add(underTableLight);
+
         // MATERIALES
         const feltMaterial = new THREE.MeshStandardMaterial({
             color: 0x1a4d2e,
@@ -477,6 +482,20 @@
         const eye2 = eye1.clone();
         eye2.position.set(-0.12, 0.05, 0.3);
         headGroup.add(eye2);
+
+        // Nariz
+        const noseGeo = new THREE.ConeGeometry(0.05, 0.1, 8);
+        const nose = new THREE.Mesh(noseGeo, skinMaterial);
+        nose.rotation.x = Math.PI / 2;
+        nose.position.set(0, 0, 0.35);
+        headGroup.add(nose);
+
+        // Boca
+        const mouthGeo = new THREE.BoxGeometry(0.1, 0.02, 0.05);
+        const mouthMaterial = new THREE.MeshStandardMaterial({ color: 0x8b0000, roughness: 0.8 });
+        const mouth = new THREE.Mesh(mouthGeo, mouthMaterial);
+        mouth.position.set(0, -0.1, 0.33);
+        headGroup.add(mouth);
         
         headGroup.position.set(0, -3.15, 1.0);
         manGroup.add(headGroup);
@@ -507,11 +526,46 @@
         arm2.position.set(-0.75, -3.7, 0.2);
         manGroup.add(arm2);
 
+        // Manos con dedos
+        const handGeo = new THREE.SphereGeometry(0.08, 12, 12);
+        const hand1 = new THREE.Mesh(handGeo, skinMaterial);
+        hand1.position.set(1.3, -3.7, 0.2);
+        manGroup.add(hand1);
+
+        const hand2 = hand1.clone();
+        hand2.position.set(-1.3, -3.7, 0.2);
+        manGroup.add(hand2);
+
+        // Dedos
+        const fingerGeo = new THREE.CylinderGeometry(0.02, 0.015, 0.15, 8);
+        for (let i = 0; i < 4; i++) {
+            const finger1 = new THREE.Mesh(fingerGeo, skinMaterial);
+            finger1.rotation.z = Math.PI / 2;
+            finger1.position.set(1.35 + i * 0.05, -3.7, 0.25);
+            manGroup.add(finger1);
+
+            const finger2 = finger1.clone();
+            finger2.position.set(-1.35 - i * 0.05, -3.7, 0.25);
+            manGroup.add(finger2);
+        }
+
         // Cinturón
         const beltGeo = new THREE.BoxGeometry(1.15, 0.08, 0.25);
         const belt = new THREE.Mesh(beltGeo, beltMaterial);
         belt.position.set(0, -3.5, 0.3);
         manGroup.add(belt);
+
+        // Zapatos
+        const shoeMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.5, metalness: 0.1 });
+        const shoeGeo = new THREE.BoxGeometry(0.25, 0.1, 0.4);
+        
+        const shoe1 = new THREE.Mesh(shoeGeo, shoeMaterial);
+        shoe1.position.set(0.35, -4.4, -0.8);
+        manGroup.add(shoe1);
+
+        const shoe2 = shoe1.clone();
+        shoe2.position.set(-0.35, -4.4, -0.8);
+        manGroup.add(shoe2);
 
         manGroup.rotation.y = Math.PI / 6; 
         scene.add(manGroup);
@@ -565,6 +619,24 @@
         const clip = new THREE.Mesh(clipGeo, radioDetailMaterial);
         clip.position.set(-0.15, 0, 0.07);
         radioGroup.add(clip);
+
+        // Grille/Speaker (agujeros)
+        const grilleMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.8 });
+        const grilleGeo = new THREE.BoxGeometry(0.2, 0.1, 0.01);
+        const grille = new THREE.Mesh(grilleGeo, grilleMaterial);
+        grille.position.set(0, 0.05, 0.075);
+        radioGroup.add(grille);
+
+        // Agujeros en el grille (simples cilindros)
+        const holeGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.02, 8);
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                const hole = new THREE.Mesh(holeGeo, radioDetailMaterial);
+                hole.rotation.x = Math.PI / 2;
+                hole.position.set(i * 0.05, 0.05 + j * 0.03, 0.08);
+                radioGroup.add(hole);
+            }
+        }
 
         // Posicionar radio al lado del hombre
         radioGroup.position.set(1.2, -3.6, 0.8);
