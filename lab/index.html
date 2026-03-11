@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" id="favicon">
     <title data-i18n-title="lab_title">Laboratorio - La Catrina Pool League</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
@@ -219,5 +220,65 @@
             });
         }
     </script>
+
+<script>
+// FAVICON ANIMADO: Bola de billar 8 rotando horizontalmente
+const faviconCanvas = document.createElement('canvas');
+faviconCanvas.width = 32;
+faviconCanvas.height = 32;
+const faviconCtx = faviconCanvas.getContext('2d');
+
+function updateFavicon() {
+    const time = Date.now() * 0.005;
+    const rotation = Math.sin(time) * 0.15;
+
+    faviconCtx.clearRect(0, 0, 32, 32);
+    const cx = 16;
+    const cy = 16;
+    const radius = 14;
+
+    const gradient = faviconCtx.createRadialGradient(
+        cx - 3, cy - 3, 0,
+        cx, cy, radius
+    );
+    gradient.addColorStop(0, '#ffffff');
+    gradient.addColorStop(0.3, '#ffffff');
+    gradient.addColorStop(0.5, '#0a0a0a');
+    gradient.addColorStop(1, '#000000');
+
+    faviconCtx.beginPath();
+    faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+    faviconCtx.fillStyle = gradient;
+    faviconCtx.fill();
+
+    faviconCtx.save();
+    faviconCtx.translate(cx, cy);
+    faviconCtx.scale(1 + rotation * 0.5, 1);
+    faviconCtx.translate(-cx, -cy);
+
+    faviconCtx.fillStyle = '#ffffff';
+    faviconCtx.font = 'bold 14px Arial';
+    faviconCtx.textAlign = 'center';
+    faviconCtx.textBaseline = 'middle';
+    faviconCtx.fillText('8', cx, cy + 1);
+
+    faviconCtx.restore();
+
+    faviconCtx.beginPath();
+    faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+    faviconCtx.strokeStyle = '#d4af37';
+    faviconCtx.lineWidth = 2;
+    faviconCtx.stroke();
+
+    const link = document.getElementById('favicon');
+    if (link) {
+        link.href = faviconCanvas.toDataURL('image/png');
+    }
+
+    requestAnimationFrame(updateFavicon);
+}
+
+updateFavicon();
+</script>
 </body>
 </html>

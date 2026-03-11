@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" id="favicon">
+    <title>Test Partidas Ocultas</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #1a1a1a; color: white; }
+        .result { margin: 10px 0; padding: 10px; background: #333; border-radius: 5px; }
+        .hidden-match { color: #888; }
+        .visible-match { color: #4ade80; }
+    </style>
+</head>
+<body>
+    <h1>Test de Partidas Ocultas</h1>
+    <div id="results"></div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgyARlrVo-J1qIhu49Nfvif_p7xVVFW5s",
+            authDomain: "elopool-f1e62.firebaseapp.com",
+            databaseURL: "https://elopool-f1e62-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "elopool-f1e62",
+            storageBucket: "elopool-f1e62.firebasestorage.app",
+            messagingSenderId: "125100775441",
+            appId: "1:125100775441:web:b61f62a308af5c678db9b0"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        async function test() {
+            const container = document.getElementById('results');
+            container.innerHTML = '<div class="result">Cargando...</div>';
+
+            try {
+                const snapshot = await database.ref('matches').once('value');
+                const matches = snapshot.val();
+
+                if (!matches) {
+                    container.innerHTML = '<div class="result">No hay partidas</div>';
+                    return;
+                }
+
+                const total = Object.keys(matches).length;
+                const ocultas = Object.values(matches).filter(m => m.hidden === true).length;
+                const visibles = Object.values(matches).filter(m => !m.hidden).length;
+
+                let html = `<div class="result">Total partidas: ${total}</div>`;
+                html += `<div class="result">Ocultas: ${ocultas}</div>`;
+                html += `<div class="result">Visibles: ${visibles}</div>`;
+
+                // Filtrar como hace historial/index.html
+                const visibleMatches = Object.entries(matches)
+                    .filter(([id, m]) => m.status === 'confirmed' && !m.hidden);
+
+                html += `<div class="result">Partidas que aparecerían en /historial/: ${visibleMatches.length}</div>`;
+
+                if (visibleMatches.length > 0) {
+                    html += `<div class="result visible-match">⚠️ HAY PARTIDAS VISIBLES:</div>`;
+                    visibleMatches.forEach(([id, m]) => {
+                        html += `<div class="result visible-match">${m.winner_username} vs ${m.loser_username}</div>`;
+                    });
+                } else {
+                    html += `<div class="result hidden-match">✅ NO HAY PARTIDAS VISIBLES</div>`;
+                }
+
+                container.innerHTML = html;
+            } catch (error) {
+                container.innerHTML = `<div class="result" style="color: red;">Error: ${error.message}</div>`;
+            }
+        }
+
+        test();
+    </script>
+
+<script>
+// FAVICON ANIMADO: Bola de billar 8 rotando horizontalmente
+const faviconCanvas = document.createElement('canvas');
+faviconCanvas.width = 32;
+faviconCanvas.height = 32;
+const faviconCtx = faviconCanvas.getContext('2d');
+
+function updateFavicon() {
+    const time = Date.now() * 0.005;
+    const rotation = Math.sin(time) * 0.15;
+
+    faviconCtx.clearRect(0, 0, 32, 32);
+    const cx = 16;
+    const cy = 16;
+    const radius = 14;
+
+    const gradient = faviconCtx.createRadialGradient(
+        cx - 3, cy - 3, 0,
+        cx, cy, radius
+    );
+    gradient.addColorStop(0, '#ffffff');
+    gradient.addColorStop(0.3, '#ffffff');
+    gradient.addColorStop(0.5, '#0a0a0a');
+    gradient.addColorStop(1, '#000000');
+
+    faviconCtx.beginPath();
+    faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+    faviconCtx.fillStyle = gradient;
+    faviconCtx.fill();
+
+    faviconCtx.save();
+    faviconCtx.translate(cx, cy);
+    faviconCtx.scale(1 + rotation * 0.5, 1);
+    faviconCtx.translate(-cx, -cy);
+
+    faviconCtx.fillStyle = '#ffffff';
+    faviconCtx.font = 'bold 14px Arial';
+    faviconCtx.textAlign = 'center';
+    faviconCtx.textBaseline = 'middle';
+    faviconCtx.fillText('8', cx, cy + 1);
+
+    faviconCtx.restore();
+
+    faviconCtx.beginPath();
+    faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+    faviconCtx.strokeStyle = '#d4af37';
+    faviconCtx.lineWidth = 2;
+    faviconCtx.stroke();
+
+    const link = document.getElementById('favicon');
+    if (link) {
+        link.href = faviconCanvas.toDataURL('image/png');
+    }
+
+    requestAnimationFrame(updateFavicon);
+}
+
+updateFavicon();
+</script>
+</body>
+</html>
