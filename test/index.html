@@ -4,14 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Catrina - Pool League 3D</title>
-    <script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-  }
-}
-</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <link rel="icon" type="image/png" id="favicon">
     <style>
         * {
@@ -234,12 +228,9 @@
         La Catrina Pool League <span>v1.0.0</span>
     </div>
 
-<script type="module">
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
-// Escena 3D
-const scene = new THREE.Scene();
+    <script>
+        // Escena 3D
+        const scene = new THREE.Scene();
         scene.fog = new THREE.Fog(0x000000, 10, 50);
 
         // Cámara
@@ -447,7 +438,7 @@ const scene = new THREE.Scene();
         scene.add(tableGroup);
 
 // CARGAR MODELOS 3D GLB
-const loader = new GLTFLoader();
+const loader = new THREE.GLTFLoader();
 
 // Cargar modelo del hombre
 loader.load('man.glb', function(gltf) {
