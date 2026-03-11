@@ -464,6 +464,14 @@
                     <div class="loading">Selecciona un período para ver el ranking</div>
                 </div>
             </div>
+
+            <div class="section">
+                <div class="section-title">📋 Historial de Partidos</div>
+                <button class="btn" onclick="loadAllMatches()">🔄 Cargar Partidos</button>
+                <div id="matchesContainer">
+                    <div class="loading">Haz clic para cargar el historial de partidos</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -893,6 +901,136 @@
                 
             } catch (error) {
                 console.error('Error loading leaderboard:', error);
+                container.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Load all matches
+        async function loadAllMatches() {
+            const container = document.getElementById('matchesContainer');
+            container.innerHTML = '<div class="loading">Cargando partidos...</div>';
+            
+            try {
+                // Check if database is available
+                if (typeof database === 'undefined' || !database.ref) {
+                    container.innerHTML = '<div class="status error">❌ Firebase no está inicializado</div>';
+                    return;
+                }
+                
+                const matchesSnap = await database.ref('matches').orderByChild('timestamp').once('value');
+                const matches = matchesSnap.val();
+                
+                if (!matches) {
+                    container.innerHTML = '<div class="loading">No hay partidos registrados</div>';
+                    return;
+                }
+                
+                // Convert to array and sort by timestamp (newest first)
+                const matchesArray = Object.entries(matches)
+                    .map(([matchId, match]) => ({ matchId, ...match }))
+                    .sort((a, b) => b.timestamp - a.timestamp);
+                
+                const html = `
+                    <div style="margin-bottom: 16px; color: #aaa;">
+                        Total: <strong style="color: #d4af37;">${matchesArray.length}</strong> partidos
+                    </div>
+                    ${matchesArray.map(match => {
+                        const date = new Date(match.timestamp).toLocaleString();
+                        const winner = match.winner_username || 'Desconocido';
+                        const loser = match.player1_username === winner ? match.player2_username : match.player1_username;
+                        
+                        return `
+                            <div class="leaderboard-item" style="margin-bottom: 12px; padding: 12px; position: relative;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                    <div>
+                                        <strong>${winner}</strong> vs ${loser}
+                                        <br>
+                                        <span style="color: #888; font-size: 12px;">${date}</span>
+                                        <br>
+                                        <span style="color: ${match.winner_elo_change >= 0 ? '#4ade80' : '#ef4444'}">
+                                            ${winner}: ${match.winner_elo_change >= 0 ? '+' : ''}${match.winner_elo_change}
+                                        </span>
+                                        <span style="color: ${match.loser_elo_change >= 0 ? '#4ade80' : '#ef4444'}; margin-left: 10px;">
+                                            ${loser}: ${match.loser_elo_change >= 0 ? '+' : ''}${match.loser_elo_change}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <button class="btn" style="padding: 6px 12px; font-size: 12px;" 
+                                                onclick="deleteMatch('${match.matchId}', '${winner}', '${loser}', ${match.winner_elo_before}, ${match.loser_elo_before}, ${match.winner_elo_after}, ${match.loser_elo_after})">
+                                            🗑️ Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                `;
+                
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error loading matches:', error);
+                container.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Delete a match and revert ELO changes
+        async function deleteMatch(matchId, winnerUsername, loserUsername, winnerOldElo, loserOldElo, winnerNewElo, loserNewElo) {
+            if (!confirm(`¿Estás seguro de eliminar este partido?\n${winnerUsername} vs ${loserUsername}`)) {
+                return;
+            }
+            
+            const container = document.getElementById('matchesContainer');
+            container.innerHTML = '<div class="loading">Eliminando partido...</div>';
+            
+            try {
+                // Check if database is available
+                if (typeof database === 'undefined' || !database.ref) {
+                    container.innerHTML = '<div class="status error">❌ Firebase no está inicializado</div>';
+                    return;
+                }
+                
+                // Get users by username
+                const winnerSnap = await database.ref('users').orderByChild('username').equalTo(winnerUsername).once('value');
+                const loserSnap = await database.ref('users').orderByChild('username').equalTo(loserUsername).once('value');
+                
+                const winner = Object.entries(winnerSnap.val() || {}).map(([uid, user]) => ({ uid, ...user }))[0];
+                const loser = Object.entries(loserSnap.val() || {}).map(([uid, user]) => ({ uid, ...user }))[0];
+                
+                if (!winner || !loser) {
+                    container.innerHTML = '<div class="status error">❌ No se encontraron los usuarios</div>';
+                    return;
+                }
+                
+                // Revert ELO changes
+                await database.ref(`users/${winner.uid}/elo_rating`).set(winnerOldElo);
+                await database.ref(`users/${loser.uid}/elo_rating`).set(loserOldElo);
+                
+                // Decrement matches played
+                await database.ref(`users/${winner.uid}/matches_played`).set((winner.matches_played || 0) - 1);
+                await database.ref(`users/${loser.uid}/matches_played`).set((loser.matches_played || 0) - 1);
+                
+                // Decrement matches won for winner
+                await database.ref(`users/${winner.uid}/matches_won`).set((winner.matches_won || 0) - 1);
+                
+                // Delete the match
+                await database.ref(`matches/${matchId}`).remove();
+                
+                container.innerHTML = `
+                    <div class="status success">
+                        ✅ Partido eliminado y ELO revertido
+                        <br>${winnerUsername}: ${winnerNewElo} → ${winnerOldElo}
+                        <br>${loserUsername}: ${loserNewElo} → ${loserOldElo}
+                    </div>
+                `;
+                
+                // Refresh matches list after 2 seconds
+                setTimeout(() => {
+                    loadAllMatches();
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error deleting match:', error);
                 container.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
             }
         }
