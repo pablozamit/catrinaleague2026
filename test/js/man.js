@@ -1,4 +1,4 @@
-// Man.js - Hombre escala proporcional a la mesa
+// Man.js - Hombre que cabe debajo de la mesa
 
 const Man = {
     mesh: null,
@@ -9,8 +9,9 @@ const Man = {
     walkSpeed: 8,
     isMoving: false,
     
-    // Escala: humano ~1.75m real → ~9.6 unidades (×5.5)
-    scale: 5.5,
+    // Escala ajustada para caber debajo de la mesa (7 unidades de ancho)
+    // Longitud total ~5.5 unidades para caber cómodamente
+    scale: 3.2,
     
     init(scene) {
         this.group = new THREE.Group();
@@ -106,8 +107,11 @@ const Man = {
         this.parts.shoeL.position.set(-0.6, 0.1, -3.8);
         this.group.add(this.parts.shoeL);
         
-        // Posición inicial bajo la mesa (escala grande)
-        this.group.position.set(2, -1.5, 1);
+        // Posición inicial: completamente debajo de la mesa
+        // Y = -2.5 (bajo el tablero), Z = 0 (centrado), X = 2 (ligeramente desplazado)
+        this.group.position.set(2, -2.2, 0);
+        // Rotar para que quepa en el espacio (tumbado de lado)
+        this.group.rotation.y = Math.PI / 2;
         
         scene.add(this.group);
         this.mesh = this.group;
@@ -125,8 +129,8 @@ const Man = {
         const startPos = this.group.position.clone();
         const startRot = this.group.rotation.clone();
         
-        // Posición final: fuera de la mesa
-        const endPos = new THREE.Vector3(12, 0, 8);
+        // Posición final: fuera de la mesa (mismo plano Y que la mesa)
+        const endPos = new THREE.Vector3(10, 0, 6);
         
         const animate = () => {
             const elapsed = Date.now() - startTime;
