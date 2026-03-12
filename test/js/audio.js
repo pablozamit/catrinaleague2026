@@ -171,3 +171,4 @@ toneScript.onload = () => {
     console.log('Tone.js cargado');
 };
 document.head.appendChild(toneScript);
+window.Audio = Audio;

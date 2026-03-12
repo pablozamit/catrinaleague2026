@@ -221,3 +221,4 @@ const Table = {
         return positions[id];
     }
 };
+window.Table = Table;

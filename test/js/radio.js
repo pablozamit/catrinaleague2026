@@ -242,3 +242,4 @@ const Radio = {
         }
     }
 };
+window.Radio = Radio;

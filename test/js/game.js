@@ -115,3 +115,4 @@ const Game = {
         Scene.updateCameraPosition();
     }
 };
+window.Game = Game;

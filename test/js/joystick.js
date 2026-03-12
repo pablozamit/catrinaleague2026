@@ -132,3 +132,4 @@ const Joystick = {
         this.reset();
     }
 };
+window.Joystick = Joystick;
