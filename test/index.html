@@ -7,241 +7,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="icon" type="image/png" id="favicon">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            touch-action: none;
-        }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            background: #000;
-            overflow: hidden;
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-        }
-        
-        /* Canvas 3D */
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        
-        /* UI Layer */
-        .ui-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            pointer-events: none;
-        }
-        
-        /* Header */
-        .header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
-            pointer-events: auto;
-        }
-        
-        .header h1 {
-            font-family: 'Georgia', serif;
-            font-size: 2.5rem;
-            color: #d4af37;
-            text-shadow: 0 0 30px rgba(212, 175, 55, 0.8);
-            letter-spacing: 8px;
-            text-transform: uppercase;
-        }
-        
-        .header p {
-            color: #888;
-            font-size: 0.8rem;
-            letter-spacing: 4px;
-            margin-top: 0.5rem;
-        }
-        
-        /* Marcadores de troneras */
-        .pocket-marker {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            pointer-events: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 100;
-            opacity: 0;
-        }
-        
-        .pocket-marker.visible {
-            opacity: 1;
-        }
-        
-        .pocket-marker:hover {
-            transform: translate(-50%, -50%) scale(1.3) !important;
-        }
-        
-        .pocket-marker.dimmed {
-            opacity: 0.3;
-            pointer-events: none;
-        }
-        
-        .pocket-label {
-            position: absolute;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(10px);
-            color: #d4af37;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: all 0.3s ease;
-            top: 55px;
-            pointer-events: none;
-            border: 1px solid rgba(212, 175, 55, 0.5);
-        }
-        
-        .pocket-marker:hover .pocket-label {
-            opacity: 1;
-        }
-        
-        .pocket-marker span {
-            font-size: 1.8rem;
-            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));
-        }
-        
-        /* Loading */
-        #loading {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #d4af37;
-            font-size: 1.2rem;
-            z-index: 1000;
-            letter-spacing: 2px;
-        }
-        
-        /* Instrucciones */
-        .instructions {
-            position: fixed;
-            bottom: 4rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: #888;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            z-index: 100;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
-        }
-        
-        .instructions.hidden {
-            opacity: 0;
-        }
-        
-        /* Footer */
-        .version-footer {
-            position: fixed;
-            bottom: 0.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #444;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            z-index: 100;
-        }
-        
-        /* JOYSTICK */
-        #joystick-zone {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            width: 120px;
-            height: 120px;
-            z-index: 200;
-            pointer-events: auto;
-            display: none;
-        }
-        
-        #joystick-zone.active {
-            display: block;
-        }
-        
-        .joystick-base {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: rgba(30, 30, 30, 0.8);
-            border: 2px solid rgba(212, 175, 55, 0.5);
-        }
-        
-        .joystick-handle {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(212, 175, 55, 0.9);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-            cursor: grab;
-        }
-        
-        .joystick-handle:active {
-            cursor: grabbing;
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-        
-        /* Status indicator */
-        #game-status {
-            position: fixed;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(212, 175, 55, 0.9);
-            color: #000;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            z-index: 200;
-            display: none;
-            letter-spacing: 1px;
-        }
-        
-        #game-status.active {
-            display: block;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: none; }
+        body { font-family: 'Arial', sans-serif; background: #000; overflow: hidden; width: 100vw; height: 100vh; }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #loading { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #d4af37; font-size: 1.2rem; z-index: 1000; }
+        .ui-layer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
+        .header { position: absolute; top: 0; left: 0; width: 100%; text-align: center; padding: 2rem; background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%); pointer-events: auto; }
+        .header h1 { font-family: 'Georgia', serif; font-size: 2.5rem; color: #d4af37; text-shadow: 0 0 30px rgba(212, 175, 55, 0.8); letter-spacing: 8px; text-transform: uppercase; }
+        .header p { color: #888; font-size: 0.8rem; letter-spacing: 4px; margin-top: 0.5rem; }
+        .pocket-marker { position: absolute; width: 50px; height: 50px; cursor: pointer; pointer-events: auto; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; z-index: 100; opacity: 0; }
+        .pocket-marker.visible { opacity: 1; }
+        .pocket-marker:hover { transform: translate(-50%, -50%) scale(1.3) !important; }
+        .pocket-marker.dimmed { opacity: 0.3; pointer-events: none; }
+        .pocket-label { position: absolute; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px); color: #d4af37; padding: 8px 15px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; white-space: nowrap; opacity: 0; transition: all 0.3s ease; top: 55px; pointer-events: none; border: 1px solid rgba(212, 175, 55, 0.5); }
+        .pocket-marker:hover .pocket-label { opacity: 1; }
+        .pocket-marker span { font-size: 1.8rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8)); }
+        .instructions { position: fixed; bottom: 4rem; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.8); color: #888; padding: 12px 25px; border-radius: 25px; font-size: 0.75rem; letter-spacing: 2px; border: 1px solid rgba(212, 175, 55, 0.3); z-index: 100; pointer-events: none; transition: opacity 0.5s ease; }
+        .instructions.hidden { opacity: 0; }
+        .version-footer { position: fixed; bottom: 0.5rem; left: 50%; transform: translateX(-50%); color: #444; font-size: 0.7rem; letter-spacing: 1px; z-index: 100; }
+        #joystick-zone { position: fixed; bottom: 30px; left: 30px; width: 120px; height: 120px; z-index: 200; pointer-events: auto; display: none; }
+        #joystick-zone.active { display: block; }
+        .joystick-base { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: rgba(30, 30, 30, 0.8); border: 2px solid rgba(212, 175, 55, 0.5); }
+        .joystick-handle { position: absolute; width: 50px; height: 50px; border-radius: 50%; background: rgba(212, 175, 55, 0.9); top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); cursor: grab; }
+        .joystick-handle:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.1); }
+        #game-status { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); background: rgba(212, 175, 55, 0.9); color: #000; padding: 10px 20px; border-radius: 25px; font-size: 0.9rem; font-weight: bold; z-index: 200; display: none; letter-spacing: 1px; }
+        #game-status.active { display: block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
     </style>
 </head>
 <body>
@@ -254,7 +45,6 @@
             <p>POOL LEAGUE & BILLIARDS</p>
         </div>
         
-        <!-- Marcadores de troneras -->
         <div class="pocket-marker" id="marker-tl" data-target="../reglas/">
             <span>📋</span>
             <div class="pocket-label">Reglas</div>
@@ -280,211 +70,25 @@
             <div class="pocket-label">Historial</div>
         </div>
         
-        <div class="instructions" id="instructions">
-            Arrastra para rotar • Pulsa la radio para jugar
-        </div>
+        <div class="instructions" id="instructions">Arrastra para rotar • Pulsa la radio para jugar</div>
         
-        <div class="version-footer">
-            La Catrina Pool League <span>v1.0.0</span>
-        </div>
+        <div class="version-footer">La Catrina Pool League <span>v1.0.0</span></div>
         
-        <!-- Game Status -->
         <div id="game-status">MODO JUEGO ACTIVADO - Usa el joystick para mover al hombre</div>
         
-        <!-- Joystick -->
         <div id="joystick-zone">
             <div class="joystick-base"></div>
             <div class="joystick-handle"></div>
         </div>
     </div>
 
-    <script>
-    // SISTEMA DE CARGA CON LOGS EXHAUSTIVOS
-    (function() {
-        const logs = [];
-        let logContainer = null;
-        
-        function createLogUI() {
-            const container = document.createElement('div');
-            container.style.cssText = `
-                position: fixed;
-                top: 10px;
-                left: 10px;
-                width: 600px;
-                max-height: 500px;
-                background: rgba(0, 0, 0, 0.95);
-                border: 3px solid #d4af37;
-                border-radius: 8px;
-                z-index: 100000;
-                font-family: 'Courier New', monospace;
-                font-size: 11px;
-                overflow: hidden;
-                box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
-            `;
-            
-            const header = document.createElement('div');
-            header.innerHTML = '📋 SYSTEM LOGS <span style="color:#888;font-size:10px;">(click header to hide)</span>';
-            header.style.cssText = `
-                background: #d4af37;
-                color: #000;
-                padding: 10px;
-                font-weight: bold;
-                font-size: 13px;
-                cursor: pointer;
-            `;
-            let visible = true;
-            header.onclick = () => {
-                visible = !visible;
-                content.style.display = visible ? 'block' : 'none';
-            };
-            container.appendChild(header);
-            
-            const content = document.createElement('div');
-            content.id = 'log-content';
-            content.style.cssText = `
-                max-height: 450px;
-                overflow-y: auto;
-                padding: 10px;
-                color: #00ff00;
-            `;
-            container.appendChild(content);
-            
-            document.body.appendChild(container);
-            logContainer = content;
-            
-            return content;
-        }
-        
-        function log(message, type = 'info') {
-            const timestamp = new Date().toLocaleTimeString();
-            const colors = {
-                info: '#00ff00',
-                warn: '#ffaa00',
-                error: '#ff0000',
-                system: '#00ffff',
-                success: '#00ff00'
-            };
-            const color = colors[type] || colors.info;
-            
-            const entry = `[${timestamp}] [${type.toUpperCase()}] ${message}`;
-            logs.push(entry);
-            
-            console.log(`%c${entry}`, `color: ${color}`);
-            
-            if (!logContainer) {
-                createLogUI();
-            }
-            
-            const div = document.createElement('div');
-            div.style.cssText = `
-                margin: 2px 0;
-                padding: 2px 5px;
-                border-left: 3px solid ${color};
-                background: rgba(255,255,255,0.03);
-                word-break: break-all;
-            `;
-            div.innerHTML = `<span style="color:#888">[${timestamp}]</span> <span style="color:${color}">${message}</span>`;
-            
-            logContainer.appendChild(div);
-            logContainer.scrollTop = logContainer.scrollHeight;
-        }
-        
-        // Interceptar errores
-        window.onerror = (msg, url, line, col, error) => {
-            log(`❌ JS ERROR: ${msg}`, 'error');
-            log(`   At: ${url}:${line}:${col}`, 'error');
-            if (error && error.stack) {
-                log(`   Stack: ${error.stack.split('\\n')[0]}`, 'error');
-            }
-            return false;
-        };
-        
-        window.onunhandledrejection = (event) => {
-            log(`❌ UNHANDLED PROMISE: ${event.reason}`, 'error');
-        };
-        
-        // Log inicial
-        log('═══════════════════════════════════════', 'system');
-        log('🚀 LA CATRINA 3D - LOGGER INICIADO', 'system');
-        log('═══════════════════════════════════════', 'system');
-        log(`URL: ${window.location.href}`, 'system');
-        log(`Pathname: ${window.location.pathname}`, 'system');
-        log(`Protocol: ${window.location.protocol}`, 'system');
-        log(`Host: ${window.location.host}`, 'system');
-        log('─────────────────────────────────────────', 'system');
-        
-        // Verificar Three.js
-        log('Verificando Three.js...', 'system');
-        if (typeof THREE === 'undefined') {
-            log('❌ THREE.js NO CARGADO', 'error');
-        } else {
-            log('✅ THREE.js v' + THREE.REVISION, 'success');
-        }
-        
-        // Cargar scripts
-        const scripts = [
-            { name: 'logger.js', url: '/test/js/logger.js' },
-            { name: 'audio.js', url: '/test/js/audio.js' },
-            { name: 'scene.js', url: '/test/js/scene.js' },
-            { name: 'table.js', url: '/test/js/table.js' },
-            { name: 'man.js', url: '/test/js/man.js' },
-            { name: 'radio.js', url: '/test/js/radio.js' },
-            { name: 'joystick.js', url: '/test/js/joystick.js' },
-            { name: 'game.js', url: '/test/js/game.js' },
-            { name: 'main.js', url: '/test/js/main.js' }
-        ];
-        
-        log('─────────────────────────────────────────', 'system');
-        log('Iniciando carga de scripts...', 'system');
-        log('─────────────────────────────────────────', 'system');
-        
-        let loadedCount = 0;
-        let errorCount = 0;
-        
-        function loadNextScript(index) {
-            if (index >= scripts.length) {
-                log('═══════════════════════════════════════', 'system');
-                log(`✅ CARGA COMPLETADA: ${loadedCount} OK, ${errorCount} errores`, loadedCount === scripts.length ? 'success' : 'warn');
-                log('═══════════════════════════════════════', 'system');
-                return;
-            }
-            
-            const script = scripts[index];
-            log(`[${index + 1}/${scripts.length}] Cargando ${script.name}...`, 'info');
-            log(`   URL: ${script.url}`, 'info');
-            
-            const scriptEl = document.createElement('script');
-            scriptEl.src = script.url;
-            
-            scriptEl.onload = () => {
-                loadedCount++;
-                log(`✅ ${script.name} cargado OK`, 'success');
-                
-                // Verificar variable global
-                const varName = script.name.replace('.js', '');
-                if (window[varName]) {
-                    log(`   Variable ${varName} disponible`, 'success');
-                } else {
-                    log(`   Variable ${varName} no disponible (puede ser normal)`, 'warn');
-                }
-                
-                loadNextScript(index + 1);
-            };
-            
-            scriptEl.onerror = (e) => {
-                errorCount++;
-                log(`❌ ${script.name} ERROR 404`, 'error');
-                log(`   No se pudo cargar: ${script.url}`, 'error');
-                loadNextScript(index + 1);
-            };
-            
-            document.head.appendChild(scriptEl);
-        }
-        
-        // Iniciar carga secuencial
-        loadNextScript(0);
-        
-    })();
-    </script>
+    <script src="/test/js/scene.js"></script>
+    <script src="/test/js/table.js"></script>
+    <script src="/test/js/man.js"></script>
+    <script src="/test/js/radio.js"></script>
+    <script src="/test/js/joystick.js"></script>
+    <script src="/test/js/game.js"></script>
+    <script src="/test/js/audio.js"></script>
+    <script src="/test/js/main.js"></script>
 </body>
 </html>
