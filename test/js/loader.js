@@ -136,10 +136,9 @@ const Loader = {
         this.log('─────────────────────────────', 'info');
         this.log('Iniciando carga de scripts', 'info');
         
-        // Determinar ruta base
-        const path = window.location.pathname;
-        const basePath = path.includes('/test/') ? path.split('/test/')[0] + '/test/' : path;
-        this.log(`Ruta base detectada: ${basePath}`, 'info');
+            // Usar ruta absoluta desde la raíz
+        const basePath = '/test/';
+        this.log(`Ruta base: ${basePath}`, 'info');
         
         for (let i = 0; i < this.scripts.length; i++) {
             const script = this.scripts[i];
