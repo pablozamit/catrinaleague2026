@@ -8,8 +8,8 @@ const Radio = {
     onActivate: null,
     parts: {},
     
-    // Escala: radio ~25cm real → ~1.4 unidades (×5.5)
-    scale: 5.5,
+  // Escala: radio ~25cm real → ~1.4 unidades (×0.4)
+  scale: 0.4,
     
     init(scene) {
         this.group = new THREE.Group();
@@ -99,8 +99,8 @@ const Radio = {
         this.light.position.set(0, 1 * s, 0);
         this.group.add(this.light);
         
-        // Posición: junto al hombre, bajo la mesa (escala grande)
-        this.group.position.set(4, -1.0, 2);
+    // Posición: junto al hombre, bajo la mesa (escala grande)
+    this.group.position.set(3, -1.8, 1);
         this.group.rotation.y = -Math.PI / 4;
         
         // Interactividad

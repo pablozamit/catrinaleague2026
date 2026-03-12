@@ -9,9 +9,9 @@ const Man = {
     walkSpeed: 8,
     isMoving: false,
     
-    // Escala ajustada para caber debajo de la mesa (7 unidades de ancho)
-    // Longitud total ~5.5 unidades para caber cómodamente
-    scale: 3.2,
+  // Escala ajustada para caber debajo de la mesa (7 unidades de ancho)
+  // Longitud total ~5.5 unidades para caber cómodamente
+  scale: 0.4,
     
     init(scene) {
         this.group = new THREE.Group();
@@ -107,11 +107,9 @@ const Man = {
         this.parts.shoeL.position.set(-0.6, 0.1, -3.8);
         this.group.add(this.parts.shoeL);
         
-        // Posición inicial: completamente debajo de la mesa
-        // Y = -2.5 (bajo el tablero), Z = 0 (centrado), X = 2 (ligeramente desplazado)
-        this.group.position.set(2, -2.2, 0);
-        // Rotar para que quepa en el espacio (tumbado de lado)
-        this.group.rotation.y = Math.PI / 2;
+    // Posición inicial: completamente debajo de la mesa
+    // Y = -2.5 (bajo el tablero), Z = 0 (centrado), X = 2 (ligeramente desplazado)
+    this.group.position.set(2, -2.0, 0);
         
         scene.add(this.group);
         this.mesh = this.group;
