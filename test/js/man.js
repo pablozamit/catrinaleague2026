@@ -54,7 +54,7 @@ const Man = {
         this.group.add(this.parts.neck);
         
         // Torso
-        const torsoGeo = new THREE.CapsuleGeometry(0.18, 0.5, 4, 8);
+        const torsoGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.5, 12);
         this.parts.torso = new THREE.Mesh(torsoGeo, shirtMaterial);
         this.parts.torso.position.set(0, 0.18, -0.1);
         this.parts.torso.rotation.x = Math.PI / 2;
@@ -62,7 +62,7 @@ const Man = {
         this.group.add(this.parts.torso);
         
         // Brazo derecho (bajo la cabeza como almohada)
-        const armGeo = new THREE.CapsuleGeometry(0.06, 0.35, 4, 8);
+        const armGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.35, 12);
         this.parts.armR = new THREE.Mesh(armGeo, shirtMaterial);
         this.parts.armR.position.set(0.15, 0.12, 0.25);
         this.parts.armR.rotation.set(Math.PI/3, 0, Math.PI/4);
@@ -75,7 +75,7 @@ const Man = {
         this.group.add(this.parts.armL);
         
         // Piernas
-        const legGeo = new THREE.CapsuleGeometry(0.09, 0.45, 4, 8);
+        const legGeo = new THREE.CylinderGeometry(0.09, 0.09, 0.45, 12);
         
         // Pierna derecha (doblada)
         this.parts.legR_upper = new THREE.Mesh(legGeo, pantsMaterial);
