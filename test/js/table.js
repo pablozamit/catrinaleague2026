@@ -1,15 +1,16 @@
-// Table.js - Mesa de billar realista
+// Table.js - Mesa de billar (escala similar a index.html)
 
 const Table = {
     mesh: null,
     group: null,
     pockets: [],
     
-    // Dimensiones reales (metros)
-    width: 2.54,  // 9 pies
-    height: 1.27,
-    frameThickness: 0.15,
-    legHeight: 0.8,
+    // Dimensiones en escala visual (misma proporción que index.html)
+    width: 14,    // Tablero jugable
+    height: 7,    // Tablero jugable
+    frameThickness: 0.8,
+    frameHeight: 0.6,
+    legHeight: 4, // Patas más altas para ver bajo la mesa
     
     init(scene) {
         this.group = new THREE.Group();
@@ -38,66 +39,70 @@ const Table = {
             metalness: 0.8
         });
         
-        // Tablero (fieltro)
-        const boardGeo = new THREE.BoxGeometry(this.width, 0.05, this.height);
+        // Tablero (fieltro) - BoxGeometry(width, height, depth)
+        const boardGeo = new THREE.BoxGeometry(this.width, 0.3, this.height);
         const board = new THREE.Mesh(boardGeo, feltMaterial);
-        board.position.y = 0.8;
+        board.position.y = 0.15;
         board.receiveShadow = true;
         this.group.add(board);
         
         // Marco de madera
-        const frameWidth = this.width + 0.3;
-        const frameDepth = this.height + 0.3;
-        const frameHeight = 0.25;
+        const frameWidth = this.width + this.frameThickness * 2;
+        const frameDepth = this.height + this.frameThickness * 2;
         
         // Lados largos
-        const frameLongGeo = new THREE.BoxGeometry(frameWidth, frameHeight, 0.15);
+        const frameLongGeo = new THREE.BoxGeometry(frameWidth, this.frameHeight, this.frameThickness);
         const frameLong1 = new THREE.Mesh(frameLongGeo, woodMaterial);
-        frameLong1.position.set(0, 0.7, this.height/2 + 0.075);
+        frameLong1.position.set(0, this.frameHeight/2, this.height/2 + this.frameThickness/2);
         frameLong1.castShadow = true;
         this.group.add(frameLong1);
         
         const frameLong2 = frameLong1.clone();
-        frameLong2.position.set(0, 0.7, -this.height/2 - 0.075);
+        frameLong2.position.set(0, this.frameHeight/2, -this.height/2 - this.frameThickness/2);
         this.group.add(frameLong2);
         
         // Lados cortos
-        const frameShortGeo = new THREE.BoxGeometry(0.15, frameHeight, frameDepth);
+        const frameShortGeo = new THREE.BoxGeometry(this.frameThickness, this.frameHeight, frameDepth);
         const frameShort1 = new THREE.Mesh(frameShortGeo, woodMaterial);
-        frameShort1.position.set(this.width/2 + 0.075, 0.7, 0);
+        frameShort1.position.set(this.width/2 + this.frameThickness/2, this.frameHeight/2, 0);
         frameShort1.castShadow = true;
         this.group.add(frameShort1);
         
         const frameShort2 = frameShort1.clone();
-        frameShort2.position.set(-this.width/2 - 0.075, 0.7, 0);
+        frameShort2.position.set(-this.width/2 - this.frameThickness/2, this.frameHeight/2, 0);
         this.group.add(frameShort2);
         
         // Bandas de goma (6 cojines)
-        const cushionGeo1 = new THREE.BoxGeometry(this.width - 0.1, 0.15, 0.08);
-        const cushion1 = new THREE.Mesh(cushionGeo1, rubberMaterial);
-        cushion1.position.set(0, 0.88, this.height/2 - 0.04);
+        const cushionHeight = 0.5;
+        const cushionThickness = 0.4;
+        
+        // Cojines largos
+        const cushionLongGeo = new THREE.BoxGeometry(this.width, cushionHeight, cushionThickness);
+        const cushion1 = new THREE.Mesh(cushionLongGeo, rubberMaterial);
+        cushion1.position.set(0, this.frameHeight + cushionHeight/2, this.height/2 - cushionThickness/2);
         this.group.add(cushion1);
         
         const cushion2 = cushion1.clone();
-        cushion2.position.set(0, 0.88, -this.height/2 + 0.04);
+        cushion2.position.set(0, this.frameHeight + cushionHeight/2, -this.height/2 + cushionThickness/2);
         this.group.add(cushion2);
         
-        const cushionGeo2 = new THREE.BoxGeometry(0.08, 0.15, this.height - 0.2);
-        const cushion3 = new THREE.Mesh(cushionGeo2, rubberMaterial);
-        cushion3.position.set(this.width/2 - 0.04, 0.88, 0);
+        // Cojines cortos
+        const cushionShortGeo = new THREE.BoxGeometry(cushionThickness, cushionHeight, this.height);
+        const cushion3 = new THREE.Mesh(cushionShortGeo, rubberMaterial);
+        cushion3.position.set(this.width/2 - cushionThickness/2, this.frameHeight + cushionHeight/2, 0);
         this.group.add(cushion3);
         
         const cushion4 = cushion3.clone();
-        cushion4.position.set(-this.width/2 + 0.04, 0.88, 0);
+        cushion4.position.set(-this.width/2 + cushionThickness/2, this.frameHeight + cushionHeight/2, 0);
         this.group.add(cushion4);
         
-        // Patas (4 cilindros)
-        const legGeo = new THREE.CylinderGeometry(0.08, 0.06, this.legHeight, 16);
+        // Patas (4 cilindros) - Más altas para ver bajo la mesa
+        const legGeo = new THREE.CylinderGeometry(0.4, 0.3, this.legHeight, 16);
         const legPositions = [
-            [-this.width/2 + 0.2, -this.legHeight/2 + 0.4, -this.height/2 + 0.2],
-            [this.width/2 - 0.2, -this.legHeight/2 + 0.4, -this.height/2 + 0.2],
-            [-this.width/2 + 0.2, -this.legHeight/2 + 0.4, this.height/2 - 0.2],
-            [this.width/2 - 0.2, -this.legHeight/2 + 0.4, this.height/2 - 0.2]
+            [-6, -this.legHeight/2 + 0.3, -2.5],
+            [6, -this.legHeight/2 + 0.3, -2.5],
+            [-6, -this.legHeight/2 + 0.3, 2.5],
+            [6, -this.legHeight/2 + 0.3, 2.5]
         ];
         
         legPositions.forEach(pos => {
@@ -107,15 +112,15 @@ const Table = {
             this.group.add(leg);
         });
         
-        // Troneras (6)
-        const pocketGeo = new THREE.CylinderGeometry(0.07, 0.05, 0.1, 16);
+        // Troneras (6) - Más grandes para ser visibles
+        const pocketGeo = new THREE.CylinderGeometry(0.5, 0.4, 0.6, 16);
         const pocketPositions = [
-            { pos: [-this.width/2 + 0.05, 0.75, -this.height/2 + 0.05], id: 'tl' },
-            { pos: [0, 0.75, -this.height/2 + 0.02], id: 'tc' },
-            { pos: [this.width/2 - 0.05, 0.75, -this.height/2 + 0.05], id: 'tr' },
-            { pos: [-this.width/2 + 0.05, 0.75, this.height/2 - 0.05], id: 'bl' },
-            { pos: [0, 0.75, this.height/2 - 0.02], id: 'bc' },
-            { pos: [this.width/2 - 0.05, 0.75, this.height/2 - 0.05], id: 'br' }
+            { pos: [-7, 0.5, -3.5], id: 'tl' },
+            { pos: [0, 0.5, -3.5], id: 'tc' },
+            { pos: [7, 0.5, -3.5], id: 'tr' },
+            { pos: [-7, 0.5, 3.5], id: 'bl' },
+            { pos: [0, 0.5, 3.5], id: 'bc' },
+            { pos: [7, 0.5, 3.5], id: 'br' }
         ];
         
         pocketPositions.forEach(pocketData => {
@@ -127,7 +132,7 @@ const Table = {
         });
         
         // Bola blanca
-        const ballGeo = new THREE.SphereGeometry(0.06, 32, 32);
+        const ballGeo = new THREE.SphereGeometry(0.25, 32, 32);
         const ballMaterial = new THREE.MeshPhysicalMaterial({
             color: 0xffffff,
             roughness: 0.1,
@@ -136,37 +141,37 @@ const Table = {
             clearcoatRoughness: 0.1
         });
         const cueBall = new THREE.Mesh(ballGeo, ballMaterial);
-        cueBall.position.set(0, 0.86, 0);
+        cueBall.position.set(0, 0.4, 0);
         cueBall.castShadow = true;
         this.group.add(cueBall);
         this.cueBall = cueBall;
         
         // Líneas de la mesa
-        const lineMaterial = new THREE.LineBasicMaterial({ 
-            color: 0xffffff, 
-            opacity: 0.3, 
-            transparent: true 
+        const lineMaterial = new THREE.LineBasicMaterial({
+            color: 0xffffff,
+            opacity: 0.3,
+            transparent: true
         });
         
         // Línea central
         const centerLineGeo = new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(0, 0.825, -this.height/2 + 0.1),
-            new THREE.Vector3(0, 0.825, this.height/2 - 0.1)
+            new THREE.Vector3(0, 0.16, -this.height/2 + 0.5),
+            new THREE.Vector3(0, 0.16, this.height/2 - 0.5)
         ]);
         const centerLine = new THREE.Line(centerLineGeo, lineMaterial);
         this.group.add(centerLine);
         
         // Círculo central
-        const circleGeo = new THREE.RingGeometry(0.15, 0.16, 32);
-        const circleMaterial = new THREE.MeshBasicMaterial({ 
-            color: 0xffffff, 
-            opacity: 0.3, 
-            transparent: true, 
-            side: THREE.DoubleSide 
+        const circleGeo = new THREE.RingGeometry(0.4, 0.42, 32);
+        const circleMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            opacity: 0.3,
+            transparent: true,
+            side: THREE.DoubleSide
         });
         const centerCircle = new THREE.Mesh(circleGeo, circleMaterial);
         centerCircle.rotation.x = -Math.PI / 2;
-        centerCircle.position.set(0, 0.825, 0);
+        centerCircle.position.set(0, 0.16, 0);
         this.group.add(centerCircle);
         
         scene.add(this.group);
@@ -174,18 +179,17 @@ const Table = {
     },
     
     update(delta) {
-        // Actualizar marcadores HTML basados en posición 3D
         this.updatePocketMarkers();
     },
     
     updatePocketMarkers() {
         const pocketWorldPositions = [
-            { id: 'tl', pos: new THREE.Vector3(-this.width/2 + 0.05, 0.9, -this.height/2 + 0.05) },
-            { id: 'tc', pos: new THREE.Vector3(0, 0.9, -this.height/2 + 0.02) },
-            { id: 'tr', pos: new THREE.Vector3(this.width/2 - 0.05, 0.9, -this.height/2 + 0.05) },
-            { id: 'bl', pos: new THREE.Vector3(-this.width/2 + 0.05, 0.9, this.height/2 - 0.05) },
-            { id: 'bc', pos: new THREE.Vector3(0, 0.9, this.height/2 - 0.02) },
-            { id: 'br', pos: new THREE.Vector3(this.width/2 - 0.05, 0.9, this.height/2 - 0.05) }
+            { id: 'tl', pos: new THREE.Vector3(-7, 0.9, -3.5) },
+            { id: 'tc', pos: new THREE.Vector3(0, 0.9, -3.5) },
+            { id: 'tr', pos: new THREE.Vector3(7, 0.9, -3.5) },
+            { id: 'bl', pos: new THREE.Vector3(-7, 0.9, 3.5) },
+            { id: 'bc', pos: new THREE.Vector3(0, 0.9, 3.5) },
+            { id: 'br', pos: new THREE.Vector3(7, 0.9, 3.5) }
         ];
         
         pocketWorldPositions.forEach(data => {
@@ -211,12 +215,12 @@ const Table = {
     
     getPocketPosition(id) {
         const positions = {
-            'tl': new THREE.Vector3(-this.width/2 + 0.05, 0.75, -this.height/2 + 0.05),
-            'tc': new THREE.Vector3(0, 0.75, -this.height/2 + 0.02),
-            'tr': new THREE.Vector3(this.width/2 - 0.05, 0.75, -this.height/2 + 0.05),
-            'bl': new THREE.Vector3(-this.width/2 + 0.05, 0.75, this.height/2 - 0.05),
-            'bc': new THREE.Vector3(0, 0.75, this.height/2 - 0.02),
-            'br': new THREE.Vector3(this.width/2 - 0.05, 0.75, this.height/2 - 0.05)
+            'tl': new THREE.Vector3(-7, 0.5, -3.5),
+            'tc': new THREE.Vector3(0, 0.5, -3.5),
+            'tr': new THREE.Vector3(7, 0.5, -3.5),
+            'bl': new THREE.Vector3(-7, 0.5, 3.5),
+            'bc': new THREE.Vector3(0, 0.5, 3.5),
+            'br': new THREE.Vector3(7, 0.5, 3.5)
         };
         return positions[id];
     }
