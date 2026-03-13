@@ -42,8 +42,8 @@
             <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">PIRATE POOL LEAGUE</h1>
             <p class="text-xl md:text-2xl font-light text-sky-100" data-i18n="header.subtitle">Official Captain's Log & Regulations</p>
             <div class="mt-8 flex justify-center space-x-4">
-                <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md"><span data-i18n="header.players">30 Players</span></span>
-                <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md"><span data-i18n="header.teams">5 Teams</span></span>
+                <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md"><span data-i18n="header.players">36 Players</span></span>
+                <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md"><span data-i18n="header.teams">6 Teams</span></span>
                 <span class="bg-yellow-400 text-sky-900 px-4 py-2 rounded-full font-bold shadow-md"><span data-i18n="header.weeks">8 Weeks</span></span>
             </div>
         </div>
@@ -75,15 +75,15 @@
                 <!-- Text Content: Description -->
                 <div class="space-y-4">
                     <div class="bg-white p-4 rounded-lg border-l-4 border-sky-600 shadow-sm">
-                        <h4 class="font-bold text-sky-800 text-lg" data-i18n="ranks.level_a.title">LEVEL A: Captain (1-5)</h4>
-                        <p class="text-slate-600 text-sm" data-i18n="ranks.level_a.desc">The elite top 5. They lead the teams and make strategic decisions.</p>
+                        <h4 class="font-bold text-sky-800 text-lg" data-i18n="ranks.level_a.title">LEVEL A: Captain (1-6)</h4>
+                        <p class="text-slate-600 text-sm" data-i18n="ranks.level_a.desc">The elite top 6. They lead the teams and make strategic decisions.</p>
                     </div>
                     <div class="bg-white p-4 rounded-lg border-l-4 border-sky-500 shadow-sm">
-                        <h4 class="font-bold text-sky-800 text-lg" data-i18n="ranks.level_b.title">LEVEL B: Boatswain (6-10)</h4>
-                        <p class="text-slate-600 text-sm" data-i18n="ranks.level_b.desc">The Vice-Presidents. Assigned in reverse order to balance the strongest captains.</p>
+                        <h4 class="font-bold text-sky-800 text-lg" data-i18n="ranks.level_b.title">LEVEL B: Boatswain (7-12)</h4>
+                        <p class="text-slate-600 text-sm" data-i18n="ranks.level_b.desc">The Vice-Captains. Assigned in reverse order to balance the strongest captains.</p>
                     </div>
                     <div class="bg-white p-4 rounded-lg border-l-4 border-yellow-400 shadow-sm">
-                        <h4 class="font-bold text-sky-800 text-lg" data-i18n="ranks.level_cf.title">LEVELS C-F: The Crew (11-30)</h4>
+                        <h4 class="font-bold text-sky-800 text-lg" data-i18n="ranks.level_cf.title">LEVELS C-F: The Crew (13-36)</h4>
                         <p class="text-slate-600 text-sm" data-i18n="ranks.level_cf.desc">From Rogue Helmsmen to Clumsy Cabin Boys. Selected via Draft (C-E) or Lottery (F).</p>
                     </div>
                 </div>
@@ -104,14 +104,14 @@
                 <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
                     <div class="text-4xl mb-2">👑</div>
                     <h3 class="font-bold text-sky-900 mb-2" data-i18n="formation.step1.title">1. Captains</h3>
-                    <p class="text-sm text-slate-600" data-i18n="formation.step1.desc">Top 5 Players are fixed as leaders of Teams 1-5.</p>
+                    <p class="text-sm text-slate-600" data-i18n="formation.step1.desc">Top 6 Players are fixed as leaders of Teams 1-6.</p>
                 </div>
                 <div class="flex items-center justify-center md:hidden text-2xl text-sky-300">⬇</div>
                 
                 <div class="bg-sky-50 p-6 rounded-lg border border-sky-100">
                     <div class="text-4xl mb-2">⚖️</div>
                     <h3 class="font-bold text-sky-900 mb-2" data-i18n="formation.step2.title">2. Inverse B</h3>
-                    <p class="text-sm text-slate-600" data-i18n="formation.step2.desc">Rank 10 joins Rank 1. Rank 6 joins Rank 5. Perfect balance.</p>
+                    <p class="text-sm text-slate-600" data-i18n="formation.step2.desc">Rank 12 joins Rank 1. Rank 7 joins Rank 6. Perfect balance.</p>
                 </div>
                 <div class="flex items-center justify-center md:hidden text-2xl text-sky-300">⬇</div>
 
@@ -164,7 +164,7 @@
                             <tbody>
                                 <tr class="bg-white border-b border-sky-100 hover:bg-sky-50">
                                     <td class="px-4 py-3 font-bold text-sky-900" data-i18n="rules.matchup.row1.rank">A (Captain)</td>
-                                    <td class="px-4 py-3" data-i18n="rules.matchup.row1.opponents">2x A, 2x B, 2x C, 2x D</td>
+                                    <td class="px-4 py-3" data-i18n="rules.matchup.row1.opponents">1x vs each Team (5 matches)</td>
                                 </tr>
                                 <tr class="bg-white border-b border-sky-100 hover:bg-sky-50">
                                     <td class="px-4 py-3 font-bold text-sky-900" data-i18n="rules.matchup.row2.rank">B, C, D</td>
@@ -304,25 +304,25 @@
         const translations = {
             en: {
                 "header.subtitle": "Official Captain's Log & Regulations",
-                "header.players": "30 Players",
-                "header.teams": "5 Teams",
+                "header.players": "36 Players",
+                "header.teams": "6 Teams",
                 "header.weeks": "8 Weeks",
                 "ranks.title": "The Crew Ranks",
                 "ranks.intro": "The league hierarchy is strictly divided into six tiers based on ELO ranking. From the commanding Captains to the lowly Cabin Boys, every pirate has a rank that dictates their role in the fleet.",
                 "ranks.chart.title": "ELO Hierarchy",
                 "ranks.chart.subtitle": "Ranking range (1 = Top ELO)",
-                "ranks.level_a.title": "LEVEL A: Captain (1-5)",
-                "ranks.level_a.desc": "The elite top 5. They lead the teams and make strategic decisions.",
-                "ranks.level_b.title": "LEVEL B: Boatswain (6-10)",
-                "ranks.level_b.desc": "The Vice-Presidents. Assigned in reverse order to balance the strongest captains.",
-                "ranks.level_cf.title": "LEVELS C-F: The Crew (11-30)",
+                "ranks.level_a.title": "LEVEL A: Captain (1-6)",
+                "ranks.level_a.desc": "The elite top 6. They lead the teams and make strategic decisions.",
+                "ranks.level_b.title": "LEVEL B: Boatswain (7-12)",
+                "ranks.level_b.desc": "The Vice-Captains. Assigned in reverse order to balance the strongest captains.",
+                "ranks.level_cf.title": "LEVELS C-F: The Crew (13-36)",
                 "ranks.level_cf.desc": "From Rogue Helmsmen to Clumsy Cabin Boys. Selected via Draft (C-E) or Lottery (F).",
                 "formation.title": "Building the Fleet",
                 "formation.intro": "Fairness is paramount on the high seas. Teams are not just gathered; they are engineered for balance using a specific protocol of assignment, drafting, and luck.",
                 "formation.step1.title": "1. Captains",
-                "formation.step1.desc": "Top 5 Players are fixed as leaders of Teams 1-5.",
+                "formation.step1.desc": "Top 6 Players are fixed as leaders of Teams 1-6.",
                 "formation.step2.title": "2. Inverse B",
-                "formation.step2.desc": "Rank 10 joins Rank 1. Rank 6 joins Rank 5. Perfect balance.",
+                "formation.step2.desc": "Rank 12 joins Rank 1. Rank 7 joins Rank 6. Perfect balance.",
                 "formation.step3.title": "3. The Draft",
                 "formation.step3.desc": "Levels C, D, and E are hand-picked by the leadership.",
                 "formation.step4.title": "4. Lottery",
@@ -335,7 +335,7 @@
                 "rules.matchup.thead1": "Your Rank",
                 "rules.matchup.thead2": "Your Opponents (8 Matches)",
                 "rules.matchup.row1.rank": "A (Captain)",
-                "rules.matchup.row1.opponents": "2x A, 2x B, 2x C, 2x D",
+                "rules.matchup.row1.opponents": "1x vs each Team (5 matches)",
                 "rules.matchup.row2.rank": "B, C, D",
                 "rules.matchup.row2.opponents": "Mix of Own Level + Adjacent Levels",
                 "rules.matchup.row3.rank": "E, F",
@@ -374,25 +374,25 @@
             },
             es: {
                 "header.subtitle": "Registro Oficial del Capitán y Reglamento",
-                "header.players": "30 Jugadores",
-                "header.teams": "5 Equipos",
+                "header.players": "36 Jugadores",
+                "header.teams": "6 Equipos",
                 "header.weeks": "8 Semanas",
                 "ranks.title": "Los Rangos de la Tripulación",
                 "ranks.intro": "La jerarquía de la liga está estrictamente dividida en seis niveles según el ranking ELO. Desde los Capitanes al mando hasta los modestos Grumetes, cada pirata tiene un rango que dicta su rol en la flota.",
                 "ranks.chart.title": "Jerarquía ELO",
                 "ranks.chart.subtitle": "Rango de clasificación (1 = ELO más alto)",
-                "ranks.level_a.title": "NIVEL A: Capitán (1-5)",
-                "ranks.level_a.desc": "La élite del top 5. Lideran los equipos y toman decisiones estratégicas.",
-                "ranks.level_b.title": "NIVEL B: Contramaestre (6-10)",
-                "ranks.level_b.desc": "Los Vicepresidentes. Asignados en orden inverso para equilibrar a los capitanes más fuertes.",
-                "ranks.level_cf.title": "NIVELES C-F: La Tripulación (11-30)",
+                "ranks.level_a.title": "NIVEL A: Capitán (1-6)",
+                "ranks.level_a.desc": "La élite del top 6. Lideran los equipos y toman decisiones estratégicas.",
+                "ranks.level_b.title": "NIVEL B: Contramaestre (7-12)",
+                "ranks.level_b.desc": "Los Vicecapitanes. Asignados en orden inverso para equilibrar a los capitanes más fuertes.",
+                "ranks.level_cf.title": "NIVELES C-F: La Tripulación (13-36)",
                 "ranks.level_cf.desc": "Desde Timoneles Pícaros hasta Grumetes Torpes. Seleccionados vía Draft (C-E) o Lotería (F).",
                 "formation.title": "Construyendo la Flota",
                 "formation.intro": "La justicia es primordial en alta mar. Los equipos no se reúnen simplemente; están diseñados para el equilibrio usando un protocolo específico de asignación, draft y suerte.",
                 "formation.step1.title": "1. Capitanes",
-                "formation.step1.desc": "Los 5 mejores jugadores son fijados como líderes de los Equipos 1-5.",
+                "formation.step1.desc": "Los 6 mejores jugadores son fijados como líderes de los Equipos 1-6.",
                 "formation.step2.title": "2. B Inverso",
-                "formation.step2.desc": "El rango 10 se une al rango 1. El rango 6 se une al rango 5. Equilibrio perfecto.",
+                "formation.step2.desc": "El rango 12 se une al rango 1. El rango 7 se une al rango 6. Equilibrio perfecto.",
                 "formation.step3.title": "3. El Draft",
                 "formation.step3.desc": "Los niveles C, D y E son seleccionados a mano por el liderazgo.",
                 "formation.step4.title": "4. Lotería",
@@ -405,7 +405,7 @@
                 "rules.matchup.thead1": "Tu Rango",
                 "rules.matchup.thead2": "Tus Oponentes (8 Partidos)",
                 "rules.matchup.row1.rank": "A (Capitán)",
-                "rules.matchup.row1.opponents": "2x A, 2x B, 2x C, 2x D",
+                "rules.matchup.row1.opponents": "1x vs cada Equipo (5 partidos)",
                 "rules.matchup.row2.rank": "B, C, D",
                 "rules.matchup.row2.opponents": "Mezcla de Propio Nivel + Niveles Adyacentes",
                 "rules.matchup.row3.rank": "E, F",
@@ -518,7 +518,7 @@
                     labels: t["chart.ranks.levels"],
                     datasets: [{
                         label: t["chart.ranks.label"],
-                        data: [5, 5, 5, 5, 5, 5],
+                        data: [6, 6, 6, 6, 6, 6],
                         backgroundColor: [
                             '#0c4a6e',
                             '#0369a1',
@@ -546,7 +546,7 @@
                                     return label;
                                 },
                                 label: function(context) {
-                                    const ranks = ['1 - 5', '6 - 10', '11 - 15', '16 - 20', '21 - 25', '26 - 30'];
+                                    const ranks = ['1-6', '7-12', '13-18', '19-24', '25-30', '31-36'];
                                     return (currentLang === 'es' ? 'Rango: ' : 'Ranking Range: ') + ranks[context.dataIndex];
                                 }
                             }
