@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" id="favicon">
     <title>Perfil - La Catrina Pool League</title>
+    <link rel="stylesheet" href="../css/navigation.css">
     <style>
         * {
             margin: 0;
@@ -23,35 +24,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-        }
-
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #d4af37;
-            border-radius: 8px;
-            color: #d4af37;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background: rgba(212, 175, 55, 0.2);
-            transform: translateX(-4px);
+            padding-top: calc(var(--nav-height) + 2rem);
         }
 
         .profile-header {
@@ -319,17 +292,6 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <a href="../elo/" class="back-btn">
-                <span>←</span>
-                <span data-i18n="back_to_ranking">Volver al Ranking</span>
-            </a>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <div id="langSelectorContainer"></div>
-                <div id="notificationBellContainer"></div>
-            </div>
-        </header>
-
         <div id="profileContent">
             <div class="loading" data-i18n="profile_loading">Cargando perfil...</div>
         </div>
@@ -345,6 +307,7 @@
     <script src="../js/firebase.js"></script>
     <script src="../js/badges.js"></script>
     <script src="../js/notifications.js"></script>
+    <script src="../js/navigation-component.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
@@ -713,9 +676,6 @@
 
         // Initialize
         waitForFirebase().then(async () => {
-            // Initialize language selector
-            document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
-            
             initFirebase();
             
             const username = getUsernameFromUrl();
@@ -724,16 +684,15 @@
                 return;
             }
             
-            await renderProfile(username);
-            
-            // Add notification bell if user is logged in
-            onAuthStateChanged(async (user) => {
-                if (user) {
-                    const bellContainer = document.getElementById('notificationBellContainer');
-                    bellContainer.innerHTML = createNotificationBell();
-                    await updateNotificationBell(user.uid);
-                }
+            // Initialize Navigation
+            new CatrinaNav({
+                title: username ? username.toUpperCase() : 'PERFIL',
+                subtitle: 'LA CATRINA',
+                backLink: '../elo/index.html',
+                basePath: '../'
             });
+
+            await renderProfile(username);
         });
     </script>
 

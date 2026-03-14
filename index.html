@@ -6,6 +6,7 @@
     <title>La Catrina - Pool League 3D</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="icon" type="image/png" id="favicon">
+    <link rel="stylesheet" href="css/navigation.css">
     <style>
         * {
             margin: 0;
@@ -180,14 +181,7 @@
     <div id="canvas-container"></div>
 
     <div class="ui-layer">
-        <div class="header">
-            <div style="position: absolute; top: 20px; right: 20px; z-index: 1000; display: flex; align-items: center; gap: 15px;">
-                <div id="langSelectorContainer"></div>
-                <div id="notificationBellContainer"></div>
-            </div>
-            <h1>LA CATRINA</h1>
-            <p data-i18n="app_subtitle">POOL LEAGUE & BILLIARDS</p>
-        </div>
+        <!-- Navigation Component will prepend to body -->
     </div>
 
     <!-- Marcadores de troneras -->
@@ -909,11 +903,21 @@
         updateFavicon();
     </script>
     
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="js/firebase.js"></script>
     <script src="js/translations.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/navigation-component.js"></script>
     <script>
-        if (typeof createLanguageSelector === 'function') {
-            document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+            new CatrinaNav({
+                isIndex: true,
+                basePath: './'
+            });
+        });
     </script>
 </body>
 </html>

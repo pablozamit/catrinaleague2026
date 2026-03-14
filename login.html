@@ -6,6 +6,7 @@
     <link rel="icon" type="image/png" id="favicon">
     <title>La Catrina Pool League</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/navigation.css">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -44,6 +45,7 @@
             width: 100%;
             max-width: 400px;
             padding: 2rem;
+            padding-top: calc(var(--nav-height) + 2rem);
         }
 
         .logo {
@@ -207,7 +209,6 @@
         </div>
 
         <div class="login-card">
-            <div style="position: absolute; top: 20px; right: 20px;" id="langSelectorContainer"></div>
             <h2 data-i18n="login_title">INICIAR SESIÓN</h2>
             
             <div id="loginError" class="error"></div>
@@ -242,6 +243,7 @@
     <script src="js/badges.js"></script>
     <script src="js/notifications.js"></script>
     <script src="js/toast.js"></script>
+    <script src="js/navigation-component.js"></script>
     <script>
         async function waitForFirebase() {
             let attempts = 0;
@@ -435,7 +437,12 @@
     </script>
     <script src="js/translations.js"></script>
     <script>
-        document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
+        document.addEventListener('DOMContentLoaded', () => {
+            new CatrinaNav({
+                backLink: 'index.html',
+                basePath: './'
+            });
+        });
     </script>
 
 <script>

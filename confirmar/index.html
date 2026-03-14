@@ -6,6 +6,7 @@
     <link rel="icon" type="image/png" id="favicon">
     <title>Confirmar Resultados - La Catrina</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/navigation.css">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -32,61 +33,11 @@
                 radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
         }
 
-        .header {
-            background: linear-gradient(180deg, rgba(26, 74, 46, 0.3) 0%, transparent 100%);
-            padding: 2rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-        }
-
-        .header h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--color-gold);
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-            letter-spacing: 4px;
-            margin-bottom: 0.5rem;
-        }
-
-        .user-info {
-            color: var(--color-white);
-            font-size: 0.9rem;
-        }
-
-        .back-link {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-            color: var(--color-gold);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .header-right {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logout-btn {
-            background: transparent;
-            border: 1px solid var(--color-gold);
-            color: var(--color-gold);
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            font-size: 0.8rem;
-        }
-
         .container {
             max-width: 600px;
             margin: 0 auto;
             padding: 2rem;
+            padding-top: calc(var(--nav-height) + 2rem);
         }
 
         .card {
@@ -271,18 +222,6 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="../" class="back-link" data-i18n="back">← Volver</a>
-        <div class="header-right">
-            <div id="langSelectorContainer" style="margin-right: 15px;"></div>
-            <div id="notificationBellContainer"></div>
-            <button class="logout-btn" onclick="showChangePasswordModal()" style="margin-right: 10px;" data-i18n="change_password">Cambiar Contraseña</button>
-            <button class="logout-btn" onclick="logout()" data-i18n="logout">Cerrar Sesión</button>
-        </div>
-        <h1 data-i18n="confirm_title">CONFIRMAR RESULTADOS</h1>
-        <div class="user-info"><span data-i18n="results_user">Usuario</span>: <span id="currentUsername">-</span></div>
-    </div>
-
     <div class="container">
         <div id="messageArea"></div>
 
@@ -343,6 +282,7 @@
     <script src="../js/logging.js"></script>
     <script src="../js/notifications.js"></script>
     <script src="../js/toast.js"></script>
+    <script src="../js/navigation-component.js"></script>
     <script>
         let currentUserData = null;
         let pendingMatches = [];
@@ -383,6 +323,14 @@
         async function loadUserData(user) {
             try {
                 currentUser = user;
+
+                // Initialize Navigation
+                new CatrinaNav({
+                    title: 'CONFIRMAR',
+                    subtitle: 'LA CATRINA',
+                    backLink: '../resultados/index.html',
+                    basePath: '../'
+                });
                 
                 const userData = await getUserData(user.uid);
                 currentUserData = userData || {
@@ -392,17 +340,10 @@
                     matches_won: 0
                 };
 
-                document.getElementById('currentUsername').textContent = currentUserData.username;
-
                 // Cargar usuarios y partidos
                 allUsers = await getAllUsers();
                 await loadPendingMatches();
                 
-                // Inicializar notificaciones
-                const bellContainer = document.getElementById('notificationBellContainer');
-                bellContainer.innerHTML = createNotificationBell();
-                await updateNotificationBell(user.uid);
-
                 document.getElementById('loadingScreen').classList.add('hidden');
 
                 // Log de login exitoso
@@ -769,9 +710,6 @@
         }
     </script>
     <script src="../js/translations.js"></script>
-    <script>
-        document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
-    </script>
 
 <script>
 // FAVICON ANIMADO: Bola de billar 8 rotando horizontalmente

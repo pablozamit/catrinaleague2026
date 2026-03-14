@@ -23,13 +23,12 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
+            padding-top: calc(var(--nav-height) + 2rem);
         }
 
-        header {
+        header.admin-header {
             text-align: center;
             margin-bottom: 40px;
-            position: relative;
-            padding-top: 2rem;
         }
 
         h1 {
@@ -354,15 +353,10 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <a href="../" class="logout-btn">← Volver</a>
-            <div style="position: absolute; top: 2rem; right: 2rem; display: flex; align-items: center; gap: 15px;">
-                <div id="langSelectorContainer"></div>
-                <div id="notificationBellContainer"></div>
-            </div>
+        <header class="admin-header">
             <h1>Panel de Administración</h1>
             <p class="subtitle">Sistema de Campeones - La Catrina Pool League</p>
-        </div>
+        </header>
 
         <!-- Login Section - Only visible when not authenticated -->
         <div id="loginSection" class="login-form">
@@ -486,6 +480,7 @@
     <script src="../js/firebase.js"></script>
     <script src="../js/badges.js"></script>
     <script src="../js/notifications.js"></script>
+    <script src="../js/navigation-component.js"></script>
 
     <script>
         // Admin credentials (in production, these should be stored securely)
@@ -1080,18 +1075,17 @@
         
         // Initialize
         waitForFirebase().then(async () => {
-            document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
             initFirebase();
             
+            new CatrinaNav({
+                title: 'LA CATRINA',
+                subtitle: 'ADMIN',
+                backLink: '../index.html',
+                basePath: '../'
+            });
+
             // Check admin authentication
             checkAdminAuth();
-            
-            // Load notifications if admin
-            if (isAdminAuthenticated) {
-                const bellContainer = document.getElementById('notificationBellContainer');
-                bellContainer.innerHTML = createNotificationBell();
-                await updateNotificationBell('admin');
-            }
         });
     </script>
 

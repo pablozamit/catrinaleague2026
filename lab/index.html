@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Próximamente - La Catrina Pool League</title>
+    <link rel="stylesheet" href="../css/navigation.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -15,5 +16,21 @@
         <p class="text-6xl mb-4">🔒</p>
         <h1 class="text-2xl font-bold text-slate-400">Próximamente</h1>
     </div>
+
+    <script src="../js/firebase.js"></script>
+    <script src="../js/translations.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/navigation-component.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+            new CatrinaNav({
+                title: 'LAB',
+                subtitle: 'LA CATRINA',
+                backLink: '../index.html',
+                basePath: '../'
+            });
+        });
+    </script>
 </body>
 </html>

@@ -6,6 +6,7 @@
     <link rel="icon" type="image/png" id="favicon">
     <title>Liga - La Catrina Pool League</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/navigation.css">
     <style>
         :root {
             --color-bg: #0a0a0a;
@@ -31,50 +32,11 @@
                 radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
         }
 
-        .header {
-            background: linear-gradient(180deg, rgba(26, 74, 46, 0.3) 0%, transparent 100%);
-            padding: 2rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-        }
-
-        .header h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: var(--color-gold);
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-            letter-spacing: 4px;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: var(--color-text-muted);
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-        }
-
-        .back-link {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-            color: var(--color-gold);
-            text-decoration: none;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .back-link:hover {
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-        }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
+            padding-top: calc(var(--nav-height) + 2rem);
         }
 
         .placeholder {
@@ -106,19 +68,6 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="../" class="back-link">
-            <span>←</span>
-            <span>Volver a la Mesa</span>
-        </a>
-        <div style="position: absolute; top: 2rem; right: 2rem; display: flex; align-items: center; gap: 15px;">
-            <div id="langSelectorContainer"></div>
-            <div id="notificationBellContainer"></div>
-        </div>
-        <h1>LIGA</h1>
-        <p>LA CATRINA POOL LEAGUE</p>
-    </div>
-
     <div class="container">
         <div class="placeholder">
             <div class="placeholder-icon">🚧</div>
@@ -137,6 +86,7 @@
     <script src="../js/firebase.js"></script>
     <script src="../js/badges.js"></script>
     <script src="../js/notifications.js"></script>
+    <script src="../js/navigation-component.js"></script>
 
     <script>
         // Initialize Firebase and notifications
@@ -145,21 +95,13 @@
                 initFirebase();
             }
 
-            // Initialize language selector
-            if (typeof createLanguageSelector === 'function') {
-                const langContainer = document.getElementById('langSelectorContainer');
-                if (langContainer) {
-                    langContainer.innerHTML = createLanguageSelector();
-                }
-            }
-
-            // Initialize notification bell
-            if (typeof createNotificationBell === 'function') {
-                const bellContainer = document.getElementById('notificationBellContainer');
-                if (bellContainer) {
-                    bellContainer.innerHTML = createNotificationBell();
-                }
-            }
+            // Initialize Navigation
+            new CatrinaNav({
+                title: 'LIGA',
+                subtitle: 'LA CATRINA',
+                backLink: '../index.html',
+                basePath: '../'
+            });
 
             // Set up auth state change for notifications
             if (typeof onAuthStateChanged === 'function') {

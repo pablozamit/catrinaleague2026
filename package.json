@@ -20,5 +20,8 @@
   "homepage": "https://github.com/pablozamit/catrinaleague2026#readme",
   "dependencies": {
     "firebase-admin": "^13.6.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
   }
 }

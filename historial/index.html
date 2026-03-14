@@ -6,6 +6,7 @@
     <link rel="icon" type="image/png" id="favicon">
     <title data-i18n-title="nav_history">Historial de Partidos - La Catrina</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/navigation.css">
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -33,68 +34,11 @@
                 radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
         }
 
-        .header {
-            background: linear-gradient(180deg, rgba(26, 74, 46, 0.3) 0%, transparent 100%);
-            padding: 2rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            position: relative;
-        }
-
-        .header h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 2rem;
-            font-weight: 900;
-            color: var(--color-gold);
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-            letter-spacing: 4px;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-
-        .user-info {
-            color: var(--color-white);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        .back-link {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-            color: var(--color-gold);
-            text-decoration: none;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            z-index: 100;
-        }
-
-        .header-right {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            z-index: 100;
-        }
-
-        .logout-btn {
-            background: transparent;
-            border: 1px solid var(--color-gold);
-            color: var(--color-gold);
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 2rem;
+            padding-top: calc(var(--nav-height) + 2rem);
         }
 
         .card {
@@ -225,17 +169,6 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="../" class="back-link" data-i18n="back">← Volver</a>
-        <div class="header-right">
-            <div id="langSelectorContainer" style="margin-right: 15px;"></div>
-            <div id="notificationBellContainer"></div>
-            <button class="logout-btn" onclick="logout()" data-i18n="logout">Cerrar Sesión</button>
-        </div>
-        <h1 data-i18n="nav_history">HISTORIAL DE PARTIDOS</h1>
-        <div class="user-info"><span data-i18n="login_username">Usuario</span>: <span id="currentUsername">-</span></div>
-    </div>
-
     <div class="container">
         <div class="card">
             <div id="loadingScreen">
@@ -257,6 +190,7 @@
     <script src="../js/notifications.js"></script>
     <script src="../js/toast.js"></script>
     <script src="../js/translations.js"></script>
+    <script src="../js/navigation-component.js"></script>
     
     <script>
         // Variables globales
@@ -283,35 +217,20 @@
 
             initFirebase();
 
+            // Initialize Navigation
+            new CatrinaNav({
+                title: 'HISTORIAL',
+                subtitle: 'LA CATRINA',
+                backLink: '../index.html',
+                basePath: '../'
+            });
+
             // Cargar partidos inmediatamente (PÚBLICO)
             await loadAllMatches();
             
             // Mostrar contenido tras la primera carga
             document.getElementById('loadingScreen').classList.add('hidden');
             document.getElementById('matchesScreen').classList.remove('hidden');
-
-            // Manejar estado de sesión (opcional para el header)
-            onAuthStateChanged(async (user) => {
-                if (user) {
-                    await loadUserData(user);
-                    document.getElementById('logoutBtn').classList.remove('hidden');
-                    document.getElementById('userInfo').classList.remove('hidden');
-                } else {
-                    document.getElementById('logoutBtn').classList.add('hidden');
-                    document.getElementById('userInfo').classList.add('hidden');
-                }
-            });
-
-            // Selector de idioma y notificaciones (públicos)
-            const langContainer = document.getElementById('langSelectorContainer');
-            if (langContainer) {
-                langContainer.innerHTML = createLanguageSelector();
-            }
-            
-            const bellContainer = document.getElementById('notificationBellContainer');
-            if (bellContainer) {
-                bellContainer.innerHTML = createNotificationBell();
-            }
         });
 
         async function loadUserData(user) {
@@ -319,8 +238,6 @@
                 const userData = await getUserData(user.uid);
                 if (userData) {
                     currentUserData = userData;
-                    document.getElementById('currentUsername').textContent = currentUserData.username;
-                    await updateNotificationBell(user.uid);
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
