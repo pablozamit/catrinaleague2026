@@ -23,7 +23,7 @@ const translations = {
         nav_login: 'Login / Resultados',
         nav_history: 'Historial',
         nav_coming_soon: 'Próximamente',
-        nav_lab: 'Laboratorio',
+        nav_exam: 'Examen de la Liga',
         instructions: 'Arrastra para rotar • Haz clic en las troneras',
         
         // Laboratorio
