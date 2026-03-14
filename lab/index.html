@@ -3,17 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Próximamente - La Catrina Pool League</title>
+    <title>Pirate Pool League: Elite Academy (10-Question Quiz)</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Roboto', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        body { font-family: 'Roboto', sans-serif; background-color: #0c1c38; color: #e2e8f0; }
+        .pirate-card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(8px); border: 1px solid #334155; border-radius: 1rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); }
+        .btn-option { transition: all 0.2s ease; border: 1px solid #475569; }
+        .btn-option:hover { background-color: #334155; border-color: #fbbf24; transform: translateX(5px); }
+        .progress-bar { transition: width 0.4s ease; }
+        .lang-btn { transition: all 0.3s ease; filter: grayscale(0.8); cursor: pointer; }
+        .lang-btn:hover { filter: grayscale(0); transform: scale(1.1); }
+        .lang-btn.active { filter: grayscale(0); transform: scale(1.2); border: 3px solid #fbbf24; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center">
-    <div class="text-center">
-        <p class="text-6xl mb-4">🔒</p>
-        <h1 class="text-2xl font-bold text-slate-400">Próximamente</h1>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Language Selection Screen -->
+    <div id="screen-lang" class="max-w-md w-full text-center space-y-8 fade-in">
+        <h1 class="text-5xl font-black text-yellow-400 mb-2 tracking-tighter italic">ELITE ACADEMY</h1>
+        <p class="text-slate-400 uppercase tracking-widest text-sm font-bold">Official Knowledge Assessment • 10 Rounds</p>
+        
+        <div class="flex justify-center gap-12 py-10">
+            <div onclick="setLanguage('en')" class="lang-btn group flex flex-col items-center">
+                <span class="text-7xl mb-2 drop-shadow-lg">🇬🇧</span>
+                <p class="font-black text-slate-300 group-hover:text-yellow-400 transition-colors uppercase tracking-widest">English</p>
+            </div>
+            <div onclick="setLanguage('es')" class="lang-btn group flex flex-col items-center">
+                <span class="text-7xl mb-2 drop-shadow-lg">🇪🇸</span>
+                <p class="font-black text-slate-300 group-hover:text-yellow-400 transition-colors uppercase tracking-widest">Español</p>
+            </div>
+        </div>
     </div>
+
+    <!-- Quiz Screen -->
+    <div id="screen-quiz" class="hidden max-w-2xl w-full pirate-card p-8 space-y-6 fade-in">
+        <div class="flex justify-between items-center mb-4">
+            <span id="question-counter" class="text-yellow-400 font-black text-xs uppercase tracking-widest">Question 1 / 10</span>
+            <div class="w-32 h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                <div id="progress" class="progress-bar h-full bg-gradient-to-r from-yellow-600 to-yellow-400 w-0"></div>
+            </div>
+        </div>
+        
+        <h2 id="question-text" class="text-2xl md:text-3xl font-bold text-white mb-8 leading-tight">Question text goes here?</h2>
+        
+        <div id="options-container" class="grid grid-cols-1 gap-4">
+            <!-- Buttons will be generated here -->
+        </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="screen-result" class="hidden max-w-md w-full pirate-card p-10 text-center space-y-6 fade-in">
+        <div id="result-emoji" class="text-8xl mb-4 drop-shadow-2xl">🏆</div>
+        <h2 id="result-title" class="text-4xl font-black text-white italic tracking-tight">Assessment Complete</h2>
+        <p id="result-score-text" class="text-slate-400 text-lg font-medium">You scored 10/10 correct.</p>
+        
+        <div class="py-8 border-y border-slate-700/50 my-6">
+            <div class="text-xs text-slate-500 uppercase tracking-[0.2em] mb-2" id="label-rank">Your Final Rank</div>
+            <div id="result-rank" class="text-3xl font-black text-yellow-400 tracking-tighter">MASTER NAVIGATOR</div>
+        </div>
+        
+        <div class="space-y-4">
+            <button onclick="location.reload()" class="w-full bg-yellow-500 hover:bg-yellow-400 text-sky-950 font-black py-5 rounded-xl transition-all uppercase tracking-widest shadow-[0_5px_0_rgb(161,98,7)] active:translate-y-1 active:shadow-none">
+                Restart Training
+            </button>
+            <a href="../" class="block bg-slate-800/50 hover:bg-slate-800 text-slate-300 py-3 rounded-xl transition-colors text-sm font-bold uppercase tracking-widest">
+                Return to Port
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const questions = {
+            en: [
+                { q: "How many captains (Level A) lead the teams in the league?", options: ["4", "6", "8", "12"], correct: 1 },
+                { q: "Under the 'Inverse B' rule, which Captain does the player at Rank 12 join?", options: ["Captain 6", "Captain 3", "Captain 1", "Captain 5"], correct: 2 },
+                { q: "Matches follow a 'Race to...' what number of racks?", options: ["2", "3", "4", "5"], correct: 1 },
+                { q: "How many points does a team earn for a close 3-2 defeat (Merit Point)?", options: ["0 pts", "1 pt", "2 pts", "3 pts"], correct: 1 },
+                { q: "Which power from the Arsenal grants a 1-0 lead to start a match?", options: ["9-Ball Card", "10-Ball Card", "Lottery Luck", "Handicap Points"], correct: 3 },
+                { q: "What is the final tie-breaker criterion if all other metrics are equal?", options: ["Total Racks Won", "Head-to-Head Record", "Captains' Duel", "Coin Toss"], correct: 2 },
+                { q: "When is the deadline to declare the use of a strategic power?", options: ["Before the first shot", "The Sunday before", "The Monday before", "24 hours notice"], correct: 2 },
+                { q: "Which player levels are 'protected' from ever playing against a Captain (Level A)?", options: ["Level B & C", "Level E & F", "Only Level F", "Nobody is safe"], correct: 1 },
+                { q: "Which ranks are selected via the 'Draft' process by the leadership?", options: ["Only Level C", "Levels C, D, and E", "Levels B and C", "All levels"], correct: 1 },
+                { q: "Can 'Handicap Points' be used in a match where a 'Challenge Card' (9/10-Ball) is active?", options: ["Yes, always", "No, they are incompatible", "Only in 10-ball", "Only for captains"], correct: 1 }
+            ],
+            es: [
+                { q: "¿Cuántos capitanes (Nivel A) lideran los equipos en la liga?", options: ["4", "6", "8", "12"], correct: 1 },
+                { q: "Bajo la regla del 'B Inverso', ¿con qué Capitán se agrupa el Rango 12?", options: ["Capitán 6", "Capitán 3", "Capitán 1", "Capitán 5"], correct: 2 },
+                { q: "¿Los enfrentamientos son una 'Carrera a...' cuántas mangas?", options: ["2", "3", "4", "5"], correct: 1 },
+                { q: "¿Cuántos puntos gana un equipo por una derrota ajustada de 3-2 (Punto de Mérito)?", options: ["0 pts", "1 pt", "2 pts", "3 pts"], correct: 1 },
+                { q: "¿Qué poder del Arsenal permite empezar un partido con ventaja de 1-0?", options: ["Carta Bola 9", "Carta Bola 10", "Suerte de Lotería", "Puntos de Hándicap"], correct: 3 },
+                { q: "¿Cuál es el último criterio de desempate si todo lo demás es igual?", options: ["Mangas Ganadas", "Enfrentamiento Directo", "Duelo de Capitanes", "Lanzar Moneda"], correct: 2 },
+                { q: "¿Cuál es la fecha límite para declarar el uso de un poder estratégico?", options: ["Antes del primer tiro", "El domingo anterior", "El lunes anterior", "24h de antelación"], correct: 2 },
+                { q: "¿Qué niveles de jugador están 'protegidos' de jugar contra un Capitán (Nivel A)?", options: ["Niveles B y C", "Niveles E y F", "Solo el Nivel F", "Nadie está a salvo"], correct: 1 },
+                { q: "¿Qué rangos son seleccionados mediante el proceso de 'Draft' por el liderazgo?", options: ["Solo el Nivel C", "Niveles C, D y E", "Niveles B y C", "Todos los niveles"], correct: 1 },
+                { q: "¿Se pueden usar 'Puntos de Hándicap' en un partido con 'Carta de Desafío' (Bola 9/10) activa?", options: ["Sí, siempre", "No, son incompatibles", "Solo en bola 10", "Solo para capitanes"], correct: 1 }
+            ]
+        };
+
+        let currentLang = 'en';
+        let currentQuestion = 0;
+        let score = 0;
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('screen-lang').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const qSet = questions[currentLang][currentQuestion];
+            const total = questions[currentLang].length;
+            
+            document.getElementById('question-counter').innerText = currentLang === 'es' 
+                ? `Pregunta ${currentQuestion + 1} / ${total}` 
+                : `Question ${currentQuestion + 1} / ${total}`;
+            
+            document.getElementById('progress').style.width = `${((currentQuestion) / total) * 100}%`;
+            document.getElementById('question-text').innerText = qSet.q;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            qSet.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "btn-option w-full text-left p-5 rounded-xl bg-slate-800/80 text-slate-200 font-bold hover:text-white shadow-sm active:scale-[0.98]";
+                btn.innerText = opt;
+                btn.onclick = () => selectOption(index);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectOption(index) {
+            const correctIndex = questions[currentLang][currentQuestion].correct;
+            if (index === correctIndex) score++;
+            
+            currentQuestion++;
+            if (currentQuestion < questions[currentLang].length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+            
+            const total = questions[currentLang].length;
+            const percentage = (score / total) * 100;
+            
+            document.getElementById('result-score-text').innerText = currentLang === 'es'
+                ? `Acertaste ${score} de ${total} preguntas.`
+                : `You scored ${score} out of ${total} correct.`;
+            
+            let rank, emoji, title;
+            if (percentage === 100) {
+                title = currentLang === 'es' ? "¡MAESTRO NAVEGANTE!" : "MASTER NAVIGATOR!";
+                rank = currentLang === 'es' ? "CAPITÁN (NIVEL A)" : "CAPTAIN (LEVEL A)";
+                emoji = "🏆";
+                confetti({ particleCount: 250, spread: 100, origin: { y: 0.6 }, colors: ['#fbbf24', '#ffffff', '#0ea5e9'] });
+            } else if (percentage >= 80) {
+                title = currentLang === 'es' ? "CONTRAMAESTRE" : "BOATSWAIN";
+                rank = currentLang === 'es' ? "NIVEL B - EXPERTO" : "LEVEL B - EXPERT";
+                emoji = "🔱";
+            } else if (percentage >= 50) {
+                title = currentLang === 'es' ? "MARINERO CANALLA" : "SCALLYWAG SAILOR";
+                rank = currentLang === 'es' ? "NIVEL D - CONOCEDOR" : "LEVEL D - KNOWLEDGEABLE";
+                emoji = "⛵";
+            } else {
+                title = currentLang === 'es' ? "A LAS GALERAS..." : "TO THE BRIG...";
+                rank = currentLang === 'es' ? "GRUMETE TORPE (NIVEL F)" : "CLUMSY CABIN BOY (LEVEL F)";
+                emoji = "⚓";
+            }
+            
+            document.getElementById('result-title').innerText = title;
+            document.getElementById('result-rank').innerText = rank;
+            document.getElementById('result-emoji').innerText = emoji;
+            document.getElementById('label-rank').innerText = currentLang === 'es' ? "Tu Rango Final" : "Your Final Rank";
+        }
+    </script>
 </body>
 </html>
