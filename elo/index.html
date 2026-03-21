@@ -406,6 +406,7 @@
     <!-- App Scripts -->
     <script src="../js/translations.js"></script>
     <script src="../js/firebase.js"></script>
+    <script src="../js/logging.js"></script>
 
     <script>
         // Wait for Firebase to load
@@ -417,6 +418,43 @@
                     setTimeout(() => waitForFirebase().then(resolve), 100);
                 }
             });
+        }
+
+        // Authentication check
+        document.addEventListener('DOMContentLoaded', async () => {
+            const ready = await waitForFirebase();
+            if (!ready) {
+                document.querySelector('.container').innerHTML = '<div class="update-info"><p>Error cargando Firebase</p></div>';
+                return;
+            }
+
+            initFirebase();
+
+            // Inicializar sistema de logging
+            if (window.initLogging) {
+                await initLogging();
+            }
+
+            // Proteger acceso: solo usuarios autenticados
+            onAuthStateChanged((user) => {
+                if (!user) {
+                    window.location.href = '../login.html';
+                } else {
+                    loadRankingData(user);
+                }
+            });
+        });
+
+        async function loadRankingData(user) {
+            // Ejecutar la carga del ranking solo si el usuario está autenticado
+            console.log('Usuario autenticado:', user.email);
+            
+            // Llamar a la función original de carga del ranking
+            try {
+                await loadRanking();
+            } catch (error) {
+                console.error('Error cargando ranking:', error);
+            }
         }
 
         // Calculate ELO 7 days ago for each player
@@ -767,8 +805,26 @@
             }
         }
 
-        // Initialize with timeout protection
-        function initializeApp() {
+        // Initialize with timeout protection and authentication
+        async function initializeApp() {
+            // Check authentication first
+            const user = await new Promise((resolve) => {
+                if (typeof auth !== 'undefined') {
+                    auth.onAuthStateChanged((u) => resolve(u));
+                } else {
+                    resolve(null);
+                }
+            });
+
+            if (!user) {
+                // Not authenticated, redirect to login
+                console.log('Usuario no autenticado, redirigiendo...');
+                window.location.href = '../login.html';
+                return;
+            }
+
+            console.log('Usuario autenticado, cargando ranking...');
+
             try {
                 // Initialize language selector
                 if (typeof createLanguageSelector === 'function') {
