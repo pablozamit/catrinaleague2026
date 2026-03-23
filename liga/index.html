@@ -386,31 +386,10 @@
         const teamButtons = document.getElementById('teamButtons');
         const loadingScreen = document.getElementById('loadingScreen');
 
-        async function loadTeamData() {
-            const snapshot = await database.ref('users').once('value');
-            const users = snapshot.val();
-            
+        function loadTeamData() {
+            // La liga no ha comenzado - todos los valores a 0
             return teams.map(team => {
                 const players = team.players.map(playerName => {
-                    const userEntry = Object.entries(users).find(
-                        ([, data]) => (data.username || '').toLowerCase() === playerName.toLowerCase()
-                    );
-                    
-                    if (userEntry) {
-                        const [, data] = userEntry;
-                        const played = data.matches_played || 0;
-                        const wins = data.matches_won || 0;
-                        const losses = played - wins;
-                        const points = wins * 3;
-                        
-                        return {
-                            name: data.username || playerName,
-                            played,
-                            wins,
-                            losses,
-                            points
-                        };
-                    }
                     return {
                         name: playerName,
                         played: 0,
