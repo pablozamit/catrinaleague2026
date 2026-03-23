@@ -12,6 +12,8 @@
             --black: #0a0a0a;
             --white: #f5f5f5;
             --felt: #1a4d2e;
+            --card-width: 180px;
+            --card-height: 260px;
         }
 
         * {
@@ -29,22 +31,17 @@
             background-image: 
                 radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
                 radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
+            padding: 80px 20px 40px;
         }
 
         .header {
             text-align: center;
-            padding: 2rem 0 3rem;
+            margin-bottom: 3rem;
         }
 
         .title {
             font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 900;
             color: var(--gold);
             text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
@@ -52,123 +49,166 @@
         }
 
         .subtitle {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #666;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             margin-top: 0.5rem;
         }
 
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        .card {
+        .naipe {
+            width: var(--card-width);
+            height: var(--card-height);
             perspective: 1000px;
             cursor: pointer;
-            min-height: 200px;
         }
 
-        .card-inner {
+        .naipe-inner {
             position: relative;
             width: 100%;
-            height: 200px;
+            height: 100%;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
         }
 
-        .card.flipped .card-inner {
+        .naipe.revelado .naipe-inner {
             transform: rotateY(180deg);
         }
 
-        .card-front, .card-back {
+        .naipe-face {
             position: absolute;
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border-radius: 16px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            padding: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
 
-        .card-front {
-            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
-            border: 2px solid var(--gold);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(212, 175, 55, 0.1);
+        .naipe-front {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border: 2px solid #333;
         }
 
-        .card-back {
-            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
-            border: 2px solid var(--gold);
-            transform: rotateY(180deg);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(212, 175, 55, 0.1);
+        .naipe-front::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
         }
 
-        .card-number {
+        .naipe-corner {
             font-family: 'Cinzel', serif;
-            font-size: 3rem;
+            font-size: 1.2rem;
             font-weight: 900;
             color: var(--gold);
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            align-self: flex-start;
         }
 
-        .card-symbol {
+        .naipe-corner.bottom {
+            align-self: flex-end;
+            transform: rotate(180deg);
+        }
+
+        .naipe-center {
+            font-size: 3rem;
+            color: rgba(212, 175, 55, 0.4);
+        }
+
+        .naipe-suit {
             font-size: 2rem;
-            margin-top: 0.5rem;
-            opacity: 0.7;
+            color: rgba(212, 175, 55, 0.6);
         }
 
-        .card-label {
-            font-family: 'Cinzel', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--gold);
-            margin-bottom: 1rem;
+        .naipe-back {
+            background: linear-gradient(180deg, #1f1f1f 0%, #111111 100%);
+            border: 2px solid var(--gold);
+            transform: rotateY(180deg);
+            justify-content: flex-start;
         }
 
-        .card-players {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            width: 100%;
-            padding: 0 1rem;
+        .naipe-back::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 1px solid var(--gold);
+            border-radius: 6px;
+            opacity: 0.3;
         }
 
-        .player-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem;
-            background: rgba(212, 175, 55, 0.1);
-            border-radius: 8px;
+        .naipe-header {
             font-family: 'Cinzel', serif;
             font-size: 1rem;
-            color: var(--white);
+            font-weight: 700;
+            color: var(--gold);
+            text-align: center;
+            margin-bottom: 8px;
         }
 
-        .player-row.unknown {
+        .naipe-players {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .naipe-player {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            color: var(--white);
+            text-align: center;
+            padding: 6px 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .naipe-player.unknown {
             color: var(--gold);
             font-style: italic;
             background: transparent;
-            border: 1px dashed rgba(212, 175, 55, 0.3);
+            border: 1px dashed rgba(212, 175, 55, 0.4);
+            letter-spacing: 2px;
         }
 
-        .card-hint {
-            font-size: 0.75rem;
+        .naipe-player:first-child {
+            margin-top: 10px;
+        }
+
+        .naipe-hint {
+            font-size: 0.6rem;
             color: #666;
-            margin-top: 1rem;
+            margin-top: 8px;
         }
 
         .back-link {
             position: fixed;
-            top: 1.5rem;
-            left: 1.5rem;
+            top: 20px;
+            left: 20px;
             color: var(--gold);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -181,14 +221,19 @@
         }
 
         @media (max-width: 600px) {
-            .cards-grid {
-                grid-template-columns: 1fr;
+            :root {
+                --card-width: 140px;
+                --card-height: 200px;
             }
-            .title {
-                font-size: 1.8rem;
+            .naipe-player {
+                font-size: 0.6rem;
+                padding: 4px 2px;
             }
-            .card-number {
-                font-size: 2.5rem;
+            .naipe-center {
+                font-size: 2rem;
+            }
+            .naipe-corner {
+                font-size: 1rem;
             }
         }
     </style>
@@ -196,14 +241,12 @@
 <body>
     <a href="./" class="back-link">← Volver</a>
 
-    <div class="container">
-        <div class="header">
-            <h1 class="title">EQUIPOS</h1>
-            <p class="subtitle">Liga 2026 · Toca las cartas para revelar</p>
-        </div>
-
-        <div class="cards-grid" id="cardsGrid"></div>
+    <div class="header">
+        <h1 class="title">EQUIPOS</h1>
+        <p class="subtitle">Liga 2026 · Toca las cartas</p>
     </div>
+
+    <div class="cards-container" id="cardsContainer"></div>
 
     <script>
         const teams = [
@@ -215,32 +258,39 @@
             { id: 6, known: ['pablo', 'joe'], unknown: 4 }
         ];
 
+        const suits = ['♠', '♥', '♦', '♣', '★', '◈'];
+
         function renderCards() {
-            const grid = document.getElementById('cardsGrid');
-            grid.innerHTML = teams.map(team => `
-                <div class="card" onclick="flipCard(this, ${team.id})">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="card-number">${team.id}</div>
-                            <div class="card-symbol">❓</div>
-                        </div>
-                        <div class="card-back">
-                            <div class="card-label">EQUIPO ${team.id}</div>
-                            <div class="card-players">
-                                ${team.known.map(p => `
-                                    <div class="player-row">${p.charAt(0).toUpperCase() + p.slice(1)}</div>
-                                `).join('')}
-                                ${Array(team.unknown).fill('<div class="player-row unknown">??????</div>').join('')}
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = teams.map(team => {
+                const suit = suits[team.id - 1];
+                const allPlayers = [...team.known, ...Array(team.unknown).fill('??????')];
+                
+                return `
+                    <div class="naipe" onclick="revelar(this)">
+                        <div class="naipe-inner">
+                            <div class="naipe-face naipe-front">
+                                <span class="naipe-corner">${team.id}</span>
+                                <span class="naipe-center">${suit}</span>
+                                <span class="naipe-corner bottom">${team.id}</span>
                             </div>
-                            <div class="card-hint">Toca para voltear</div>
+                            <div class="naipe-face naipe-back">
+                                <div class="naipe-header">EQUIPO ${team.id}</div>
+                                <div class="naipe-players">
+                                    ${allPlayers.map(p => `
+                                        <div class="naipe-player ${p === '??????' ? 'unknown' : ''}">${p}</div>
+                                    `).join('')}
+                                </div>
+                                <div class="naipe-hint">toca para voltear</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        function flipCard(card, teamId) {
-            card.classList.toggle('flipped');
+        function revelar(naipe) {
+            naipe.classList.toggle('revelado');
         }
 
         renderCards();
