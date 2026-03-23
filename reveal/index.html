@@ -303,8 +303,9 @@
 
         const suits = ['♠', '♥', '♦', '♣', '★', '◈'];
 
-        function getSpainTime() {
-            return new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' });
+        function getSpainDate() {
+            const now = new Date();
+            return new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' }));
         }
 
         function getUnlockHour(teamId) {
@@ -312,15 +313,17 @@
         }
 
         function getTimeUntilUnlock(teamId) {
-            const now = new Date();
+            const now = getSpainDate();
             
             const unlockHour = getUnlockHour(teamId);
             const today = now.getDate();
+            const month = now.getMonth();
+            const year = now.getFullYear();
             
-            let unlockDate = new Date(now.getFullYear(), now.getMonth(), today, unlockHour, 0, 0, 0);
+            let unlockDate = new Date(year, month, today, unlockHour, 0, 0, 0);
             
             if (now.getHours() >= unlockHour) {
-                unlockDate = new Date(now.getFullYear(), now.getMonth(), today + 1, unlockHour, 0, 0, 0);
+                unlockDate = new Date(year, month, today + 1, unlockHour, 0, 0, 0);
             }
             
             const diff = Math.floor((unlockDate - now) / 1000);
