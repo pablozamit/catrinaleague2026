@@ -263,6 +263,8 @@
         .player-number {
             position: relative;
             z-index: 2;
+            color: rgba(255, 255, 255, 0.4);
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
         }
 
         /* Estilos para el modal */
@@ -638,7 +640,7 @@
                 // Try to use a placeholder if available
                 this.src = '/assets/players/placeholder.jpg';
             };
-            captionText.textContent = playerName === 'johnny' ? 'Johnny (Test)' : playerName;
+            captionText.textContent = playerName.charAt(0).toUpperCase() + playerName.slice(1);
             
             modal.style.display = 'flex';
         }
