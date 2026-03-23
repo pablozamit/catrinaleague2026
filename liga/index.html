@@ -248,31 +248,44 @@
         /* Estilos específicos para la prueba de Johnny y Artur */
         .player-rank.silhouette-effect {
             background-color: transparent;
-            background-size: cover;
-            background-position: center;
-            filter: grayscale(80%) brightness(0.5) contrast(2);
-            opacity: 0.7;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
             position: relative;
             overflow: hidden;
         }
 
-        .player-rank.silhouette-effect:hover {
+        .silhouette-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: grayscale(80%) brightness(0.5) contrast(2);
+            z-index: 0;
+        }
+
+        .player-rank.silhouette-effect:hover .silhouette-bg {
             opacity: 0.85;
+        }
+
+        .player-rank.silhouette-effect:hover {
             transform: scale(1.03);
         }
 
-        /* Asegurar que el número reste legible sobre la imagen de fondo */
+        /* Número legible sobre la silueta */
         .player-number {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-            color: rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 1;
+            color: rgba(255, 255, 255, 0.95);
             font-size: 3vw;
             font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 1);
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 1), -1px -1px 4px rgba(0, 0, 0, 1);
+        }
+
+        @media (min-width: 768px) {
+            .player-number {
+                font-size: 1.8rem;
+            }
         }
 
         @media (min-width: 768px) {
@@ -572,12 +585,15 @@
                     rankDiv.className = 'player-rank silhouette-effect';
                     rankDiv.setAttribute('data-player', player.name);
                     
-                    // Set the appropriate background image based on player
+                    // Background div with filtered image
+                    const bgDiv = document.createElement('div');
+                    bgDiv.className = 'silhouette-bg';
                     if (player.name === 'johnny') {
-                        rankDiv.style.backgroundImage = `url('/assets/players/johnnycard.png')`;
+                        bgDiv.style.backgroundImage = `url('/assets/players/johnnycard.png')`;
                     } else if (player.name === 'artur') {
-                        rankDiv.style.backgroundImage = `url('/assets/players/artur.jpg')`;
+                        bgDiv.style.backgroundImage = `url('/assets/players/artur.jpg')`;
                     }
+                    rankDiv.appendChild(bgDiv);
                     
                     rankDiv.innerHTML = `<span class="player-number">${i + 1}</span>`;
                     rankDiv.onclick = function(e) {
