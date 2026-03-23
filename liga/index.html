@@ -194,7 +194,7 @@
 
         .table-header {
             display: grid;
-            grid-template-columns: 1fr 15vw 15vw 15vw 18vw;
+            grid-template-columns: 10vw 1fr 12vw 12vw 12vw 14vw;
             padding: 2vw 0;
             border-bottom: 1px solid rgba(212, 175, 55, 0.3);
             font-family: var(--font-ui);
@@ -206,11 +206,12 @@
             z-index: 2;
         }
 
-        .table-header span:nth-child(1) { text-align: left; }
-        .table-header span:nth-child(2) { text-align: center; }
+        .table-header span:nth-child(1) { text-align: center; }
+        .table-header span:nth-child(2) { text-align: left; }
         .table-header span:nth-child(3) { text-align: center; }
         .table-header span:nth-child(4) { text-align: center; }
-        .table-header span:nth-child(5) { text-align: right; }
+        .table-header span:nth-child(5) { text-align: center; }
+        .table-header span:nth-child(6) { text-align: right; }
 
         .player-list {
             list-style: none;
@@ -220,7 +221,7 @@
 
         .player-row {
             display: grid;
-            grid-template-columns: 1fr 15vw 15vw 15vw 18vw;
+            grid-template-columns: 10vw 1fr 12vw 12vw 12vw 14vw;
             align-items: center;
             padding: 3vw 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -232,13 +233,14 @@
 
         .player-rank {
             font-family: var(--font-display);
-            font-size: 5vw;
+            font-size: 4vw;
+            text-align: center;
             color: var(--muted);
         }
 
         .player-name {
             font-family: var(--font-serif);
-            font-size: 4.5vw;
+            font-size: 4vw;
             font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
@@ -248,14 +250,14 @@
 
         .player-stat {
             font-family: var(--font-display);
-            font-size: 4vw;
+            font-size: 3.5vw;
             text-align: center;
             color: var(--white);
         }
 
         .player-pts {
             font-family: var(--font-display);
-            font-size: 5vw;
+            font-size: 4vw;
             text-align: right;
             color: var(--gold);
         }
@@ -340,6 +342,7 @@
         </div>
 
         <div class="table-header">
+            <span>#</span>
             <span>Jugador</span>
             <span>PJ</span>
             <span>G</span>
