@@ -313,30 +313,28 @@
 
         function getTimeUntilUnlock(teamId) {
             const now = new Date();
-            const madridTime = new Date(now.toLocaleString('es-ES', { timeZone: 'Europe/Madrid' }));
             
-            const unlockDate = new Date(madridTime);
-            unlockDate.setHours(getUnlockHour(teamId), 0, 0, 0);
+            const unlockHour = getUnlockHour(teamId);
+            const today = now.getDate();
             
-            if (madridTime >= unlockDate) {
-                return 0;
+            let unlockDate = new Date(now.getFullYear(), now.getMonth(), today, unlockHour, 0, 0, 0);
+            
+            if (now.getHours() >= unlockHour) {
+                unlockDate = new Date(now.getFullYear(), now.getMonth(), today + 1, unlockHour, 0, 0, 0);
             }
             
-            return Math.floor((unlockDate - madridTime) / 1000);
+            const diff = Math.floor((unlockDate - now) / 1000);
+            return diff > 0 ? diff : 0;
         }
 
         function formatCountdown(seconds) {
-            if (seconds <= 0) return '00:00:00';
+            if (seconds <= 0) return '00:00';
             
             const hours = Math.floor(seconds / 3600);
             const mins = Math.floor((seconds % 3600) / 60);
             const secs = seconds % 60;
             
-            if (hours > 0) {
-                return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            }
-            
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
         function isUnlocked(teamId) {
