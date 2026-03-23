@@ -2,236 +2,638 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" id="favicon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Liga - La Catrina Pool League</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --color-bg: #0a0a0a;
-            --color-gold: #d4af37;
-            --color-gold-light: #f4d03f;
-            --color-white: #f5f5f5;
-            --color-text-muted: #888;
+            --gold: #d4af37;
+            --gold-light: #f4d03f;
+            --black: #0a0a0a;
+            --white: #f5f5f5;
+            --muted: #666;
+            --felt: #1a4d2e;
+            
+            --font-display: 'Cinzel', serif;
+            --font-serif: 'EB Garamond', serif;
+            --font-ui: 'Inter', sans-serif;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            user-select: none;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--color-bg);
-            color: var(--color-white);
-            min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            background-color: var(--gold);
+            color: var(--black);
+            font-family: var(--font-ui);
+            overflow: hidden;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .header {
-            background: linear-gradient(180deg, rgba(26, 74, 46, 0.3) 0%, transparent 100%);
-            padding: 2rem;
-            text-align: center;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        .header-section {
+            padding: 4vw;
+            height: 45dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+            z-index: 10;
         }
 
-        .header h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: var(--color-gold);
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-            letter-spacing: 4px;
-            margin-bottom: 0.5rem;
+        .packed-text {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            line-height: 0.85;
+            text-transform: uppercase;
         }
 
-        .header p {
-            color: var(--color-text-muted);
-            font-size: 0.9rem;
-            letter-spacing: 2px;
+        .title-main {
+            font-family: var(--font-display);
+            font-size: 24vw;
+            letter-spacing: -0.02em;
+            width: 100%;
+            margin-bottom: -1vw;
+            color: var(--black);
+            text-shadow: none;
         }
 
-        .back-link {
+        .title-sub {
+            font-family: var(--font-display);
+            font-size: 15vw;
+            letter-spacing: -0.01em;
+            color: var(--black);
+        }
+
+        .meta-block {
+            font-family: var(--font-ui);
+            font-size: 3vw;
+            line-height: 1.2;
+            width: 35%;
+            margin-left: auto;
+            text-align: right;
+            font-weight: 600;
+            color: var(--black);
+        }
+
+        .sub-meta {
+            font-family: var(--font-serif);
+            font-size: 4vw;
+            line-height: 1.1;
+            margin-top: 2vw;
+            width: 80%;
+            border-top: 2px solid var(--black);
+            padding-top: 1vw;
+            color: var(--black);
+        }
+
+        .dial-container {
             position: absolute;
-            top: 2rem;
-            left: 2rem;
-            color: var(--color-gold);
-            text-decoration: none;
-            font-size: 0.9rem;
+            top: 45dvh;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60vw;
+            height: 60vw;
+            max-width: 280px;
+            max-height: 280px;
+            z-index: 20;
+            cursor: grab;
+            touch-action: none;
+        }
+
+        .dial-container:active {
+            cursor: grabbing;
+        }
+
+        .dial {
+            width: 100%;
+            height: 100%;
+            background-color: var(--black);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: 3px solid var(--gold);
+        }
+
+        .dial-team-indicator {
+            position: absolute;
+            color: var(--gold);
+            font-family: var(--font-display);
+            font-size: 28vw;
+            line-height: 1;
+            letter-spacing: -0.05em;
+            pointer-events: none;
+        }
+
+        .dial-label {
+            position: absolute;
+            color: var(--white);
+            font-family: var(--font-ui);
+            font-size: 2.5vw;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            top: 5%;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .dial::before, .dial::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            top: 50%;
+        }
+        .dial::before { left: 5%; }
+        .dial::after { right: 5%; }
+
+        .swipe-hint {
+            position: absolute;
+            bottom: -8vw;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-ui);
+            font-size: 2.5vw;
+            color: var(--black);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
+            gap: 2vw;
+            opacity: 0.6;
+        }
+        
+        .swipe-hint span {
+            display: block;
+            width: 4vw;
+            height: 1px;
+            background: currentColor;
         }
 
-        .back-link:hover {
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        .data-section {
+            background-color: var(--black);
+            color: var(--white);
+            height: 55dvh;
+            padding: 8vw 4vw 4vw 4vw;
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+        .bg-letters {
+            position: absolute;
+            bottom: -5vw;
+            left: 0;
+            font-family: var(--font-display);
+            font-size: 60vw;
+            line-height: 0.7;
+            color: var(--white);
+            opacity: 0.03;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .placeholder {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 12px;
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 2vw;
+            margin-bottom: 3vw;
+            position: relative;
+            z-index: 2;
         }
 
-        .placeholder-icon {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
+        .team-title {
+            font-family: var(--font-display);
+            font-size: 8vw;
+            letter-spacing: 0.02em;
+            color: var(--gold);
         }
 
-        .placeholder h2 {
-            font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
-            color: var(--color-gold);
-            margin-bottom: 1rem;
+        .team-stats {
+            font-family: var(--font-ui);
+            font-size: 2.5vw;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255,255,255,0.5);
         }
 
-        .placeholder p {
-            color: var(--color-text-muted);
-            font-size: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
+        .team-total {
+            font-family: var(--font-ui);
+            font-size: 3vw;
+            color: var(--gold);
+            text-align: right;
+        }
+
+        .player-list {
+            list-style: none;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+        }
+
+        .player-row {
+            display: flex;
+            align-items: center;
+            padding: 2.5vw 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .player-row.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .player-row:nth-child(1) { transition-delay: 0.05s; }
+        .player-row:nth-child(2) { transition-delay: 0.10s; }
+
+        .player-rank {
+            font-family: var(--font-display);
+            font-size: 5vw;
+            color: var(--gold);
+            width: 8vw;
+            opacity: 0.8;
+        }
+
+        .player-avatar {
+            width: 10vw;
+            height: 10vw;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), var(--felt));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 3vw;
+            flex-shrink: 0;
+            font-family: var(--font-display);
+            font-size: 4vw;
+            color: var(--black);
+            font-weight: 900;
+        }
+
+        .player-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .player-name {
+            font-family: var(--font-serif);
+            font-size: 5vw;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--white);
+        }
+
+        .player-stats {
+            font-family: var(--font-ui);
+            font-size: 2.5vw;
+            color: var(--muted);
+            margin-top: 0.5vw;
+        }
+
+        .player-stats span {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .player-elo {
+            font-family: var(--font-display);
+            font-size: 5vw;
+            text-align: right;
+            color: var(--gold);
+            width: 18vw;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-text {
+            font-family: var(--font-display);
+            font-size: 8vw;
+            color: var(--gold);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        @media (min-width: 768px) {
+            .title-main { font-size: 12rem; }
+            .title-sub { font-size: 7rem; }
+            .meta-block { font-size: 1rem; width: 25%; }
+            .sub-meta { font-size: 1.5rem; width: 60%; }
+            .dial-label { font-size: 0.8rem; }
+            .dial-team-indicator { font-size: 12rem; }
+            .swipe-hint { font-size: 0.8rem; bottom: -30px; }
+            .swipe-hint span { width: 20px; }
+            .team-title { font-size: 3rem; }
+            .team-stats { font-size: 0.8rem; }
+            .team-total { font-size: 1rem; }
+            .player-rank { font-size: 2rem; width: 40px; }
+            .player-avatar { width: 50px; height: 50px; font-size: 1.5rem; }
+            .player-name { font-size: 1.5rem; }
+            .player-stats { font-size: 0.8rem; }
+            .player-elo { font-size: 2rem; width: 80px; }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="../" class="back-link">
-            <span>←</span>
-            <span>Volver a la Mesa</span>
-        </a>
-        <div style="position: absolute; top: 2rem; right: 2rem; display: flex; align-items: center; gap: 15px;">
-            <div id="langSelectorContainer"></div>
-            <div id="notificationBellContainer"></div>
-        </div>
-        <h1>LIGA</h1>
-        <p>LA CATRINA POOL LEAGUE</p>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-text">LIGA</div>
     </div>
 
-    <div class="container">
-        <div class="placeholder">
-            <div class="placeholder-icon">🚧</div>
-            <h2>En construcción</h2>
-            <p>La sección de Liga está siendo desarrollada. Prueba de concepto.</p>
+    <header class="header-section">
+        <div class="packed-text">
+            <div class="title-main">LIGA</div>
+            <div class="title-sub">2026</div>
+            <div class="meta-block">
+                LA CATRINA<br>POOL LEAGUE<br>TEMPORADA 1
+            </div>
         </div>
+        
+        <div class="sub-meta">
+            Sistema de puntuación acumulativa. Los 2 primeros de cada grupo avanzan a la final.
+        </div>
+    </header>
+
+    <div class="dial-container" id="dialContainer">
+        <div class="dial" id="dial">
+            <div class="dial-label">Equipo</div>
+            <div class="dial-team-indicator" id="dialIndicator">1</div>
+        </div>
+        <div class="swipe-hint"><span></span>DESLIZA<span></span></div>
     </div>
 
-    <!-- Firebase -->
+    <main class="data-section">
+        <div class="bg-letters">TEAM</div>
+        
+        <div class="team-header">
+            <div class="team-title" id="teamTitle">EQUIPO 1</div>
+            <div>
+                <div class="team-stats" id="teamStats">Grupo 1 / 6</div>
+                <div class="team-total" id="teamTotal">2938 PTS</div>
+            </div>
+        </div>
+
+        <ul class="player-list" id="playerList"></ul>
+    </main>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-    <!-- App Scripts -->
-    <script src="../js/translations.js"></script>
-    <script src="../js/firebase.js"></script>
-    <script src="../js/badges.js"></script>
-    <script src="../js/notifications.js"></script>
-
     <script>
-        // Initialize Firebase and notifications
-        try {
-            if (typeof initFirebase === 'function') {
-                initFirebase();
-            }
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgyARlrVo-J1qIhu49Nfvif_p7xVVFW5s",
+            authDomain: "elopool-f1e62.firebaseapp.com",
+            databaseURL: "https://elopool-f1e62-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "elopool-f1e62",
+            storageBucket: "elopool-f1e62.firebasestorage.app",
+            messagingSenderId: "125100775441",
+            appId: "1:125100775441:web:b61f62a308af5c678db9b0"
+        };
 
-            // Initialize language selector
-            if (typeof createLanguageSelector === 'function') {
-                const langContainer = document.getElementById('langSelectorContainer');
-                if (langContainer) {
-                    langContainer.innerHTML = createLanguageSelector();
-                }
-            }
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-            // Initialize notification bell
-            if (typeof createNotificationBell === 'function') {
-                const bellContainer = document.getElementById('notificationBellContainer');
-                if (bellContainer) {
-                    bellContainer.innerHTML = createNotificationBell();
-                }
-            }
+        const teams = [
+            { id: 1, players: ['johnny', 'mo'] },
+            { id: 2, players: ['artur', 'sergio'] },
+            { id: 3, players: ['amauris', 'sasa'] },
+            { id: 4, players: ['fer', 'katee'] },
+            { id: 5, players: ['jack', 'jonathan'] },
+            { id: 6, players: ['pablo', 'joe'] }
+        ];
 
-            // Set up auth state change for notifications
-            if (typeof onAuthStateChanged === 'function') {
-                onAuthStateChanged(async (user) => {
-                    if (user) {
-                        try {
-                            await updateNotificationBell(user.uid);
-                        } catch (error) {
-                            console.error('Error updating notification bell:', error);
-                        }
+        let currentTeamIndex = 0;
+        let currentRotation = 0;
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        let lastRotation = 0;
+
+        const dial = document.getElementById('dial');
+        const dialContainer = document.getElementById('dialContainer');
+        const dialIndicator = document.getElementById('dialIndicator');
+        const teamTitle = document.getElementById('teamTitle');
+        const teamStats = document.getElementById('teamStats');
+        const teamTotal = document.getElementById('teamTotal');
+        const playerList = document.getElementById('playerList');
+        const loadingScreen = document.getElementById('loadingScreen');
+
+        async function loadTeamData() {
+            const snapshot = await database.ref('users').once('value');
+            const users = snapshot.val();
+            
+            const teamData = teams.map(team => {
+                const players = team.players.map(playerName => {
+                    const userEntry = Object.entries(users).find(
+                        ([, data]) => (data.username || '').toLowerCase() === playerName.toLowerCase()
+                    );
+                    
+                    if (userEntry) {
+                        const [, data] = userEntry;
+                        return {
+                            name: data.username || playerName,
+                            elo: data.elo_rating || 1200,
+                            matches: data.matches_played || 0,
+                            wins: data.matches_won || 0
+                        };
                     }
-});
+                    return {
+                        name: playerName,
+                        elo: 1200,
+                        matches: 0,
+                        wins: 0
+                    };
+                });
+
+                const totalElo = players.reduce((sum, p) => sum + p.elo, 0);
+
+                return {
+                    id: team.id,
+                    players,
+                    totalElo
+                };
+            });
+
+            return teamData;
+        }
+
+        function renderTeam(index) {
+            const team = teamData[index];
+            
+            dialIndicator.innerText = team.id;
+            teamTitle.innerText = `EQUIPO ${team.id}`;
+            teamStats.innerText = `Grupo ${team.id} / ${teamData.length}`;
+            teamTotal.innerText = `${team.totalElo} PTS`;
+
+            const oldRows = playerList.querySelectorAll('.player-row');
+            oldRows.forEach(row => row.classList.remove('active'));
+
+            setTimeout(() => {
+                playerList.innerHTML = '';
+                team.players.forEach((player, i) => {
+                    const li = document.createElement('li');
+                    li.className = 'player-row';
+                    
+                    const initial = player.name.charAt(0).toUpperCase();
+                    const winRate = player.matches > 0 
+                        ? Math.round((player.wins / player.matches) * 100) 
+                        : 0;
+
+                    li.innerHTML = `
+                        <div class="player-rank">${i + 1}</div>
+                        <div class="player-avatar">${initial}</div>
+                        <div class="player-info">
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-stats">
+                                <span>${player.matches}</span> part. · 
+                                <span>${player.wins}</span> vict. 
+                                (${winRate}%)
+                            </div>
+                        </div>
+                        <div class="player-elo">${player.elo}</div>
+                    `;
+                    playerList.appendChild(li);
+
+                    void li.offsetWidth;
+                    li.classList.add('active');
+                });
+            }, 150);
+        }
+
+        dialContainer.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            startX = e.touches[0].clientX;
+            dial.style.transition = 'none';
+        }, { passive: false });
+
+        dialContainer.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            currentX = e.touches[0].clientX;
+            const diffX = currentX - startX;
+            const rotationDelta = diffX * 0.5;
+            dial.style.transform = `rotate(${lastRotation + rotationDelta}deg)`;
+        }, { passive: false });
+
+        dialContainer.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const diffX = currentX - startX;
+            
+            if (Math.abs(diffX) > 30) {
+                if (diffX < 0) {
+                    currentTeamIndex = (currentTeamIndex + 1) % teamData.length;
+                    currentRotation -= 60;
+                } else {
+                    currentTeamIndex = (currentTeamIndex - 1 + teamData.length) % teamData.length;
+                    currentRotation += 60;
+                }
+            }
+
+            dial.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+            dial.style.transform = `rotate(${currentRotation}deg)`;
+            lastRotation = currentRotation;
+            renderTeam(currentTeamIndex);
+            
+            startX = 0;
+            currentX = 0;
+        });
+
+        dialContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            dial.style.transition = 'none';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            currentX = e.clientX;
+            const diffX = currentX - startX;
+            const rotationDelta = diffX * 0.5;
+            dial.style.transform = `rotate(${lastRotation + rotationDelta}deg)`;
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            const diffX = currentX - startX;
+            
+            if (Math.abs(diffX) > 30) {
+                if (diffX < 0) {
+                    currentTeamIndex = (currentTeamIndex + 1) % teamData.length;
+                    currentRotation -= 60;
+                } else {
+                    currentTeamIndex = (currentTeamIndex - 1 + teamData.length) % teamData.length;
+                    currentRotation += 60;
+                }
+            }
+
+            dial.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+            dial.style.transform = `rotate(${currentRotation}deg)`;
+            lastRotation = currentRotation;
+            renderTeam(currentTeamIndex);
+        });
+
+        let teamData = [];
+
+        async function init() {
+            try {
+                teamData = await loadTeamData();
+                renderTeam(currentTeamIndex);
+                loadingScreen.classList.add('hidden');
+            } catch (error) {
+                console.error('Error loading team data:', error);
+                loadingScreen.innerHTML = '<div class="loading-text" style="font-size: 1rem;">Error cargando datos</div>';
+            }
+        }
+
+        init();
     </script>
-
-<script>
-// FAVICON ANIMADO: Bola de billar 8 rotando horizontalmente
-const faviconCanvas = document.createElement('canvas');
-faviconCanvas.width = 32;
-faviconCanvas.height = 32;
-const faviconCtx = faviconCanvas.getContext('2d');
-
-function updateFavicon() {
-    const time = Date.now() * 0.005;
-    const rotation = Math.sin(time) * 0.15;
-
-    faviconCtx.clearRect(0, 0, 32, 32);
-    const cx = 16;
-    const cy = 16;
-    const radius = 14;
-
-    const gradient = faviconCtx.createRadialGradient(
-        cx - 3, cy - 3, 0,
-        cx, cy, radius
-    );
-    gradient.addColorStop(0, '#ffffff');
-    gradient.addColorStop(0.3, '#ffffff');
-    gradient.addColorStop(0.5, '#0a0a0a');
-    gradient.addColorStop(1, '#000000');
-
-    faviconCtx.beginPath();
-    faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
-    faviconCtx.fillStyle = gradient;
-    faviconCtx.fill();
-
-    faviconCtx.save();
-    faviconCtx.translate(cx, cy);
-    faviconCtx.scale(1 + rotation * 0.5, 1);
-    faviconCtx.translate(-cx, -cy);
-
-    faviconCtx.fillStyle = '#ffffff';
-    faviconCtx.font = 'bold 14px Arial';
-    faviconCtx.textAlign = 'center';
-    faviconCtx.textBaseline = 'middle';
-    faviconCtx.fillText('8', cx, cy + 1);
-
-    faviconCtx.restore();
-
-    faviconCtx.beginPath();
-    faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
-    faviconCtx.strokeStyle = '#d4af37';
-    faviconCtx.lineWidth = 2;
-    faviconCtx.stroke();
-
-    const link = document.getElementById('favicon');
-    if (link) {
-        link.href = faviconCanvas.toDataURL('image/png');
-    }
-
-    requestAnimationFrame(updateFavicon);
-}
-
-updateFavicon();
-</script>
 </body>
 </html>
