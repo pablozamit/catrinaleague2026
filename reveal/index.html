@@ -303,9 +303,8 @@
 
         const suits = ['♠', '♥', '♦', '♣', '★', '◈'];
 
-        function getSpainDate() {
-            const now = new Date();
-            return new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' }));
+        function getMadridHour() {
+            return parseInt(new Date().toLocaleString('en-US', { timeZone: 'Europe/Madrid', hour: 'numeric', hour12: false }), 10);
         }
 
         function getUnlockHour(teamId) {
@@ -313,21 +312,13 @@
         }
 
         function getTimeUntilUnlock(teamId) {
-            const now = getSpainDate();
-            
+            const madridHour = getMadridHour();
             const unlockHour = getUnlockHour(teamId);
-            const today = now.getDate();
-            const month = now.getMonth();
-            const year = now.getFullYear();
             
-            let unlockDate = new Date(year, month, today, unlockHour, 0, 0, 0);
+            if (madridHour >= unlockHour) return 0;
             
-            if (now.getHours() >= unlockHour) {
-                unlockDate = new Date(year, month, today + 1, unlockHour, 0, 0, 0);
-            }
-            
-            const diff = Math.floor((unlockDate - now) / 1000);
-            return diff > 0 ? diff : 0;
+            const minutesUntil = (unlockHour - madridHour) * 60 - new Date().getMinutes();
+            return minutesUntil * 60 - new Date().getSeconds();
         }
 
         function formatCountdown(seconds) {
