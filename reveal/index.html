@@ -69,6 +69,11 @@
             height: var(--card-height);
             perspective: 1000px;
             cursor: pointer;
+            position: relative;
+        }
+
+        .naipe.locked {
+            cursor: not-allowed;
         }
 
         .naipe-inner {
@@ -92,7 +97,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             padding: 15px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
@@ -102,15 +107,26 @@
             border: 2px solid #333;
         }
 
-        .naipe-front::before {
+        .naipe-front.locked {
+            border-color: #444;
+            opacity: 0.7;
+        }
+
+        .naipe-front.locked::before {
             content: '';
             position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0,0,0,0.1) 10px,
+                rgba(0,0,0,0.1) 20px
+            );
+            border-radius: 12px;
         }
 
         .naipe-corner {
@@ -119,10 +135,17 @@
             font-weight: 900;
             color: var(--gold);
             align-self: flex-start;
+            position: absolute;
+            top: 10px;
+            left: 10px;
         }
 
         .naipe-corner.bottom {
             align-self: flex-end;
+            top: auto;
+            bottom: 10px;
+            left: auto;
+            right: 10px;
             transform: rotate(180deg);
         }
 
@@ -134,6 +157,23 @@
         .naipe-suit {
             font-size: 2rem;
             color: rgba(212, 175, 55, 0.6);
+        }
+
+        .naipe-countdown {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #ef4444;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .naipe-countdown-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem;
+            color: #666;
+            display: block;
+            margin-top: 5px;
         }
 
         .naipe-back {
@@ -162,6 +202,7 @@
             color: var(--gold);
             text-align: center;
             margin-bottom: 8px;
+            z-index: 1;
         }
 
         .naipe-players {
@@ -169,6 +210,7 @@
             flex-direction: column;
             gap: 4px;
             width: 100%;
+            z-index: 1;
         }
 
         .naipe-player {
@@ -192,14 +234,11 @@
             letter-spacing: 2px;
         }
 
-        .naipe-player:first-child {
-            margin-top: 10px;
-        }
-
         .naipe-hint {
             font-size: 0.6rem;
             color: #666;
             margin-top: 8px;
+            z-index: 1;
         }
 
         .back-link {
@@ -235,6 +274,9 @@
             .naipe-corner {
                 font-size: 1rem;
             }
+            .naipe-countdown {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
@@ -243,12 +285,13 @@
 
     <div class="header">
         <h1 class="title">EQUIPOS</h1>
-        <p class="subtitle">Liga 2026 · Toca las cartas</p>
+        <p class="subtitle">Liga 2026 · Se revelan poco a poco</p>
     </div>
 
     <div class="cards-container" id="cardsContainer"></div>
 
     <script>
+        const BASE_HOUR = 13;
         const teams = [
             { id: 1, known: ['johnny', 'mo'], unknown: 4 },
             { id: 2, known: ['artur', 'sergio'], unknown: 4 },
@@ -260,19 +303,81 @@
 
         const suits = ['♠', '♥', '♦', '♣', '★', '◈'];
 
+        function getSpainTime() {
+            return new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' });
+        }
+
+        function getUnlockHour(teamId) {
+            return BASE_HOUR + (teamId - 1);
+        }
+
+        function getTimeUntilUnlock(teamId) {
+            const now = new Date();
+            const madridTime = new Date(now.toLocaleString('es-ES', { timeZone: 'Europe/Madrid' }));
+            
+            const unlockDate = new Date(madridTime);
+            unlockDate.setHours(getUnlockHour(teamId), 0, 0, 0);
+            
+            if (madridTime >= unlockDate) {
+                return 0;
+            }
+            
+            return Math.floor((unlockDate - madridTime) / 1000);
+        }
+
+        function formatCountdown(seconds) {
+            if (seconds <= 0) return '00:00:00';
+            
+            const hours = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+            
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function isUnlocked(teamId) {
+            return getTimeUntilUnlock(teamId) <= 0;
+        }
+
         function renderCards() {
             const container = document.getElementById('cardsContainer');
+            
             container.innerHTML = teams.map(team => {
                 const suit = suits[team.id - 1];
                 const allPlayers = [...team.known, ...Array(team.unknown).fill('??????')];
+                const unlocked = isUnlocked(team.id);
+                const secondsUntil = getTimeUntilUnlock(team.id);
+                const unlockHour = getUnlockHour(team.id);
+                
+                const frontClass = unlocked ? 'naipe-front' : 'naipe-front locked';
+                
+                let frontContent = '';
+                if (unlocked) {
+                    frontContent = `
+                        <span class="naipe-corner">${team.id}</span>
+                        <span class="naipe-center">${suit}</span>
+                        <span class="naipe-corner bottom">${team.id}</span>
+                    `;
+                } else {
+                    frontContent = `
+                        <span class="naipe-corner">${team.id}</span>
+                        <div class="naipe-countdown">
+                            ${formatCountdown(secondsUntil)}
+                            <span class="naipe-countdown-label">a las ${unlockHour}:00</span>
+                        </div>
+                        <span class="naipe-corner bottom">${team.id}</span>
+                    `;
+                }
                 
                 return `
-                    <div class="naipe" onclick="revelar(this)">
+                    <div class="naipe ${unlocked ? '' : 'locked'}" onclick="${unlocked ? 'revelar(this)' : ''}">
                         <div class="naipe-inner">
-                            <div class="naipe-face naipe-front">
-                                <span class="naipe-corner">${team.id}</span>
-                                <span class="naipe-center">${suit}</span>
-                                <span class="naipe-corner bottom">${team.id}</span>
+                            <div class="naipe-face ${frontClass}">
+                                ${frontContent}
                             </div>
                             <div class="naipe-face naipe-back">
                                 <div class="naipe-header">EQUIPO ${team.id}</div>
@@ -281,7 +386,7 @@
                                         <div class="naipe-player ${p === '??????' ? 'unknown' : ''}">${p}</div>
                                     `).join('')}
                                 </div>
-                                <div class="naipe-hint">toca para voltear</div>
+                                <div class="naipe-hint">${unlocked ? 'toca para voltear' : `se revela a las ${unlockHour}:00`}</div>
                             </div>
                         </div>
                     </div>
@@ -290,10 +395,18 @@
         }
 
         function revelar(naipe) {
+            if (naipe.classList.contains('locked')) return;
             naipe.classList.toggle('revelado');
         }
 
         renderCards();
+        
+        setInterval(() => {
+            const lockedCards = document.querySelectorAll('.naipe.locked');
+            if (lockedCards.length > 0) {
+                renderCards();
+            }
+        }, 1000);
     </script>
 </body>
 </html>
