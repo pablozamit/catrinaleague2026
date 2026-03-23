@@ -576,12 +576,20 @@
                 const li = document.createElement('li');
                 li.className = 'player-row';
                 
-                // Special handling for Johnny's test
-                if (player.name === 'johnny') {
-                    // Create the rank div with silhouette effect for Johnny
+                // Special handling for Johnny and Artur's test
+                if (player.name === 'johnny' || player.name === 'artur') {
+                    // Create the rank div with silhouette effect
                     const rankDiv = document.createElement('div');
                     rankDiv.className = 'player-rank silhouette-effect';
                     rankDiv.setAttribute('data-player', player.name);
+                    
+                    // Set the appropriate background image based on player
+                    if (player.name === 'johnny') {
+                        rankDiv.style.backgroundImage = `url('/assets/players/johnnycard.png')`;
+                    } else if (player.name === 'artur') {
+                        rankDiv.style.backgroundImage = `url('/assets/players/artur.jpg')`;
+                    }
+                    
                     rankDiv.innerHTML = `<span class="player-number">${i + 1}</span>`;
                     rankDiv.onclick = function(e) {
                         e.stopPropagation();
@@ -589,24 +597,34 @@
                     };
                     li.appendChild(rankDiv);
                     
-                    // Add name and stats for Johnny
+                    // Add name and stats
                     const nameDiv = document.createElement('div');
                     nameDiv.className = 'player-name';
                     nameDiv.textContent = player.name;
                     li.appendChild(nameDiv);
                     
-                    // Animation column - video for Johnny
-                    const animDiv = document.createElement('div');
-                    if (player.name.toLowerCase() === 'johnny') {
-                        const video = document.createElement('video');
-                        video.src = '../material/johnny_animation.mp4';
-                        video.className = 'player-animation';
-                        video.autoplay = true;
-                        video.loop = true;
-                        video.muted = true;
-                        video.playsInline = true;
-                        animDiv.appendChild(video);
-                    }
+                    const stats = ['played', 'wins', 'losses', 'points'];
+                    stats.forEach(stat => {
+                        const statDiv = document.createElement('div');
+                        statDiv.className = 'player-stat';
+                        statDiv.textContent = player[stat] === undefined ? 0 : player[stat];
+                        li.appendChild(statDiv);
+                    });
+                } else {
+                    // Normal rendering for other players
+                    li.innerHTML = `
+                        <div class="player-rank">${i + 1}</div>
+                        <div class="player-name">${player.name}</div>
+                        <div class="player-stat">${player.played}</div>
+                        <div class="player-stat">${player.wins}</div>
+                        <div class="player-stat">${player.losses}</div>
+                        <div class="player-pts">${player.points}</div>
+                    `;
+                }
+                
+                playerList.appendChild(li);
+            });
+        }
                     li.appendChild(animDiv);
                     
                     const stats = ['played', 'wins', 'losses', 'points'];
@@ -618,9 +636,12 @@
                     });
                 } else {
                     // Normal rendering for other players
-                    const animHtml = player.name.toLowerCase() === 'johnny' ? 
-                        `<video src="../material/johnny_animation.mp4" class="player-animation" autoplay loop muted playsinline></video>` : 
-                        '';
+                    let animHtml = '';
+                    if (player.name.toLowerCase() === 'johnny') {
+                        animHtml = `<video src="../material/johnny_animation.mp4" class="player-animation" autoplay loop muted playsinline></video>`;
+                    } else if (player.name.toLowerCase() === 'artur') {
+                        animHtml = `<video src="../material/artur_animation.mp4" class="player-animation" autoplay loop muted playsinline></video>`;
+                    }
                     li.innerHTML = `
                         <div class="player-rank">${i + 1}</div>
                         <div class="player-name">${player.name}</div>
