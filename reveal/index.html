@@ -366,7 +366,7 @@
                 }
                 
                 return `
-                    <div class="naipe ${unlocked ? '' : 'locked'}" onclick="${unlocked ? 'revelar(this)' : ''}">
+                    <div class="naipe ${unlocked ? '' : 'locked'}" data-team="${team.id}" onclick="${unlocked ? 'revelar(this)' : ''}">
                         <div class="naipe-inner">
                             <div class="naipe-face ${frontClass}">
                                 ${frontContent}
@@ -391,12 +391,20 @@
             naipe.classList.toggle('revelado');
         }
 
+        let revealedTeams = new Set();
+
         renderCards();
         
         setInterval(() => {
             const lockedCards = document.querySelectorAll('.naipe.locked');
             if (lockedCards.length > 0) {
+                const currentRevealed = Array.from(document.querySelectorAll('.naipe.revelado')).map(n => n.dataset.team);
+                currentRevealed.forEach(t => revealedTeams.add(t));
                 renderCards();
+                revealedTeams.forEach(teamId => {
+                    const card = document.querySelector(`.naipe[data-team="${teamId}"]`);
+                    if (card) card.classList.add('revelado');
+                });
             }
         }, 1000);
     </script>
