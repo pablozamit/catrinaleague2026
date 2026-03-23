@@ -194,7 +194,7 @@
 
         .table-header {
             display: grid;
-            grid-template-columns: 10vw 1fr 12vw 12vw 12vw 14vw;
+            grid-template-columns: 10vw 1fr 15vw 12vw 12vw 12vw 14vw;
             padding: 2vw 0;
             border-bottom: 1px solid rgba(212, 175, 55, 0.3);
             font-family: var(--font-ui);
@@ -211,7 +211,8 @@
         .table-header span:nth-child(3) { text-align: center; }
         .table-header span:nth-child(4) { text-align: center; }
         .table-header span:nth-child(5) { text-align: center; }
-        .table-header span:nth-child(6) { text-align: right; }
+        .table-header span:nth-child(6) { text-align: center; }
+        .table-header span:nth-child(7) { text-align: right; }
 
         .player-list {
             list-style: none;
@@ -221,7 +222,7 @@
 
         .player-row {
             display: grid;
-            grid-template-columns: 10vw 1fr 12vw 12vw 12vw 14vw;
+            grid-template-columns: 10vw 1fr 15vw 12vw 12vw 12vw 14vw;
             align-items: center;
             padding: 3vw 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -236,6 +237,87 @@
             font-size: 4vw;
             text-align: center;
             color: var(--muted);
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* Estilos específicos para la prueba de Johnny */
+        .player-rank.silhouette-effect {
+            filter: grayscale(100%) brightness(0.15) contrast(4);
+            opacity: 0.25;
+            border: 2px dashed var(--gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        .player-rank.silhouette-effect:hover {
+            opacity: 0.35;
+            transform: scale(1.03);
+            border-color: var(--gold-light);
+        }
+
+        /* Asegurar que el número reste legible sobre la imagen de fondo */
+        .player-number {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: var(--black);
+            margin: auto;
+            padding: 2vw;
+            border: 3px solid var(--gold);
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 1vw;
+            right: 2vw;
+            color: var(--white);
+            font-size: 3vw;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--gold);
+        }
+
+        #modalPhoto {
+            max-width: 100%;
+            max-height: 60vh;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            margin-bottom: 1.5vw;
+        }
+
+        .caption {
+            margin-top: 1.5vw;
+            color: var(--white);
+            font-family: var(--font-serif);
+            font-size: 2.5vw;
         }
 
         .player-name {
@@ -246,6 +328,21 @@
             overflow: hidden;
             text-overflow: ellipsis;
             color: var(--white);
+        }
+
+        .player-animation {
+            width: 12vw;
+            height: 8vw;
+            max-width: 80px;
+            max-height: 50px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+
+        .player-anim-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .player-stat {
@@ -344,6 +441,7 @@
         <div class="table-header">
             <span>#</span>
             <span>Jugador</span>
+            <span>Anim</span>
             <span>PJ</span>
             <span>G</span>
             <span>P</span>
@@ -352,6 +450,15 @@
 
         <ul class="player-list" id="playerList"></ul>
     </main>
+
+    <!-- Modal for player photo -->
+    <div id="photoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modalPhoto" src="" alt="Foto del Jugador">
+            <div id="modalCaption" class="caption"></div>
+        </div>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -431,20 +538,69 @@
             
             teamTitle.innerText = `EQUIPO ${team.id}`;
             teamStats.innerText = `Grupo ${team.id} / ${teamData.length}`;
-
+    
             playerList.innerHTML = '';
             team.players.forEach((player, i) => {
                 const li = document.createElement('li');
                 li.className = 'player-row';
                 
-                li.innerHTML = `
-                    <div class="player-rank">${i + 1}</div>
-                    <div class="player-name">${player.name}</div>
-                    <div class="player-stat">${player.played}</div>
-                    <div class="player-stat">${player.wins}</div>
-                    <div class="player-stat">${player.losses}</div>
-                    <div class="player-pts">${player.points}</div>
-                `;
+                // Special handling for Johnny's test
+                if (player.name === 'johnny') {
+                    // Create the rank div with silhouette effect for Johnny
+                    const rankDiv = document.createElement('div');
+                    rankDiv.className = 'player-rank silhouette-effect';
+                    rankDiv.setAttribute('data-player', player.name);
+                    rankDiv.style.backgroundImage = `url('/assets/players/johnnycard.png')`;
+                    rankDiv.innerHTML = `<span class="player-number">${i + 1}</span>`;
+                    rankDiv.onclick = function(e) {
+                        e.stopPropagation();
+                        showPlayerPhotoTest(player.name);
+                    };
+                    li.appendChild(rankDiv);
+                    
+                    // Add name and stats for Johnny
+                    const nameDiv = document.createElement('div');
+                    nameDiv.className = 'player-name';
+                    nameDiv.textContent = player.name;
+                    li.appendChild(nameDiv);
+                    
+                    // Animation column - video for Johnny
+                    const animDiv = document.createElement('div');
+                    if (player.name.toLowerCase() === 'johnny') {
+                        const video = document.createElement('video');
+                        video.src = '../material/johnny_animation.mp4';
+                        video.className = 'player-animation';
+                        video.autoplay = true;
+                        video.loop = true;
+                        video.muted = true;
+                        video.playsInline = true;
+                        animDiv.appendChild(video);
+                    }
+                    li.appendChild(animDiv);
+                    
+                    const stats = ['played', 'wins', 'losses', 'points'];
+                    stats.forEach(stat => {
+                        const statDiv = document.createElement('div');
+                        statDiv.className = 'player-stat';
+                        statDiv.textContent = player[stat] === undefined ? 0 : player[stat];
+                        li.appendChild(statDiv);
+                    });
+                } else {
+                    // Normal rendering for other players
+                    const animHtml = player.name.toLowerCase() === 'johnny' ? 
+                        `<video src="../material/johnny_animation.mp4" class="player-animation" autoplay loop muted playsinline></video>` : 
+                        '';
+                    li.innerHTML = `
+                        <div class="player-rank">${i + 1}</div>
+                        <div class="player-name">${player.name}</div>
+                        <div class="player-anim-cell">${animHtml}</div>
+                        <div class="player-stat">${player.played}</div>
+                        <div class="player-stat">${player.wins}</div>
+                        <div class="player-stat">${player.losses}</div>
+                        <div class="player-pts">${player.points}</div>
+                    `;
+                }
+                
                 playerList.appendChild(li);
             });
         }
@@ -458,6 +614,44 @@
             } catch (error) {
                 console.error('Error loading team data:', error);
                 loadingScreen.innerHTML = '<div class="loading-text" style="font-size: 1rem;">Error cargando datos</div>';
+            }
+        }
+
+        // Function to show player photo in modal (test version)
+        function showPlayerPhotoTest(playerName) {
+            const modal = document.getElementById('photoModal');
+            const modalImg = document.getElementById('modalPhoto');
+            const captionText = document.getElementById('modalCaption');
+            
+            // For the test, always use johnnycard.png when it's Johnny
+            const imagePath = playerName === 'johnny' 
+                ? '/assets/players/johnnycard.png' 
+                : `/assets/players/${playerName}.jpg`;
+                
+            modalImg.src = imagePath;
+            modalImg.onerror = function() {
+                console.error(`Error loading image: ${imagePath}`);
+                // Try to use a placeholder if available
+                this.src = '/assets/players/placeholder.jpg';
+            };
+            captionText.textContent = playerName === 'johnny' ? 'Johnny (Test)' : playerName;
+            
+            modal.style.display = 'flex';
+        }
+
+        // Modal close logic
+        const modal = document.getElementById("photoModal");
+        const span = document.getElementsByClassName("close")[0];
+
+        // Close when clicking on the X
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // Close when clicking outside the modal content
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
             }
         }
 
