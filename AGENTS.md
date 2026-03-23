@@ -204,3 +204,6 @@ Dónde se define el filtro de partidas ocultas en el historial
 
 **Última actualización**: 11 de marzo de 2026
 **Maintainer**: pablozamit (GitHub)
+
+## Herramientas
+- **Navegación Ultra-Rápida:** lightpanda (navegador headless en Zig, 11x más rápido, para extracción ligera de datos).
