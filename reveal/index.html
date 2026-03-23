@@ -26,145 +26,140 @@
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 2rem;
-            position: relative;
         }
 
         .header {
             text-align: center;
-            padding: 3rem 0;
+            padding: 2rem 0 3rem;
         }
 
         .title {
             font-family: 'Cinzel', serif;
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--gold);
-            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
-            letter-spacing: 8px;
-            margin-bottom: 0.5rem;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 1s ease forwards;
-        }
-
-        .subtitle {
-            font-size: 1rem;
-            color: var(--gold);
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            opacity: 0;
-            animation: fadeInUp 1s ease 0.3s forwards;
-        }
-
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .team-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 12px;
-            padding: 1.5rem;
-            opacity: 0;
-            transform: translateY(40px);
-        }
-
-        .team-card.revealed {
-            animation: cardReveal 0.6s ease forwards;
-        }
-
-        @keyframes cardReveal {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .team-number {
-            font-family: 'Cinzel', serif;
             font-size: 2.5rem;
             font-weight: 900;
             color: var(--gold);
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            letter-spacing: 6px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #666;
+            letter-spacing: 3px;
+            margin-top: 0.5rem;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            perspective: 1000px;
+            cursor: pointer;
+            min-height: 200px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-front {
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+            border: 2px solid var(--gold);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(212, 175, 55, 0.1);
+        }
+
+        .card-back {
+            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+            border: 2px solid var(--gold);
+            transform: rotateY(180deg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(212, 175, 55, 0.1);
+        }
+
+        .card-number {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .card-symbol {
+            font-size: 2rem;
+            margin-top: 0.5rem;
+            opacity: 0.7;
+        }
+
+        .card-label {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold);
             margin-bottom: 1rem;
-            text-align: center;
+        }
+
+        .card-players {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0 1rem;
         }
 
         .player-row {
             display: flex;
             align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .player-row:last-child {
-            border-bottom: none;
-        }
-
-        .player-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), var(--felt));
-            display: flex;
-            align-items: center;
             justify-content: center;
+            padding: 0.5rem;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 8px;
             font-family: 'Cinzel', serif;
-            font-weight: 900;
-            font-size: 1.2rem;
-            color: var(--black);
-            margin-right: 1rem;
-        }
-
-        .player-name {
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            font-weight: 700;
+            font-size: 1rem;
             color: var(--white);
         }
 
-        .reveal-btn {
-            display: block;
-            margin: 3rem auto 0;
-            padding: 1rem 3rem;
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--black);
-            background: var(--gold);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
+        .player-row.unknown {
+            color: var(--gold);
+            font-style: italic;
+            background: transparent;
+            border: 1px dashed rgba(212, 175, 55, 0.3);
         }
 
-        .reveal-btn:hover {
-            background: var(--gold-light);
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
-        }
-
-        .reveal-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .card-hint {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 1rem;
         }
 
         .back-link {
@@ -184,6 +179,18 @@
         .back-link:hover {
             text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
         }
+
+        @media (max-width: 600px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .title {
+                font-size: 1.8rem;
+            }
+            .card-number {
+                font-size: 2.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -192,56 +199,51 @@
     <div class="container">
         <div class="header">
             <h1 class="title">EQUIPOS</h1>
-            <p class="subtitle">Liga 2026</p>
+            <p class="subtitle">Liga 2026 · Toca las cartas para revelar</p>
         </div>
 
-        <div class="team-grid" id="teamGrid"></div>
-
-        <button class="reveal-btn" id="revealBtn" onclick="revealTeams()">
-            Revelar Equipos
-        </button>
+        <div class="cards-grid" id="cardsGrid"></div>
     </div>
 
     <script>
         const teams = [
-            { id: 1, players: ['johnny', 'mo'] },
-            { id: 2, players: ['artur', 'sergio'] },
-            { id: 3, players: ['amauris', 'sasa'] },
-            { id: 4, players: ['fer', 'katee'] },
-            { id: 5, players: ['jack', 'jonathan'] },
-            { id: 6, players: ['pablo', 'joe'] }
+            { id: 1, known: ['johnny', 'mo'], unknown: 4 },
+            { id: 2, known: ['artur', 'sergio'], unknown: 4 },
+            { id: 3, known: ['amauris', 'sasa'], unknown: 4 },
+            { id: 4, known: ['fer', 'katee'], unknown: 4 },
+            { id: 5, known: ['jack', 'jonathan'], unknown: 4 },
+            { id: 6, known: ['pablo', 'joe'], unknown: 4 }
         ];
 
-        function renderTeams() {
-            const grid = document.getElementById('teamGrid');
+        function renderCards() {
+            const grid = document.getElementById('cardsGrid');
             grid.innerHTML = teams.map(team => `
-                <div class="team-card" id="team-${team.id}">
-                    <div class="team-number">EQUIPO ${team.id}</div>
-                    ${team.players.map(player => `
-                        <div class="player-row">
-                            <div class="player-avatar">${player.charAt(0).toUpperCase()}</div>
-                            <div class="player-name">${player.charAt(0).toUpperCase() + player.slice(1)}</div>
+                <div class="card" onclick="flipCard(this, ${team.id})">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-number">${team.id}</div>
+                            <div class="card-symbol">❓</div>
                         </div>
-                    `).join('')}
+                        <div class="card-back">
+                            <div class="card-label">EQUIPO ${team.id}</div>
+                            <div class="card-players">
+                                ${team.known.map(p => `
+                                    <div class="player-row">${p.charAt(0).toUpperCase() + p.slice(1)}</div>
+                                `).join('')}
+                                ${Array(team.unknown).fill('<div class="player-row unknown">??????</div>').join('')}
+                            </div>
+                            <div class="card-hint">Toca para voltear</div>
+                        </div>
+                    </div>
                 </div>
             `).join('');
         }
 
-        function revealTeams() {
-            const cards = document.querySelectorAll('.team-card');
-            const btn = document.getElementById('revealBtn');
-            
-            btn.disabled = true;
-            btn.textContent = '¡Revelado!';
-            
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.classList.add('revealed');
-                }, index * 200);
-            });
+        function flipCard(card, teamId) {
+            card.classList.toggle('flipped');
         }
 
-        renderTeams();
+        renderCards();
     </script>
 </body>
 </html>
