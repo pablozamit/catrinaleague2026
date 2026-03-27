@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de Partidos - La Catrina Pool League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: #d4af37;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            letter-spacing: 4px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .calendar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .calendar-wrapper {
+            background: rgba(255, 255, 255, 1);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        iframe {
+            width: 100%;
+            height: 80vh;
+            min-height: 600px;
+            border: none;
+            display: block;
+        }
+
+        .info-box {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .info-box p {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 1.5rem 2rem;
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #fff;
+        }
+
+        .back-link::before {
+            content: '← ';
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            iframe {
+                height: 60vh;
+                min-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-link">Volver al inicio</a>
+    
+    <div class="header">
+        <h1>CALENDARIO DE PARTIDOS</h1>
+        <p>Horario de la próxima jornada de La Catrina Pool League</p>
+    </div>
+
+    <div class="calendar-container">
+        <div class="calendar-wrapper">
+            <iframe 
+                src="https://calendar.google.com/calendar/embed?src=26b2b14efdb88c0f380cab93f59b346739701deea26a01c7be0fa6d14b20a491%40group.calendar.google.com&ctz=Europe%2FMadrid&mode=WEEK&hl=es&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=1"
+                title="Calendario de Partidos"
+                scrolling="no">
+            </iframe>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <p>
+            Los horarios marcados en verde son partidas confirmadas. 
+            Para añadir una partida al calendario, contacta con el administrador de la liga.
+        </p>
+    </div>
+</body>
+</html>
