@@ -194,25 +194,22 @@
 
         .table-header {
             display: grid;
-            grid-template-columns: 10vw 1fr 15vw 12vw 12vw 12vw 14vw;
+            grid-template-columns: 35px minmax(80px, 2fr) 45px repeat(6, 1fr) 45px;
+            gap: 5px;
             padding: 2vw 0;
             border-bottom: 1px solid rgba(212, 175, 55, 0.3);
             font-family: var(--font-ui);
             font-size: 2.5vw;
             color: var(--gold);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.05em;
             position: relative;
             z-index: 2;
         }
 
-        .table-header span:nth-child(1) { text-align: center; }
+        .table-header span { text-align: center; }
         .table-header span:nth-child(2) { text-align: left; }
-        .table-header span:nth-child(3) { text-align: center; }
-        .table-header span:nth-child(4) { text-align: center; }
-        .table-header span:nth-child(5) { text-align: center; }
-        .table-header span:nth-child(6) { text-align: center; }
-        .table-header span:nth-child(7) { text-align: right; }
+        .table-header span:nth-child(10) { text-align: right; }
 
         .player-list {
             list-style: none;
@@ -222,7 +219,8 @@
 
         .player-row {
             display: grid;
-            grid-template-columns: 10vw 1fr 15vw 12vw 12vw 12vw 14vw;
+            grid-template-columns: 35px minmax(80px, 2fr) 45px repeat(6, 1fr) 45px;
+            gap: 5px;
             align-items: center;
             padding: 3vw 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -375,12 +373,12 @@
         }
 
         .table-header span:nth-child(3) {
-            visibility: hidden;
+            opacity: 0.5;
         }
 
         .player-stat {
             font-family: var(--font-display);
-            font-size: 3.5vw;
+            font-size: 2.8vw;
             text-align: center;
             color: var(--white);
         }
@@ -472,13 +470,16 @@
             <div class="team-stats" id="teamStats">Grupo 1 / 6</div>
         </div>
 
-        <div class="table-header">
+        <div class="table-header" id="tableHeader">
             <span>#</span>
             <span>Jugador</span>
-            <span>Anim</span>
+            <span>GIF</span>
             <span>PJ</span>
-            <span>G</span>
-            <span>P</span>
+            <span>PG</span>
+            <span>PP</span>
+            <span>JG</span>
+            <span>JP</span>
+            <span>%J</span>
             <span>Pts</span>
         </div>
 
@@ -518,7 +519,8 @@
             { id: 3, players: ['amauris', 'sasa', 'angel', 'erfan', 'nino', 'damian'] },
             { id: 4, players: ['jack', 'jonathan', 'connor', 'charles', 'lucas', 'favio'] },
             { id: 5, players: ['fer', 'katee', 'enrique', 'mina', 'ruth', 'rauls'] },
-            { id: 6, players: ['pablo', 'joe', 'lucasc', 'joel', 'roman', 'manuela'] }
+            { id: 6, players: ['pablo', 'joe', 'lucasc', 'joel', 'roman', 'manuela'] },
+            { id: 'G', isGlobal: true }
         ];
 
         let currentTeamIndex = 0;
@@ -536,23 +538,58 @@
                 const stats = snapshot.val() || {};
 
                 return teams.map(team => {
-                    const players = team.players.map(playerName => {
-                        const playerStats = stats[playerName] || {};
-                        return {
-                            name: playerName,
-                            played: playerStats.played || 0,
-                            wins: playerStats.wins || 0,
-                            losses: playerStats.losses || 0,
-                            merits: playerStats.merits || 0,
-                            points: playerStats.points || 0
-                        };
-                    });
+                    let players = [];
+                    
+                    if (team.isGlobal) {
+                        const nonGlobalTeams = teams.filter(t => !t.isGlobal);
+                        players = nonGlobalTeams.map(t => {
+                            let tPlayed=0, tWins=0, tLosses=0, tFramesWon=0, tFramesLost=0, tPts=0;
+                            t.players.forEach(p => {
+                                const pStats = stats[p] || {};
+                                tPlayed += pStats.played || 0;
+                                tWins += pStats.wins || 0;
+                                tLosses += pStats.losses || 0;
+                                tFramesWon += pStats.framesWon || 0;
+                                tFramesLost += pStats.framesLost || 0;
+                                tPts += pStats.points || 0;
+                            });
+                            const tPerc = (tFramesWon + tFramesLost) > 0 ? ((tFramesWon / (tFramesWon + tFramesLost)) * 100).toFixed(1) + '%' : '0.0%';
+                            return {
+                                name: `Equipo ${t.id}`,
+                                isTeam: true,
+                                played: tPlayed,
+                                wins: tWins,
+                                losses: tLosses,
+                                framesWon: tFramesWon,
+                                framesLost: tFramesLost,
+                                percFrames: tPerc,
+                                points: tPts
+                            };
+                        });
+                    } else {
+                        players = team.players.map(playerName => {
+                            const playerStats = stats[playerName] || {};
+                            const fW = playerStats.framesWon || 0;
+                            const fL = playerStats.framesLost || 0;
+                            const perc = (fW + fL) > 0 ? ((fW / (fW + fL)) * 100).toFixed(1) + '%' : '0.0%';
+                            return {
+                                name: playerName,
+                                played: playerStats.played || 0,
+                                wins: playerStats.wins || 0,
+                                losses: playerStats.losses || 0,
+                                framesWon: fW,
+                                framesLost: fL,
+                                percFrames: perc,
+                                points: playerStats.points || 0
+                            };
+                        });
+                    }
 
-                    // Ordenar jugadores por puntos
                     players.sort((a, b) => b.points - a.points);
 
                     return {
                         id: team.id,
+                        isGlobal: team.isGlobal,
                         players
                     };
                 });
@@ -582,86 +619,81 @@
         function renderTeam(index) {
             const team = teamData[index];
             
-            teamTitle.innerText = `EQUIPO ${team.id}`;
-            teamStats.innerText = `Grupo ${team.id} / ${teamData.length}`;
+            if (team.isGlobal) {
+                teamTitle.innerText = `GRUPO GLOBAL`;
+                teamStats.innerText = `Clasificación de Equipos`;
+                document.getElementById('tableHeader').children[1].innerText = "Equipo";
+            } else {
+                teamTitle.innerText = `EQUIPO ${team.id}`;
+                teamStats.innerText = `Grupo ${team.id} / ${teamData.length - 1}`;
+                document.getElementById('tableHeader').children[1].innerText = "Jugador";
+            }
     
             playerList.innerHTML = '';
             team.players.forEach((player, i) => {
                 const li = document.createElement('li');
                 li.className = 'player-row';
                 
-                // Special handling for Johnny and Artur's test
-                if (player.name === 'johnny' || player.name === 'artur') {
-                    // Create the rank div with silhouette effect
-                    const rankDiv = document.createElement('div');
-                    rankDiv.className = 'player-rank silhouette-effect';
+                // Rank
+                const rankDiv = document.createElement('div');
+                rankDiv.className = 'player-rank';
+                
+                if (!team.isGlobal && (player.name === 'johnny' || player.name === 'artur')) {
+                    rankDiv.classList.add('silhouette-effect');
                     rankDiv.setAttribute('data-player', player.name);
-                    
-                    // Background div with filtered image
                     const bgDiv = document.createElement('div');
                     bgDiv.className = 'silhouette-bg';
-                    if (player.name === 'johnny') {
-                        bgDiv.style.backgroundImage = `url('/assets/players/johnnycard.png')`;
-                    } else if (player.name === 'artur') {
-                        bgDiv.style.backgroundImage = `url('/assets/players/artur.jpg')`;
-                    }
+                    if (player.name === 'johnny') bgDiv.style.backgroundImage = `url('/assets/players/johnnycard.png')`;
+                    if (player.name === 'artur') bgDiv.style.backgroundImage = `url('/assets/players/artur.jpg')`;
                     rankDiv.appendChild(bgDiv);
-                    
-                    rankDiv.innerHTML = `<span class="player-number">${i + 1}</span>`;
                     rankDiv.onclick = function(e) {
                         e.stopPropagation();
                         showPlayerPhotoTest(player.name);
                     };
-                    li.appendChild(rankDiv);
-                    
-                    // Add name and stats
-                    const nameDiv = document.createElement('div');
-                    nameDiv.className = 'player-name';
-                    nameDiv.textContent = player.name;
-                    li.appendChild(nameDiv);
-                    
-                    // Animation column
-                    const animDiv = document.createElement('div');
-                    animDiv.className = 'player-anim-cell';
-                    if (player.name.toLowerCase() === 'johnny') {
-                        const video = document.createElement('video');
-                        video.src = '../material/johnny_animation.mp4';
-                        video.className = 'player-animation';
-                        video.autoplay = true;
-                        video.loop = true;
-                        video.muted = true;
-                        video.playsInline = true;
-                        animDiv.appendChild(video);
-                    } else if (player.name.toLowerCase() === 'artur') {
-                        const video = document.createElement('video');
-                        video.src = '../material/artur_animation.mp4';
-                        video.className = 'player-animation';
-                        video.autoplay = true;
-                        video.loop = true;
-                        video.muted = true;
-                        video.playsInline = true;
-                        animDiv.appendChild(video);
-                    }
-                    li.appendChild(animDiv);
-                    
-                    const stats = ['played', 'wins', 'losses', 'points'];
-                    stats.forEach(stat => {
-                        const statDiv = document.createElement('div');
-                        statDiv.className = 'player-stat';
-                        statDiv.textContent = player[stat] === undefined ? 0 : player[stat];
-                        li.appendChild(statDiv);
-                    });
+                    rankDiv.innerHTML += `<span class="player-number">${i + 1}</span>`;
                 } else {
-                    // Normal rendering for other players
-                    li.innerHTML = `
-                        <div class="player-rank">${i + 1}</div>
-                        <div class="player-name">${player.name}</div>
-                        <div class="player-stat">${player.played}</div>
-                        <div class="player-stat">${player.wins}</div>
-                        <div class="player-stat">${player.losses}</div>
-                        <div class="player-pts">${player.points}</div>
-                    `;
+                    rankDiv.textContent = i + 1;
                 }
+                li.appendChild(rankDiv);
+                
+                // Name
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'player-name';
+                nameDiv.textContent = player.name;
+                li.appendChild(nameDiv);
+                
+                // Anim
+                const animDiv = document.createElement('div');
+                animDiv.className = 'player-anim-cell';
+                if (!team.isGlobal && (player.name.toLowerCase() === 'johnny' || player.name.toLowerCase() === 'artur')) {
+                    const video = document.createElement('video');
+                    video.src = player.name.toLowerCase() === 'johnny' ? '../material/johnny_animation.mp4' : '../material/artur_animation.mp4';
+                    video.className = 'player-animation';
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.muted = true;
+                    video.playsInline = true;
+                    animDiv.appendChild(video);
+                }
+                li.appendChild(animDiv);
+                
+                // Metrics
+                const metrics = [
+                    player.played, player.wins, player.losses, 
+                    player.framesWon, player.framesLost, player.percFrames
+                ];
+                metrics.forEach(val => {
+                    const statDiv = document.createElement('div');
+                    statDiv.className = 'player-stat';
+                    statDiv.textContent = val;
+                    li.appendChild(statDiv);
+                });
+                
+                // Pts
+                const ptsDiv = document.createElement('div');
+                ptsDiv.className = 'player-pts';
+                ptsDiv.textContent = player.points;
+                li.appendChild(ptsDiv);
                 
                 playerList.appendChild(li);
             });
