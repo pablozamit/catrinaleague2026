@@ -1,7 +1,8 @@
 # CHECKPOINT - Proyecto La Catrina Pool League
 
 ## Fecha del checkpoint
-15 de Febrero 2026
+30 de Marzo 2026 (Actualizado por Antigravity AI)
+
 
 ## Estado actual del proyecto
 
@@ -35,8 +36,10 @@ catrina2026/
 │   └── .git/
 ├── calculate-champions.js      # Script automático de campeones (cron)
 ├── CHAMPIONS.md                # Documentación del sistema de campeones
+├── AI_MASTER_GUIDE.md          # Guía ÚNICA para Agentes de IA (Súper importante)
 ├── elopool-f1e62-firebase-adminsdk-*.json  # Credenciales Firebase Admin
 └── package.json
+
 ```
 
 ## ✅ SISTEMA COMPLETO IMPLEMENTADO
@@ -229,18 +232,15 @@ crontab -e
 - **Repositorio**: https://github.com/pablozamit/catrinaleague2026
 - **Firebase Console**: https://console.firebase.google.com/project/elopool-f1e62
 
-## Pendientes / Futuras Mejoras
+## Pendientes / Futuras Mejoras (Actualizado Marzo 2026)
 
-1. **Tests automáticos** para cálculo de ELO y badges
-2. **Historial de partidos** por usuario
-3. **Gráficas de progreso** ELO en el tiempo
-4. **Export rankings** a PDF/CSV
-5. **Notificaciones push** (Firebase Cloud Messaging)
-6. **Chat entre jugadores** para coordinar partidos
-7. **Torneos automatizados** con brackets
-8. **Estadísticas avanzadas**: head-to-head, racha actual, etc.
-9. **Dark/Light theme** toggle
-10. **PWA** para instalación en móviles
+1.  ✅ **Optimización /reveal**: Se ha corregido el bug de zona horaria (usando `Europe/Madrid`) y la pérdida de estado al revelar cartas.
+2.  ✅ **Mejoras en /liga**: El layout de la tabla ahora es de 6 columnas (#, Jugador, PJ, G, P, Pts).
+3.  ✅ **Guía Maestra**: Se ha creado `AI_MASTER_GUIDE.md` para facilitar el handoff entre agentes de IA.
+4.  **En Curso**: Integración de fotos reales de los jugadores en la tabla de clasificación.
+5.  **En Curso**: Animación de sprites pixel-art (Johnny pole dance) entre el nombre y las estadísticas.
+6.  **Próximo**: Sistema de filtros avanzados (Fecha, Jugador, Ronda) en `/resultados`.
+
 
 ## CÓMO CONTINUAR DESDE ESTE CHECKPOINT
 
@@ -286,6 +286,7 @@ npm install firebase-admin
 
 ---
 
-**Estado**: ✅ **SISTEMA COMPLETO Y FUNCIONAL**  
-**Última actualización**: 15 de Febrero 2026  
-**Versión**: 2.0.0 (Badge System + Champions)
+**Estado**: ✅ **SISTEMA COMPLETO Y FUNCIONAL (En fase de pulido visual)**  
+**Última actualización**: 30 de Marzo 2026  
+**Versión**: 2.1.0 (Refined UI + AI Deployment Bridge)
+
