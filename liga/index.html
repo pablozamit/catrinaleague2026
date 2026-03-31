@@ -513,12 +513,12 @@
         const database = firebase.database();
 
         const teams = [
-            { id: 1, players: ['johnny', 'mo'] },
-            { id: 2, players: ['artur', 'sergio'] },
-            { id: 3, players: ['amauris', 'sasa'] },
-            { id: 4, players: ['fer', 'katee'] },
-            { id: 5, players: ['jack', 'jonathan'] },
-            { id: 6, players: ['pablo', 'joe'] }
+            { id: 1, players: ['johnny', 'andres', 'mo', 'david', 'nica', 'danilo'] },
+            { id: 2, players: ['artur', 'sergio', 'alexf', 'jorge', 'alexb', 'sol'] },
+            { id: 3, players: ['amauris', 'sasa', 'angel', 'erfan', 'nino', 'damian'] },
+            { id: 4, players: ['jack', 'jonathan', 'connor', 'charles', 'lucas', 'favio'] },
+            { id: 5, players: ['fer', 'katee', 'enrique', 'mina', 'ruth', 'rauls'] },
+            { id: 6, players: ['pablo', 'joe', 'lucasc', 'joel', 'roman', 'manuela'] }
         ];
 
         let currentTeamIndex = 0;
@@ -530,24 +530,36 @@
         const teamButtons = document.getElementById('teamButtons');
         const loadingScreen = document.getElementById('loadingScreen');
 
-        function loadTeamData() {
-            // La liga no ha comenzado - todos los valores a 0
-            return teams.map(team => {
-                const players = team.players.map(playerName => {
+        async function loadTeamData() {
+            try {
+                const snapshot = await database.ref('liga/stats').once('value');
+                const stats = snapshot.val() || {};
+
+                return teams.map(team => {
+                    const players = team.players.map(playerName => {
+                        const playerStats = stats[playerName] || {};
+                        return {
+                            name: playerName,
+                            played: playerStats.played || 0,
+                            wins: playerStats.wins || 0,
+                            losses: playerStats.losses || 0,
+                            merits: playerStats.merits || 0,
+                            points: playerStats.points || 0
+                        };
+                    });
+
+                    // Ordenar jugadores por puntos
+                    players.sort((a, b) => b.points - a.points);
+
                     return {
-                        name: playerName,
-                        played: 0,
-                        wins: 0,
-                        losses: 0,
-                        points: 0
+                        id: team.id,
+                        players
                     };
                 });
-
-                return {
-                    id: team.id,
-                    players
-                };
-            });
+            } catch (error) {
+                console.error("Error cargando stats de liga:", error);
+                throw error;
+            }
         }
 
         function renderTeamButtons() {
