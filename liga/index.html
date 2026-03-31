@@ -429,12 +429,18 @@
             .team-btn { font-size: 1.5rem; width: 50px; height: 50px; }
             .team-title { font-size: 3rem; }
             .team-stats { font-size: 0.8rem; }
-            .table-header { font-size: 0.8rem; padding: 10px 0; }
-            .player-rank { font-size: 2rem; }
-            .player-name { font-size: 1.5rem; }
-            .player-stat { font-size: 1.5rem; }
-            .player-pts { font-size: 2rem; }
-            .player-number { font-size: 1.5rem; }
+            .table-header { font-size: 0.75rem; padding: 10px 0; letter-spacing: 0.08em; }
+            .table-header, .player-row {
+                grid-template-columns: 40px minmax(120px, 2fr) 60px repeat(6, 60px) 55px;
+                gap: 8px;
+            }
+            .player-rank { font-size: 1.4rem; }
+            .player-name { font-size: 1.1rem; }
+            .player-stat { font-size: 1.1rem; }
+            .player-pts { font-size: 1.4rem; }
+            .player-number { font-size: 1.2rem; }
+            .player-row { padding: 14px 0; }
+            .player-animation { width: 50px; height: 35px; }
         }
     </style>
 </head>
