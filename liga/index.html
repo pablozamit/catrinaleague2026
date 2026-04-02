@@ -492,7 +492,6 @@
         <ul class="player-list" id="playerList"></ul>
     </main>
 
-    <!-- Modal for player photo -->
     <div id="photoModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -561,7 +560,7 @@
                             });
                             const tPerc = (tFramesWon + tFramesLost) > 0 ? ((tFramesWon / (tFramesWon + tFramesLost)) * 100).toFixed(1) + '%' : '0.0%';
                             return {
-                                name: `Equipo ${t.id}`,
+                                name: t.name || `Equipo ${t.id}`,
                                 isTeam: true,
                                 played: tPlayed,
                                 wins: tWins,
@@ -595,6 +594,7 @@
 
                     return {
                         id: team.id,
+                        name: team.name, // CORRECCIÓN AQUÍ
                         isGlobal: team.isGlobal,
                         players
                     };
