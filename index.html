@@ -213,7 +213,7 @@
         <div class="pocket-label" data-i18n="nav_history">Historial</div>
     </div>
 
-    <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras o en la televisión</div>
+    <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras, la televisión o el calendario</div>
 
     <div class="version-footer">
         La Catrina Pool League <span>v1.0.0</span>
@@ -689,6 +689,192 @@
         tvGroup.rotation.y = 0;
         scene.add(tvGroup);
 
+        // =========================
+        // TEXTURA DEL CALENDARIO
+        // =========================
+        const calendarCanvas = document.createElement('canvas');
+        calendarCanvas.width = 768;
+        calendarCanvas.height = 1024;
+        const calendarCtx = calendarCanvas.getContext('2d');
+
+        function drawCalendarTexture() {
+            const now = new Date();
+            const monthNames = [
+                'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
+                'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+            ];
+            const dayNames = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+
+            const month = monthNames[now.getMonth()];
+            const year = now.getFullYear();
+            const currentDay = now.getDate();
+
+            calendarCtx.clearRect(0, 0, calendarCanvas.width, calendarCanvas.height);
+
+            calendarCtx.fillStyle = '#f7f1e7';
+            calendarCtx.fillRect(0, 0, 768, 1024);
+
+            calendarCtx.fillStyle = '#b63b2f';
+            calendarCtx.fillRect(0, 0, 768, 170);
+
+            calendarCtx.fillStyle = '#ffffff';
+            calendarCtx.font = 'bold 72px Arial';
+            calendarCtx.textAlign = 'center';
+            calendarCtx.fillText('CALENDARIO', 384, 85);
+
+            calendarCtx.font = 'bold 54px Arial';
+            calendarCtx.fillText(`${month} ${year}`, 384, 145);
+
+            calendarCtx.fillStyle = '#2b2b2b';
+            calendarCtx.font = 'bold 34px Arial';
+            for (let i = 0; i < 7; i++) {
+                calendarCtx.fillText(dayNames[i], 95 + i * 83, 250);
+            }
+
+            calendarCtx.strokeStyle = '#d6c8b1';
+            calendarCtx.lineWidth = 3;
+
+            const startX = 52;
+            const startY = 290;
+            const cellW = 95;
+            const cellH = 95;
+
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 7; col++) {
+                    const x = startX + col * cellW;
+                    const y = startY + row * cellH;
+                    calendarCtx.strokeRect(x, y, cellW, cellH);
+                }
+            }
+
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            let firstWeekday = firstDay.getDay();
+            if (firstWeekday === 0) firstWeekday = 7;
+
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+            calendarCtx.font = 'bold 34px Arial';
+            calendarCtx.textAlign = 'left';
+
+            let day = 1;
+            for (let row = 0; row < 6; row++) {
+                for (let col = 1; col <= 7; col++) {
+                    const slot = row * 7 + col;
+                    if (slot >= firstWeekday && day <= daysInMonth) {
+                        const x = startX + (col - 1) * cellW;
+                        const y = startY + row * cellH;
+
+                        if (day === currentDay) {
+                            calendarCtx.fillStyle = '#d4af37';
+                            calendarCtx.fillRect(x + 8, y + 8, cellW - 16, cellH - 16);
+                            calendarCtx.fillStyle = '#111111';
+                        } else {
+                            calendarCtx.fillStyle = '#2b2b2b';
+                        }
+
+                        calendarCtx.fillText(String(day), x + 24, y + 48);
+                        day++;
+                    }
+                }
+            }
+
+            calendarCtx.textAlign = 'center';
+            calendarCtx.fillStyle = '#5f5a51';
+            calendarCtx.font = 'bold 30px Arial';
+            calendarCtx.fillText('LA CATRINA POOL LEAGUE', 384, 905);
+
+            calendarCtx.fillStyle = '#8e877b';
+            calendarCtx.font = '28px Arial';
+            calendarCtx.fillText('Haz clic para abrir el calendario completo', 384, 955);
+        }
+
+        drawCalendarTexture();
+        const calendarTexture = new THREE.CanvasTexture(calendarCanvas);
+        calendarTexture.needsUpdate = true;
+
+        // =========================
+        // CALENDARIO DE PARED
+        // =========================
+        const calendarGroup = new THREE.Group();
+
+        const calendarBack = new THREE.Mesh(
+            new THREE.BoxGeometry(2.5, 3.3, 0.08),
+            new THREE.MeshStandardMaterial({
+                color: 0xf1e6cc,
+                roughness: 0.92,
+                metalness: 0.05
+            })
+        );
+        calendarBack.castShadow = true;
+        calendarBack.receiveShadow = true;
+        calendarGroup.add(calendarBack);
+
+        const calendarTop = new THREE.Mesh(
+            new THREE.BoxGeometry(2.5, 0.42, 0.1),
+            new THREE.MeshStandardMaterial({
+                color: 0xb88b4a,
+                roughness: 0.6,
+                metalness: 0.2
+            })
+        );
+        calendarTop.position.set(0, 1.45, 0.05);
+        calendarTop.castShadow = true;
+        calendarTop.receiveShadow = true;
+        calendarGroup.add(calendarTop);
+
+        const ringBar = new THREE.Mesh(
+            new THREE.BoxGeometry(1.1, 0.06, 0.12),
+            new THREE.MeshStandardMaterial({
+                color: 0x8f6b32,
+                roughness: 0.45,
+                metalness: 0.35
+            })
+        );
+        ringBar.position.set(0, 1.2, 0.08);
+        calendarGroup.add(ringBar);
+
+        const calendarPagePivot = new THREE.Group();
+        calendarPagePivot.position.set(0, 1.15, 0.09);
+        calendarGroup.add(calendarPagePivot);
+
+        const calendarPage = new THREE.Mesh(
+            new THREE.PlaneGeometry(2.15, 2.7),
+            new THREE.MeshStandardMaterial({
+                map: calendarTexture,
+                roughness: 0.95,
+                side: THREE.DoubleSide
+            })
+        );
+        calendarPage.position.set(0, -1.35, 0);
+        calendarPage.userData = { isCalendar: true };
+        calendarPagePivot.add(calendarPage);
+
+        const calendarPage2 = new THREE.Mesh(
+            new THREE.PlaneGeometry(2.15, 2.7),
+            new THREE.MeshStandardMaterial({
+                color: 0xf4efe6,
+                roughness: 0.95,
+                side: THREE.DoubleSide
+            })
+        );
+        calendarPage2.position.set(0, -0.2, -0.012);
+        calendarGroup.add(calendarPage2);
+
+        const calendarPage3 = new THREE.Mesh(
+            new THREE.PlaneGeometry(2.15, 2.7),
+            new THREE.MeshStandardMaterial({
+                color: 0xebe4d7,
+                roughness: 0.95,
+                side: THREE.DoubleSide
+            })
+        );
+        calendarPage3.position.set(0, -0.17, -0.024);
+        calendarGroup.add(calendarPage3);
+
+        calendarGroup.position.set(6.2, 4.15, -9.2);
+        calendarGroup.rotation.y = -0.08;
+        scene.add(calendarGroup);
+
         let isDragging = false;
         let pointerMoved = false;
         let previousMousePosition = { x: 0, y: 0 };
@@ -697,11 +883,12 @@
         let cameraRadius = 18;
 
         let isTvZooming = false;
+        let isCalendarAnimating = false;
         let cinematicCamera = null;
 
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
-        const clickableObjects = [...pockets, tvScreen];
+        const clickableObjects = [...pockets, tvScreen, calendarPage];
 
         function setPointerFromClient(clientX, clientY) {
             mouse.x = (clientX / window.innerWidth) * 2 - 1;
@@ -748,10 +935,8 @@
 
                 if (t < 1) {
                     requestAnimationFrame(step);
-                } else {
-                    if (typeof onComplete === 'function') {
-                        onComplete();
-                    }
+                } else if (typeof onComplete === 'function') {
+                    onComplete();
                 }
             }
 
@@ -759,15 +944,40 @@
         }
 
         function handleTVActivation() {
-            if (isTvZooming) return;
+            if (isTvZooming || isCalendarAnimating) return;
 
             animateCameraToTV(() => {
                 window.location.href = 'live/';
             });
         }
 
+        function handleCalendarActivation() {
+            if (isCalendarAnimating || isTvZooming) return;
+
+            isCalendarAnimating = true;
+
+            const start = performance.now();
+            const duration = 950;
+
+            function step(now) {
+                const t = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - t, 3);
+
+                calendarPagePivot.rotation.x = -Math.PI * 0.92 * eased;
+                calendarPagePivot.rotation.z = -0.08 * Math.sin(t * Math.PI);
+
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    window.location.href = 'calendario/';
+                }
+            }
+
+            requestAnimationFrame(step);
+        }
+
         function handlePointerActivate(clientX, clientY) {
-            if (isTvZooming) return;
+            if (isTvZooming || isCalendarAnimating) return;
 
             setPointerFromClient(clientX, clientY);
             raycaster.setFromCamera(mouse, camera);
@@ -782,6 +992,11 @@
                 return;
             }
 
+            if (clickedObject.userData?.isCalendar) {
+                handleCalendarActivation();
+                return;
+            }
+
             if (clickedObject.userData?.id) {
                 const target = getTargetByPocketId(clickedObject.userData.id);
                 animateBallToPocket(clickedObject.position.clone(), target);
@@ -789,7 +1004,7 @@
         }
 
         function updateInteractiveCursor(clientX, clientY) {
-            if (isDragging || isTvZooming) {
+            if (isDragging || isTvZooming || isCalendarAnimating) {
                 renderer.domElement.style.cursor = 'default';
                 return;
             }
@@ -804,7 +1019,7 @@
             }
 
             const hoveredObject = intersects[0].object;
-            if (hoveredObject.userData?.isTV || hoveredObject.userData?.id) {
+            if (hoveredObject.userData?.isTV || hoveredObject.userData?.isCalendar || hoveredObject.userData?.id) {
                 renderer.domElement.style.cursor = 'pointer';
             } else {
                 renderer.domElement.style.cursor = 'default';
@@ -842,7 +1057,7 @@
         }
 
         document.addEventListener('mousedown', (e) => {
-            if (isTvZooming) return;
+            if (isTvZooming || isCalendarAnimating) return;
             isDragging = true;
             pointerMoved = false;
             previousMousePosition = { x: e.clientX, y: e.clientY };
@@ -853,7 +1068,7 @@
         });
 
         document.addEventListener('mousemove', (e) => {
-            if (isTvZooming) return;
+            if (isTvZooming || isCalendarAnimating) return;
 
             if (isDragging) {
                 const deltaMove = {
@@ -877,7 +1092,7 @@
         });
 
         document.addEventListener('click', (e) => {
-            if (isTvZooming) return;
+            if (isTvZooming || isCalendarAnimating) return;
             if (pointerMoved) {
                 pointerMoved = false;
                 return;
@@ -886,7 +1101,7 @@
         });
 
         document.addEventListener('touchstart', (e) => {
-            if (isTvZooming) return;
+            if (isTvZooming || isCalendarAnimating) return;
             if (e.touches && e.touches[0]) {
                 isDragging = true;
                 pointerMoved = false;
@@ -898,7 +1113,7 @@
         }, { passive: true });
 
         document.addEventListener('touchmove', (e) => {
-            if (isTvZooming) return;
+            if (isTvZooming || isCalendarAnimating) return;
             if (isDragging && e.touches && e.touches[0]) {
                 const deltaMove = {
                     x: e.touches[0].clientX - previousMousePosition.x,
@@ -921,7 +1136,7 @@
         }, { passive: true });
 
         document.addEventListener('touchend', (e) => {
-            if (isTvZooming) return;
+            if (isTvZooming || isCalendarAnimating) return;
 
             const changedTouch = e.changedTouches && e.changedTouches[0];
             const wasDrag = pointerMoved;
