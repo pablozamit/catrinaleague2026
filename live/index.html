@@ -1,428 +1,292 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>La Catrina Live</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --gold: #d4af37;
-            --bg: #050505;
-            --panel: rgba(10, 10, 10, 0.82);
-            --text: #f2efe8;
-            --muted: #9c9688;
-            --danger: #ff4d4f;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background:
-                linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.82)),
-                url('../material/imagen2.jpeg') center/cover no-repeat;
-            font-family: Arial, sans-serif;
-            color: var(--text);
-        }
-
-        body {
-            position: relative;
-        }
-
-        .topbar {
-            position: fixed;
-            inset: 0 0 auto 0;
-            z-index: 20;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 24px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0) 100%);
-        }
-
-        .brand {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .brand h1 {
-            font-family: Georgia, serif;
-            font-size: clamp(1.6rem, 3vw, 2.5rem);
-            color: var(--gold);
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            text-shadow: 0 0 24px rgba(212, 175, 55, 0.35);
-        }
-
-        .brand p {
-            font-size: 0.8rem;
-            letter-spacing: 3px;
-            color: var(--muted);
-            text-transform: uppercase;
-        }
-
-        .top-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .pill {
-            border: 1px solid rgba(212, 175, 55, 0.35);
-            background: rgba(0, 0, 0, 0.45);
-            color: var(--text);
-            padding: 10px 16px;
-            border-radius: 999px;
-            text-decoration: none;
-            font-size: 0.88rem;
-            letter-spacing: 1px;
-            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-        }
-
-        .pill:hover {
-            transform: translateY(-1px);
-            border-color: rgba(212, 175, 55, 0.7);
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        .live-shell {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 90px 24px 24px;
-        }
-
-        .player-frame {
-            width: min(1400px, 100%);
-            aspect-ratio: 16 / 9;
-            border-radius: 22px;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.72);
-            border: 1px solid rgba(212, 175, 55, 0.25);
-            box-shadow:
-                0 25px 80px rgba(0, 0, 0, 0.55),
-                0 0 0 1px rgba(255,255,255,0.03) inset;
-            position: relative;
-            backdrop-filter: blur(8px);
-        }
-
-        .player-frame iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
-            display: block;
-            background: #000;
-        }
-
-        .state {
-            position: absolute;
-            inset: 0;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 32px;
-        }
-
-        .state.visible {
-            display: flex;
-        }
-
-        .state-card {
-            width: min(640px, 100%);
-            padding: 34px 30px;
-            border-radius: 24px;
-            background: var(--panel);
-            border: 1px solid rgba(212, 175, 55, 0.24);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .badge-live {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            border-radius: 999px;
-            margin-bottom: 18px;
-            font-size: 0.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border: 1px solid rgba(255, 77, 79, 0.35);
-            background: rgba(255, 77, 79, 0.08);
-            color: #ffdede;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--danger);
-            box-shadow: 0 0 18px rgba(255, 77, 79, 0.8);
-            animation: pulse 1.2s infinite ease-in-out;
-        }
-
-        .state-card h2 {
-            font-family: Georgia, serif;
-            font-size: clamp(1.8rem, 3vw, 2.8rem);
-            color: var(--gold);
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-        }
-
-        .state-card p {
-            color: var(--muted);
-            line-height: 1.6;
-            font-size: 1rem;
-            max-width: 48ch;
-            margin: 0 auto 22px;
-        }
-
-        .state-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .btn {
-            appearance: none;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            padding: 12px 18px;
-            border-radius: 999px;
-            font-size: 0.92rem;
-            letter-spacing: 0.4px;
-            transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .btn-primary {
-            background: var(--gold);
-            color: #111;
-            font-weight: 700;
-        }
-
-        .btn-secondary {
-            background: rgba(255,255,255,0.06);
-            color: var(--text);
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .loading-copy {
-            margin-top: 14px;
-            color: var(--muted);
-            font-size: 0.92rem;
-        }
-
-        .footer-note {
-            position: fixed;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #5f5a4f;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            z-index: 20;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.35); opacity: 0.7; }
-        }
-
-        @media (max-width: 768px) {
-            .topbar {
-                padding: 16px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            .live-shell {
-                padding: 120px 14px 14px;
-            }
-
-            .player-frame {
-                border-radius: 16px;
-            }
-
-            .state-card {
-                padding: 24px 18px;
-            }
-
-            .state-actions {
-                flex-direction: column;
-            }
-
-            .btn, .pill {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Catrina · Live</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #050505;
+      color: #f3e7c2;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .bg {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.86)),
+        url('../material/imagen2.jpeg') center/cover no-repeat;
+      filter: saturate(.9);
+      z-index: -2;
+    }
+    .glow {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(212,175,55,.18), transparent 35%),
+        radial-gradient(circle at 50% 80%, rgba(0,140,255,.12), transparent 30%);
+      z-index: -1;
+      pointer-events: none;
+    }
+    .wrap {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+      padding: 20px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand h1 {
+      color: #d4af37;
+      letter-spacing: 4px;
+      font-size: 2rem;
+      text-shadow: 0 0 18px rgba(212,175,55,.35);
+    }
+    .brand p {
+      color: #9e9e9e;
+      font-size: .85rem;
+      letter-spacing: 2px;
+      margin-top: 4px;
+    }
+    .back {
+      color: #f3e7c2;
+      text-decoration: none;
+      border: 1px solid rgba(212,175,55,.35);
+      background: rgba(0,0,0,.35);
+      padding: 10px 14px;
+      border-radius: 999px;
+      transition: .2s ease;
+    }
+    .back:hover {
+      border-color: rgba(212,175,55,.7);
+      background: rgba(212,175,55,.08);
+    }
+    .panel {
+      width: min(1400px, 100%);
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+    }
+    .player-shell {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(212,175,55,.28);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,.45);
+      position: relative;
+    }
+    #player, #state {
+      width: 100%;
+      height: 100%;
+    }
+    #state {
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      text-align: center;
+    }
+    .card {
+      max-width: 760px;
+      padding: 32px;
+      border-radius: 24px;
+      background: rgba(8,8,8,.66);
+      border: 1px solid rgba(212,175,55,.25);
+      backdrop-filter: blur(8px);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: .82rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      border: 1px solid rgba(212,175,55,.25);
+      color: #f3e7c2;
+      background: rgba(212,175,55,.08);
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ff3b30;
+      box-shadow: 0 0 14px rgba(255,59,48,.8);
+    }
+    .title {
+      font-size: clamp(1.7rem, 2vw, 2.7rem);
+      color: #d4af37;
+      margin-bottom: 12px;
+    }
+    .text {
+      color: #d8d8d8;
+      line-height: 1.6;
+      font-size: 1rem;
+      margin-bottom: 18px;
+    }
+    .meta {
+      color: #9f9f9f;
+      font-size: .92rem;
+      line-height: 1.5;
+    }
+    .footer {
+      text-align: center;
+      color: #666;
+      font-size: .78rem;
+      letter-spacing: 1px;
+      padding-bottom: 6px;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #000;
+    }
+    @media (max-width: 768px) {
+      .wrap { padding: 14px; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .player-shell { border-radius: 18px; }
+      .card { padding: 22px; }
+    }
+  </style>
 </head>
 <body>
-    <header class="topbar">
-        <div class="brand">
-            <h1>La Catrina</h1>
-            <p>Live channel</p>
-        </div>
+  <div class="bg"></div>
+  <div class="glow"></div>
 
-        <div class="top-actions">
-            <a class="pill" href="../">← Volver a la mesa</a>
-            <a class="pill" href="https://www.youtube.com/channel/UCc8bs5OaX9FtzqxfCJfoRZw" target="_blank" rel="noopener noreferrer">
-                Ver canal en YouTube
-            </a>
-        </div>
-    </header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <h1>LA CATRINA</h1>
+        <p>POOL LEAGUE · LIVE</p>
+      </div>
+      <a class="back" href="../">← Volver a la portada</a>
+    </div>
 
-    <main class="live-shell">
-        <section class="player-frame">
-            <div id="playerContainer"></div>
-
-            <div id="loadingState" class="state visible">
-                <div class="state-card">
-                    <div class="badge-live">
-                        <span class="dot"></span>
-                        Comprobando emisión
-                    </div>
-                    <h2>Cargando directo</h2>
-                    <p>Estamos comprobando si ahora mismo hay una emisión activa en el canal.</p>
-                    <div class="loading-copy">Un segundo...</div>
-                </div>
-            </div>
-
-            <div id="offlineState" class="state">
-                <div class="state-card">
-                    <h2>No hay directo ahora</h2>
-                    <p>En este momento no aparece ninguna emisión en directo activa. Cuando haya stream, esta pantalla cargará el reproductor automáticamente.</p>
-                    <div class="state-actions">
-                        <button class="btn btn-primary" id="retryBtn">Volver a comprobar</button>
-                        <a class="btn btn-secondary" href="../">Volver a la portada</a>
-                    </div>
-                </div>
-            </div>
-
-            <div id="errorState" class="state">
-                <div class="state-card">
-                    <h2>No se pudo cargar</h2>
-                    <p>Hubo un problema al consultar YouTube. Reintenta dentro de unos segundos.</p>
-                    <div class="state-actions">
-                        <button class="btn btn-primary" id="retryBtnError">Reintentar</button>
-                        <a class="btn btn-secondary" href="../">Volver a la portada</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <main class="panel">
+      <section class="player-shell">
+        <div id="player"></div>
+        <div id="state"></div>
+      </section>
     </main>
 
-    <div class="footer-note">La Catrina Pool League · live</div>
+    <div class="footer">La Catrina Pool League</div>
+  </div>
 
-    <script>
-        const YOUTUBE_CHANNEL_ID = 'UCc8bs5OaX9FtzqxfCJfoRZw';
-        const YOUTUBE_API_KEY = 'AIzaSyD94SnWIvHOLKc5cbZMSjYmma2BvQkjcng';
+  <script>
+    const API_KEY = 'AIzaSyD94SnWIvHOLKc5cbZMSjYmma2BvQkjcng';
+    const LIVE_VIDEO_ID = 'jWG2qsCq37E';
 
-        const playerContainer = document.getElementById('playerContainer');
-        const loadingState = document.getElementById('loadingState');
-        const offlineState = document.getElementById('offlineState');
-        const errorState = document.getElementById('errorState');
-        const retryBtn = document.getElementById('retryBtn');
-        const retryBtnError = document.getElementById('retryBtnError');
+    const player = document.getElementById('player');
+    const state = document.getElementById('state');
 
-        function setState(state) {
-            loadingState.classList.remove('visible');
-            offlineState.classList.remove('visible');
-            errorState.classList.remove('visible');
+    function renderWaiting(data) {
+      const title = data?.snippet?.title || 'Directo programado';
+      const start = data?.liveStreamingDetails?.scheduledStartTime
+        ? new Date(data.liveStreamingDetails.scheduledStartTime).toLocaleString('es-ES')
+        : 'Hora no disponible';
 
-            if (state === 'loading') loadingState.classList.add('visible');
-            if (state === 'offline') offlineState.classList.add('visible');
-            if (state === 'error') errorState.classList.add('visible');
+      state.innerHTML = `
+        <div class="card">
+          <div class="badge"><span class="dot"></span> Programado</div>
+          <h2 class="title">${title}</h2>
+          <p class="text">El directo existe y está programado, pero todavía no ha arrancado en emisión pública.</p>
+          <p class="meta">Inicio previsto: ${start}</p>
+        </div>
+      `;
+      player.innerHTML = `
+        <iframe
+          src="https://www.youtube.com/embed/${LIVE_VIDEO_ID}?autoplay=0&rel=0&modestbranding=1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      `;
+    }
+
+    function renderLive(data) {
+      const title = data?.snippet?.title || 'En directo';
+      state.innerHTML = '';
+      player.innerHTML = `
+        <iframe
+          src="https://www.youtube.com/embed/${LIVE_VIDEO_ID}?autoplay=1&rel=0&modestbranding=1"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      `;
+      document.title = `La Catrina · LIVE · ${title}`;
+    }
+
+    function renderOffline() {
+      player.innerHTML = '';
+      state.innerHTML = `
+        <div class="card">
+          <div class="badge">Ahora no hay directo</div>
+          <h2 class="title">No está emitiendo ahora</h2>
+          <p class="text">El enlace del evento existe, pero YouTube todavía no lo reporta como emisión activa ni programada accesible desde la API.</p>
+          <p class="meta">Si acabas de crearlo o arrancarlo, espera un poco y recarga. YouTube a veces tarda en propagar el estado.</p>
+        </div>
+      `;
+    }
+
+    async function checkScheduledLive() {
+      try {
+        const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,status,liveStreamingDetails&id=${LIVE_VIDEO_ID}&key=${API_KEY}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.items || !data.items.length) {
+          renderOffline();
+          return;
         }
 
-        function getVideoIdFromQuery() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('v');
+        const video = data.items[0];
+        const hasLiveDetails = !!video.liveStreamingDetails;
+        const hasActualStart = !!video.liveStreamingDetails?.actualStartTime;
+        const hasActualEnd = !!video.liveStreamingDetails?.actualEndTime;
+        const embeddable = video.status?.embeddable !== false;
+
+        if (!embeddable) {
+          state.innerHTML = `
+            <div class="card">
+              <div class="badge">Embed bloqueado</div>
+              <h2 class="title">El vídeo no permite incrustación</h2>
+              <p class="text">YouTube devuelve el evento, pero el vídeo no se puede embeber en una web externa.</p>
+            </div>
+          `;
+          return;
         }
 
-        async function fetchActiveLiveVideoId() {
-            const params = new URLSearchParams({
-                part: 'snippet',
-                channelId: YOUTUBE_CHANNEL_ID,
-                type: 'video',
-                eventType: 'live',
-                maxResults: '1',
-                key: YOUTUBE_API_KEY
-            });
-
-            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?${params.toString()}`);
-            if (!response.ok) {
-                throw new Error(`YouTube API error: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data.items?.[0]?.id?.videoId || null;
+        if (hasLiveDetails && hasActualStart && !hasActualEnd) {
+          renderLive(video);
+          return;
         }
 
-        function renderPlayer(videoId) {
-            playerContainer.innerHTML = `
-                <iframe
-                    width="1280"
-                    height="720"
-                    src="https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&rel=0"
-                    title="La Catrina Live"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen
-                    referrerpolicy="strict-origin-when-cross-origin">
-                </iframe>
-            `;
+        if (hasLiveDetails) {
+          renderWaiting(video);
+          return;
         }
 
-        async function bootLivePage() {
-            setState('loading');
-            playerContainer.innerHTML = '';
+        renderOffline();
+      } catch (err) {
+        console.error(err);
+        renderOffline();
+      }
+    }
 
-            try {
-                const videoIdFromQuery = getVideoIdFromQuery();
-
-                if (videoIdFromQuery) {
-                    renderPlayer(videoIdFromQuery);
-                    setState(null);
-                    return;
-                }
-
-                const activeVideoId = await fetchActiveLiveVideoId();
-
-                if (activeVideoId) {
-                    renderPlayer(activeVideoId);
-                    setState(null);
-                    return;
-                }
-
-                setState('offline');
-            } catch (error) {
-                console.error('[live] error', error);
-                setState('error');
-            }
-        }
-
-        retryBtn?.addEventListener('click', bootLivePage);
-        retryBtnError?.addEventListener('click', bootLivePage);
-
-        bootLivePage();
-    </script>
+    checkScheduledLive();
+    setInterval(checkScheduledLive, 30000);
+  </script>
 </body>
 </html>
