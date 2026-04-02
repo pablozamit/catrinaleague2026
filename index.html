@@ -20,19 +20,17 @@
             position: relative;
         }
 
-        /* Fondo del bar */
         .bar-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                         url('material/imagen2.jpeg') center/cover;
             z-index: -1;
         }
 
-        /* Canvas 3D */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -42,7 +40,6 @@
             z-index: 1;
         }
 
-        /* UI Overlay */
         .ui-layer {
             position: fixed;
             top: 0;
@@ -77,7 +74,6 @@
             margin-top: 0.5rem;
         }
 
-        /* Marcadores de troneras (posicionados sobre el canvas) */
         .pocket-marker {
             position: fixed;
             width: 50px;
@@ -130,7 +126,6 @@
             border-color: #444;
         }
 
-        /* Indicador de carga */
         #loading {
             position: fixed;
             top: 50%;
@@ -141,7 +136,6 @@
             z-index: 1000;
         }
 
-        /* Instrucciones */
         .instructions {
             position: fixed;
             bottom: 4rem;
@@ -157,7 +151,6 @@
             z-index: 100;
         }
 
-        /* Footer con versión */
         .version-footer {
             position: fixed;
             bottom: 0.5rem;
@@ -190,975 +183,903 @@
         </div>
     </div>
 
-    <!-- Marcadores de troneras -->
     <div class="pocket-marker" id="marker-tl" data-target="reglas/" data-active="true" style="left: 20%; top: 30%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">📋</span>
         <div class="pocket-label" data-i18n="nav_rules">Reglas de la Liga</div>
     </div>
-    
+
     <div class="pocket-marker" id="marker-tc" data-target="elo/" data-active="true" style="left: 50%; top: 25%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🏆</span>
         <div class="pocket-label" data-i18n="nav_ranking">Ranking ELO</div>
     </div>
-    
+
     <div class="pocket-marker" id="marker-tr" data-target="login.html" data-active="true" style="left: 80%; top: 30%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🔐</span>
         <div class="pocket-label" data-i18n="nav_login">Login / Resultados</div>
     </div>
-    
+
     <div class="pocket-marker" id="marker-bl" data-target="exam/" data-active="true" style="left: 20%; top: 70%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">👓</span>
         <div class="pocket-label" data-i18n="nav_exam">Examen de la Liga</div>
     </div>
-    
+
     <div class="pocket-marker" id="marker-bc" data-target="liga/" data-active="true" style="left: 50%; top: 75%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🎱</span>
         <div class="pocket-label" data-i18n="nav_league">Liga</div>
     </div>
-    
+
     <div class="pocket-marker" id="marker-br" data-target="historial/" data-active="true" style="left: 80%; top: 70%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">📜</span>
         <div class="pocket-label" data-i18n="nav_history">Historial</div>
     </div>
 
-    <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras</div>
+    <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras o en la televisión</div>
 
     <div class="version-footer">
         La Catrina Pool League <span>v1.0.0</span>
     </div>
 
-<script>
-    // Escena 3D
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x000000, 10, 50);
-
-    // Cámara
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 12, 18);
-    camera.lookAt(0, 0, 0);
-
-    // Renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    document.getElementById('canvas-container').appendChild(renderer.domElement);
-
-    // ILUMINACIÓN
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.38);
-    scene.add(ambientLight);
-
-    const spotLight = new THREE.SpotLight(0xffeebb, 1.5);
-    spotLight.position.set(0, 20, 5);
-    spotLight.angle = Math.PI / 4;
-    spotLight.penumbra = 0.5;
-    spotLight.decay = 2;
-    spotLight.distance = 50;
-    spotLight.castShadow = true;
-    spotLight.shadow.mapSize.width = 2048;
-    spotLight.shadow.mapSize.height = 2048;
-    scene.add(spotLight);
-
-    const rimLight = new THREE.DirectionalLight(0xd4af37, 0.5);
-    rimLight.position.set(-10, 10, -10);
-    scene.add(rimLight);
-
-    const underTableLight = new THREE.PointLight(0xffffff, 0.5, 10);
-    underTableLight.position.set(0, -2, 0);
-    scene.add(underTableLight);
-
-    // MATERIALES
-    const feltMaterial = new THREE.MeshStandardMaterial({
-        color: 0x1a4d2e,
-        roughness: 0.9,
-        metalness: 0.1,
-    });
-
-    const woodMaterial = new THREE.MeshStandardMaterial({
-        color: 0x3d2817,
-        roughness: 0.7,
-        metalness: 0.2,
-    });
-
-    const rubberMaterial = new THREE.MeshStandardMaterial({
-        color: 0x0a0a0a,
-        roughness: 0.6,
-        metalness: 0.1,
-    });
-
-    const pocketMaterial = new THREE.MeshStandardMaterial({
-        color: 0x1a1a1a,
-        roughness: 0.4,
-        metalness: 0.6,
-    });
-
-    const ballMaterial = new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
-        roughness: 0.1,
-        metalness: 0.1,
-        clearcoat: 1.0,
-        clearcoatRoughness: 0.1,
-    });
-
-    // MESA DE BILLAR
-    const tableGroup = new THREE.Group();
-
-    const boardGeometry = new THREE.BoxGeometry(14, 0.3, 7);
-    const board = new THREE.Mesh(boardGeometry, feltMaterial);
-    board.position.y = 0.15;
-    board.receiveShadow = true;
-    tableGroup.add(board);
-
-    const frameThickness = 0.8;
-    const frameHeight = 0.6;
-
-    const frameLongGeometry = new THREE.BoxGeometry(15.6, frameHeight, frameThickness);
-    const frameLong1 = new THREE.Mesh(frameLongGeometry, woodMaterial);
-    frameLong1.position.set(0, 0.3, 3.9);
-    frameLong1.castShadow = true;
-    frameLong1.receiveShadow = true;
-    tableGroup.add(frameLong1);
-
-    const frameLong2 = frameLong1.clone();
-    frameLong2.position.set(0, 0.3, -3.9);
-    tableGroup.add(frameLong2);
-
-    const frameShortGeometry = new THREE.BoxGeometry(frameThickness, frameHeight, 8.6);
-    const frameShort1 = new THREE.Mesh(frameShortGeometry, woodMaterial);
-    frameShort1.position.set(7.9, 0.3, 0);
-    frameShort1.castShadow = true;
-    frameShort1.receiveShadow = true;
-    tableGroup.add(frameShort1);
-
-    const frameShort2 = frameShort1.clone();
-    frameShort2.position.set(-7.9, 0.3, 0);
-    tableGroup.add(frameShort2);
-
-    const cushionHeight = 0.5;
-    const cushionThickness = 0.4;
-
-    const cushionLongGeometry = new THREE.BoxGeometry(14, cushionHeight, cushionThickness);
-    const cushionLong1 = new THREE.Mesh(cushionLongGeometry, rubberMaterial);
-    cushionLong1.position.set(0, 0.55, 3.5);
-    cushionLong1.castShadow = true;
-    tableGroup.add(cushionLong1);
-
-    const cushionLong2 = cushionLong1.clone();
-    cushionLong2.position.set(0, 0.55, -3.5);
-    tableGroup.add(cushionLong2);
-
-    const cushionShortGeometry = new THREE.BoxGeometry(cushionThickness, cushionHeight, 7);
-    const cushionShort1 = new THREE.Mesh(cushionShortGeometry, rubberMaterial);
-    cushionShort1.position.set(7, 0.55, 0);
-    cushionShort1.castShadow = true;
-    tableGroup.add(cushionShort1);
-
-    const cushionShort2 = cushionShort1.clone();
-    cushionShort2.position.set(-7, 0.55, 0);
-    tableGroup.add(cushionShort2);
-
-    const legGeometry = new THREE.CylinderGeometry(0.4, 0.3, 4, 16);
-    const legPositions = [
-        [-6, -2, -2.5], [6, -2, -2.5],
-        [-6, -2, 2.5], [6, -2, 2.5]
-    ];
-
-    legPositions.forEach(pos => {
-        const leg = new THREE.Mesh(legGeometry, woodMaterial);
-        leg.position.set(pos[0], pos[1], pos[2]);
-        leg.castShadow = true;
-        tableGroup.add(leg);
-    });
-
-    // TRONERAS
-    const pocketGeometry = new THREE.CylinderGeometry(0.5, 0.4, 0.6, 16);
-    const pockets = [];
-    const pocketPositions = [
-        { pos: [-7, 0.5, -3.5], id: 'tl' },
-        { pos: [0, 0.5, -3.5], id: 'tc' },
-        { pos: [7, 0.5, -3.5], id: 'tr' },
-        { pos: [-7, 0.5, 3.5], id: 'bl' },
-        { pos: [0, 0.5, 3.5], id: 'bc' },
-        { pos: [7, 0.5, 3.5], id: 'br' }
-    ];
-
-    pocketPositions.forEach((pocketData, index) => {
-        const pocket = new THREE.Mesh(pocketGeometry, pocketMaterial);
-        pocket.position.set(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]);
-        pocket.userData = { id: pocketData.id, index };
-        pockets.push(pocket);
-        tableGroup.add(pocket);
-    });
-
-    // BOLA BLANCA
-    const ballGeometry = new THREE.SphereGeometry(0.25, 32, 32);
-    const cueBall = new THREE.Mesh(ballGeometry, ballMaterial);
-    cueBall.position.set(0, 0.4, 0);
-    cueBall.castShadow = true;
-    tableGroup.add(cueBall);
-
-    // Líneas de la mesa
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.3, transparent: true });
-
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(0, 0.16, -3.5),
-        new THREE.Vector3(0, 0.16, 3.5)
-    ]);
-    const centerLine = new THREE.Line(lineGeometry, lineMaterial);
-    tableGroup.add(centerLine);
-
-    const hLineGeometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(-7, 0.16, 0),
-        new THREE.Vector3(7, 0.16, 0)
-    ]);
-    const horizontalLine = new THREE.Line(hLineGeometry, lineMaterial);
-    tableGroup.add(horizontalLine);
-
-    const circleGeometry = new THREE.RingGeometry(0.4, 0.42, 32);
-    const circleMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 0.3,
-        transparent: true,
-        side: THREE.DoubleSide
-    });
-    const centerCircle = new THREE.Mesh(circleGeometry, circleMaterial);
-    centerCircle.rotation.x = -Math.PI / 2;
-    centerCircle.position.set(0, 0.16, 0);
-    tableGroup.add(centerCircle);
-
-    scene.add(tableGroup);
-
-    // HOMBRE DEBAJO DE LA MESA
-    const manGroup = new THREE.Group();
-    const skinMaterial = new THREE.MeshStandardMaterial({ color: 0xffdbac, roughness: 0.7, metalness: 0.1 });
-    const shirtMaterial = new THREE.MeshStandardMaterial({ color: 0x2c3e50, roughness: 0.8, metalness: 0.1 });
-    const pantsMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.7, metalness: 0.1 });
-    const hairMaterial = new THREE.MeshStandardMaterial({ color: 0x2d1810, roughness: 0.9, metalness: 0.0 });
-    const beltMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.6, metalness: 0.3 });
-
-    const torsoGroup = new THREE.Group();
-    const torsoGeo = new THREE.BoxGeometry(1.1, 0.7, 1.8);
-    const torso = new THREE.Mesh(torsoGeo, shirtMaterial);
-    torsoGroup.add(torso);
-
-    const neckGeo = new THREE.CylinderGeometry(0.12, 0.15, 0.2, 16);
-    const neck = new THREE.Mesh(neckGeo, skinMaterial);
-    neck.position.set(0, 0.45, 0.6);
-    torsoGroup.add(neck);
-
-    torsoGroup.position.set(0, -3.7, 0);
-    manGroup.add(torsoGroup);
-
-    const headGroup = new THREE.Group();
-    const headGeo = new THREE.SphereGeometry(0.35, 24, 24);
-    const head = new THREE.Mesh(headGeo, skinMaterial);
-    headGroup.add(head);
-
-    const hairGeo = new THREE.SphereGeometry(0.37, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2);
-    const hair = new THREE.Mesh(hairGeo, hairMaterial);
-    hair.position.y = 0.1;
-    headGroup.add(hair);
-
-    const eyeGeo = new THREE.SphereGeometry(0.05, 12, 12);
-    const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.3, metalness: 0.1 });
-    const eye1 = new THREE.Mesh(eyeGeo, eyeMaterial);
-    eye1.position.set(0.12, 0.05, 0.3);
-    headGroup.add(eye1);
-
-    const eye2 = eye1.clone();
-    eye2.position.set(-0.12, 0.05, 0.3);
-    headGroup.add(eye2);
-
-    const noseGeo = new THREE.ConeGeometry(0.05, 0.1, 8);
-    const nose = new THREE.Mesh(noseGeo, skinMaterial);
-    nose.rotation.x = Math.PI / 2;
-    nose.position.set(0, 0, 0.35);
-    headGroup.add(nose);
-
-    const mouthGeo = new THREE.BoxGeometry(0.1, 0.02, 0.05);
-    const mouthMaterial = new THREE.MeshStandardMaterial({ color: 0x8b0000, roughness: 0.8 });
-    const mouth = new THREE.Mesh(mouthGeo, mouthMaterial);
-    mouth.position.set(0, -0.1, 0.33);
-    headGroup.add(mouth);
-
-    headGroup.position.set(0, -3.15, 1.0);
-    manGroup.add(headGroup);
-
-    const legGeo2 = new THREE.CylinderGeometry(0.18, 0.15, 1.4, 12);
-
-    const leg1 = new THREE.Mesh(legGeo2, pantsMaterial);
-    leg1.rotation.x = Math.PI / 2;
-    leg1.rotation.y = Math.PI / 4;
-    leg1.position.set(0.35, -3.7, -1.1);
-    manGroup.add(leg1);
-
-    const leg2 = leg1.clone();
-    leg2.position.set(-0.35, -3.7, -1.1);
-    leg2.rotation.y = -Math.PI / 4;
-    manGroup.add(leg2);
-
-    const armGeo = new THREE.CylinderGeometry(0.12, 0.1, 1.1, 12);
-
-    const arm1 = new THREE.Mesh(armGeo, skinMaterial);
-    arm1.rotation.z = Math.PI / 2;
-    arm1.position.set(0.75, -3.7, 0.2);
-    manGroup.add(arm1);
-
-    const arm2 = arm1.clone();
-    arm2.position.set(-0.75, -3.7, 0.2);
-    manGroup.add(arm2);
-
-    const handGeo = new THREE.SphereGeometry(0.08, 12, 12);
-    const hand1 = new THREE.Mesh(handGeo, skinMaterial);
-    hand1.position.set(1.3, -3.7, 0.2);
-    manGroup.add(hand1);
-
-    const hand2 = hand1.clone();
-    hand2.position.set(-1.3, -3.7, 0.2);
-    manGroup.add(hand2);
-
-    const fingerGeo = new THREE.CylinderGeometry(0.02, 0.015, 0.15, 8);
-    for (let i = 0; i < 4; i++) {
-        const finger1 = new THREE.Mesh(fingerGeo, skinMaterial);
-        finger1.rotation.z = Math.PI / 2;
-        finger1.position.set(1.35 + i * 0.05, -3.7, 0.25);
-        manGroup.add(finger1);
-
-        const finger2 = finger1.clone();
-        finger2.position.set(-1.35 - i * 0.05, -3.7, 0.25);
-        manGroup.add(finger2);
-    }
-
-    const beltGeo = new THREE.BoxGeometry(1.15, 0.08, 0.25);
-    const belt = new THREE.Mesh(beltGeo, beltMaterial);
-    belt.position.set(0, -3.5, 0.3);
-    manGroup.add(belt);
-
-    const shoeMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.5, metalness: 0.1 });
-    const shoeGeo = new THREE.BoxGeometry(0.25, 0.1, 0.4);
-
-    const shoe1 = new THREE.Mesh(shoeGeo, shoeMaterial);
-    shoe1.position.set(0.35, -4.4, -0.8);
-    manGroup.add(shoe1);
-
-    const shoe2 = shoe1.clone();
-    shoe2.position.set(-0.35, -4.4, -0.8);
-    manGroup.add(shoe2);
-
-    manGroup.rotation.y = Math.PI / 6;
-    scene.add(manGroup);
-
-    // RADIO
-    const radioGroup = new THREE.Group();
-    const radioBodyMaterial = new THREE.MeshStandardMaterial({ color: 0x3d3d3d, roughness: 0.6, metalness: 0.2 });
-    const radioDetailMaterial = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.5, metalness: 0.3 });
-    const radioAntennaMaterial = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.3, metalness: 0.7 });
-
-    const radioBodyGeo = new THREE.BoxGeometry(0.35, 0.2, 0.15);
-    const radioBody = new THREE.Mesh(radioBodyGeo, radioBodyMaterial);
-    radioGroup.add(radioBody);
-
-    const radioTopGeo = new THREE.BoxGeometry(0.35, 0.08, 0.15);
-    const radioTop = new THREE.Mesh(radioTopGeo, radioDetailMaterial);
-    radioTop.position.set(0, 0.14, 0);
-    radioGroup.add(radioTop);
-
-    const dialGeo = new THREE.BoxGeometry(0.15, 0.02, 0.08);
-    const dialMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4, metalness: 0.1 });
-    const dial = new THREE.Mesh(dialGeo, dialMaterial);
-    dial.position.set(0.08, 0.18, 0);
-    radioGroup.add(dial);
-
-    const knobGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.02, 16);
-    const knob = new THREE.Mesh(knobGeo, radioDetailMaterial);
-    knob.rotation.x = Math.PI / 2;
-    knob.position.set(-0.08, 0.18, 0.05);
-    radioGroup.add(knob);
-
-    const antennaGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.3, 8);
-    const antenna = new THREE.Mesh(antennaGeo, radioAntennaMaterial);
-    antenna.position.set(0.12, 0.35, 0);
-    radioGroup.add(antenna);
-
-    const antennaBaseGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.03, 16);
-    const antennaBase = new THREE.Mesh(antennaBaseGeo, radioAntennaMaterial);
-    antennaBase.position.set(0.12, 0.2, 0);
-    radioGroup.add(antennaBase);
-
-    const clipGeo = new THREE.BoxGeometry(0.05, 0.15, 0.02);
-    const clip = new THREE.Mesh(clipGeo, radioDetailMaterial);
-    clip.position.set(-0.15, 0, 0.07);
-    radioGroup.add(clip);
-
-    const grilleMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.8 });
-    const grilleGeo = new THREE.BoxGeometry(0.2, 0.1, 0.01);
-    const grille = new THREE.Mesh(grilleGeo, grilleMaterial);
-    grille.position.set(0, 0.05, 0.075);
-    radioGroup.add(grille);
-
-    const holeGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.02, 8);
-    for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-            const hole = new THREE.Mesh(holeGeo, radioDetailMaterial);
-            hole.rotation.x = Math.PI / 2;
-            hole.position.set(i * 0.05, 0.05 + j * 0.03, 0.08);
-            radioGroup.add(hole);
-        }
-    }
-
-    radioGroup.position.set(1.2, -3.6, 0.8);
-    radioGroup.rotation.y = -Math.PI / 4;
-    scene.add(radioGroup);
-
-    // TELEVISIÓN GRANDE, MÁS VISIBLE Y MÁS CERCA
-    const tvGroup = new THREE.Group();
-
-    const tvFrameMaterial = new THREE.MeshStandardMaterial({
-        color: 0xe6dfd4,
-        roughness: 0.52,
-        metalness: 0.15
-    });
-
-    const tvScreenMaterial = new THREE.MeshStandardMaterial({
-        color: 0xd7ebff,
-        roughness: 0.08,
-        metalness: 0.02,
-        emissive: 0x8fcfff,
-        emissiveIntensity: 1.05
-    });
-
-    const tvStandMaterial = new THREE.MeshStandardMaterial({
-        color: 0xd1cbc0,
-        roughness: 0.45,
-        metalness: 0.12
-    });
-
-    const tvBackMaterial = new THREE.MeshStandardMaterial({
-        color: 0xf0ebe4,
-        roughness: 0.6,
-        metalness: 0.08
-    });
-
-    const tvFrameGeo = new THREE.BoxGeometry(8.8, 5.1, 0.34);
-    const tvFrame = new THREE.Mesh(tvFrameGeo, tvFrameMaterial);
-    tvFrame.castShadow = true;
-    tvFrame.receiveShadow = true;
-    tvGroup.add(tvFrame);
-
-    const tvBackGeo = new THREE.BoxGeometry(8.4, 4.7, 0.28);
-    const tvBack = new THREE.Mesh(tvBackGeo, tvBackMaterial);
-    tvBack.position.z = -0.08;
-    tvBack.castShadow = true;
-    tvBack.receiveShadow = true;
-    tvGroup.add(tvBack);
-
-    const tvScreenGeo = new THREE.BoxGeometry(7.75, 4.05, 0.06);
-    const tvScreen = new THREE.Mesh(tvScreenGeo, tvScreenMaterial);
-    tvScreen.position.z = 0.18;
-    tvScreen.userData = { isTV: true };
-    tvGroup.add(tvScreen);
-
-    const tvGlassGeo = new THREE.BoxGeometry(7.55, 3.85, 0.02);
-    const tvGlassMat = new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0.16,
-        roughness: 0.05,
-        metalness: 0,
-        clearcoat: 1,
-        clearcoatRoughness: 0.05
-    });
-    const tvGlass = new THREE.Mesh(tvGlassGeo, tvGlassMat);
-    tvGlass.position.z = 0.22;
-    tvGroup.add(tvGlass);
-
-    const tvBottomGeo = new THREE.BoxGeometry(8.9, 0.34, 0.36);
-    const tvBottom = new THREE.Mesh(tvBottomGeo, tvFrameMaterial);
-    tvBottom.position.set(0, -2.58, 0);
-    tvBottom.castShadow = true;
-    tvBottom.receiveShadow = true;
-    tvGroup.add(tvBottom);
-
-    const tvStandNeckGeo = new THREE.BoxGeometry(0.68, 1.25, 0.3);
-    const tvStandNeck = new THREE.Mesh(tvStandNeckGeo, tvStandMaterial);
-    tvStandNeck.position.set(0, -3.4, 0);
-    tvStandNeck.castShadow = true;
-    tvStandNeck.receiveShadow = true;
-    tvGroup.add(tvStandNeck);
-
-    const tvBaseGeo = new THREE.CylinderGeometry(1.45, 1.8, 0.2, 28);
-    const tvBase = new THREE.Mesh(tvBaseGeo, tvStandMaterial);
-    tvBase.position.set(0, -4.1, 0);
-    tvBase.castShadow = true;
-    tvBase.receiveShadow = true;
-    tvGroup.add(tvBase);
-
-    const tvLight = new THREE.PointLight(0xa8d8ff, 1.6, 26, 2);
-    tvLight.position.set(0, 0.2, 3);
-    tvGroup.add(tvLight);
-
-    tvGroup.position.set(0, 4.1, -9.4);
-    tvGroup.rotation.y = 0;
-    scene.add(tvGroup);
-
-    // ESTADO YOUTUBE LIVE
-    const YOUTUBE_CHANNEL_ID = 'UCc8bs5OaX9FtzqxfCJfoRZw';
-    const YOUTUBE_API_KEY = 'AIzaSyD94SnWIvHOLKc5cbZMSjYmma2BvQkjcng';
-
-    let activeLiveVideoId = null;
-    let liveCheckLoaded = false;
-
-    async function fetchActiveLiveVideoId() {
-        const params = new URLSearchParams({
-            part: 'snippet',
-            channelId: YOUTUBE_CHANNEL_ID,
-            type: 'video',
-            eventType: 'live',
-            maxResults: '1',
-            key: YOUTUBE_API_KEY
+    <script>
+        const YOUTUBE_CHANNEL_ID = 'UCc8bs5OaX9FtzqxfCJfoRZw';
+        const YOUTUBE_API_KEY = 'AIzaSyD94SnWIvHOLKc5cbZMSjYmma2BvQkjcng';
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.Fog(0x000000, 10, 50);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 12, 18);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.38);
+        scene.add(ambientLight);
+
+        const spotLight = new THREE.SpotLight(0xffeebb, 1.5);
+        spotLight.position.set(0, 20, 5);
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.5;
+        spotLight.decay = 2;
+        spotLight.distance = 50;
+        spotLight.castShadow = true;
+        spotLight.shadow.mapSize.width = 2048;
+        spotLight.shadow.mapSize.height = 2048;
+        scene.add(spotLight);
+
+        const rimLight = new THREE.DirectionalLight(0xd4af37, 0.5);
+        rimLight.position.set(-10, 10, -10);
+        scene.add(rimLight);
+
+        const underTableLight = new THREE.PointLight(0xffffff, 0.5, 10);
+        underTableLight.position.set(0, -2, 0);
+        scene.add(underTableLight);
+
+        const feltMaterial = new THREE.MeshStandardMaterial({
+            color: 0x1a4d2e,
+            roughness: 0.9,
+            metalness: 0.1
         });
 
-        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?${params.toString()}`);
-        if (!response.ok) {
-            throw new Error(`YouTube API error: ${response.status}`);
+        const woodMaterial = new THREE.MeshStandardMaterial({
+            color: 0x3d2817,
+            roughness: 0.7,
+            metalness: 0.2
+        });
+
+        const rubberMaterial = new THREE.MeshStandardMaterial({
+            color: 0x0a0a0a,
+            roughness: 0.6,
+            metalness: 0.1
+        });
+
+        const pocketMaterial = new THREE.MeshStandardMaterial({
+            color: 0x1a1a1a,
+            roughness: 0.4,
+            metalness: 0.6
+        });
+
+        const ballMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            roughness: 0.1,
+            metalness: 0.1,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.1
+        });
+
+        const tableGroup = new THREE.Group();
+
+        const boardGeometry = new THREE.BoxGeometry(14, 0.3, 7);
+        const board = new THREE.Mesh(boardGeometry, feltMaterial);
+        board.position.y = 0.15;
+        board.receiveShadow = true;
+        tableGroup.add(board);
+
+        const frameThickness = 0.8;
+        const frameHeight = 0.6;
+
+        const frameLongGeometry = new THREE.BoxGeometry(15.6, frameHeight, frameThickness);
+        const frameLong1 = new THREE.Mesh(frameLongGeometry, woodMaterial);
+        frameLong1.position.set(0, 0.3, 3.9);
+        frameLong1.castShadow = true;
+        frameLong1.receiveShadow = true;
+        tableGroup.add(frameLong1);
+
+        const frameLong2 = frameLong1.clone();
+        frameLong2.position.set(0, 0.3, -3.9);
+        tableGroup.add(frameLong2);
+
+        const frameShortGeometry = new THREE.BoxGeometry(frameThickness, frameHeight, 8.6);
+        const frameShort1 = new THREE.Mesh(frameShortGeometry, woodMaterial);
+        frameShort1.position.set(7.9, 0.3, 0);
+        frameShort1.castShadow = true;
+        frameShort1.receiveShadow = true;
+        tableGroup.add(frameShort1);
+
+        const frameShort2 = frameShort1.clone();
+        frameShort2.position.set(-7.9, 0.3, 0);
+        tableGroup.add(frameShort2);
+
+        const cushionHeight = 0.5;
+        const cushionThickness = 0.4;
+
+        const cushionLongGeometry = new THREE.BoxGeometry(14, cushionHeight, cushionThickness);
+        const cushionLong1 = new THREE.Mesh(cushionLongGeometry, rubberMaterial);
+        cushionLong1.position.set(0, 0.55, 3.5);
+        cushionLong1.castShadow = true;
+        tableGroup.add(cushionLong1);
+
+        const cushionLong2 = cushionLong1.clone();
+        cushionLong2.position.set(0, 0.55, -3.5);
+        tableGroup.add(cushionLong2);
+
+        const cushionShortGeometry = new THREE.BoxGeometry(cushionThickness, cushionHeight, 7);
+        const cushionShort1 = new THREE.Mesh(cushionShortGeometry, rubberMaterial);
+        cushionShort1.position.set(7, 0.55, 0);
+        cushionShort1.castShadow = true;
+        tableGroup.add(cushionShort1);
+
+        const cushionShort2 = cushionShort1.clone();
+        cushionShort2.position.set(-7, 0.55, 0);
+        tableGroup.add(cushionShort2);
+
+        const legGeometry = new THREE.CylinderGeometry(0.4, 0.3, 4, 16);
+        const legPositions = [
+            [-6, -2, -2.5], [6, -2, -2.5],
+            [-6, -2, 2.5], [6, -2, 2.5]
+        ];
+
+        legPositions.forEach(pos => {
+            const leg = new THREE.Mesh(legGeometry, woodMaterial);
+            leg.position.set(pos[0], pos[1], pos[2]);
+            leg.castShadow = true;
+            tableGroup.add(leg);
+        });
+
+        const pocketGeometry = new THREE.CylinderGeometry(0.5, 0.4, 0.6, 16);
+        const pockets = [];
+        const pocketPositions = [
+            { pos: [-7, 0.5, -3.5], id: 'tl' },
+            { pos: [0, 0.5, -3.5], id: 'tc' },
+            { pos: [7, 0.5, -3.5], id: 'tr' },
+            { pos: [-7, 0.5, 3.5], id: 'bl' },
+            { pos: [0, 0.5, 3.5], id: 'bc' },
+            { pos: [7, 0.5, 3.5], id: 'br' }
+        ];
+
+        pocketPositions.forEach((pocketData, index) => {
+            const pocket = new THREE.Mesh(pocketGeometry, pocketMaterial);
+            pocket.position.set(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]);
+            pocket.userData = { id: pocketData.id, index };
+            pockets.push(pocket);
+            tableGroup.add(pocket);
+        });
+
+        const ballGeometry = new THREE.SphereGeometry(0.25, 32, 32);
+        const cueBall = new THREE.Mesh(ballGeometry, ballMaterial);
+        cueBall.position.set(0, 0.4, 0);
+        cueBall.castShadow = true;
+        tableGroup.add(cueBall);
+
+        const lineMaterial = new THREE.LineBasicMaterial({
+            color: 0xffffff,
+            opacity: 0.3,
+            transparent: true
+        });
+
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0.16, -3.5),
+            new THREE.Vector3(0, 0.16, 3.5)
+        ]);
+        const centerLine = new THREE.Line(lineGeometry, lineMaterial);
+        tableGroup.add(centerLine);
+
+        const hLineGeometry = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(-7, 0.16, 0),
+            new THREE.Vector3(7, 0.16, 0)
+        ]);
+        const horizontalLine = new THREE.Line(hLineGeometry, lineMaterial);
+        tableGroup.add(horizontalLine);
+
+        const circleGeometry = new THREE.RingGeometry(0.4, 0.42, 32);
+        const circleMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            opacity: 0.3,
+            transparent: true,
+            side: THREE.DoubleSide
+        });
+        const centerCircle = new THREE.Mesh(circleGeometry, circleMaterial);
+        centerCircle.rotation.x = -Math.PI / 2;
+        centerCircle.position.set(0, 0.16, 0);
+        tableGroup.add(centerCircle);
+
+        scene.add(tableGroup);
+
+        const manGroup = new THREE.Group();
+        const skinMaterial = new THREE.MeshStandardMaterial({ color: 0xffdbac, roughness: 0.7, metalness: 0.1 });
+        const shirtMaterial = new THREE.MeshStandardMaterial({ color: 0x2c3e50, roughness: 0.8, metalness: 0.1 });
+        const pantsMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.7, metalness: 0.1 });
+        const hairMaterial = new THREE.MeshStandardMaterial({ color: 0x2d1810, roughness: 0.9, metalness: 0.0 });
+        const beltMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.6, metalness: 0.3 });
+
+        const torsoGroup = new THREE.Group();
+        const torsoGeo = new THREE.BoxGeometry(1.1, 0.7, 1.8);
+        const torso = new THREE.Mesh(torsoGeo, shirtMaterial);
+        torsoGroup.add(torso);
+
+        const neckGeo = new THREE.CylinderGeometry(0.12, 0.15, 0.2, 16);
+        const neck = new THREE.Mesh(neckGeo, skinMaterial);
+        neck.position.set(0, 0.45, 0.6);
+        torsoGroup.add(neck);
+
+        torsoGroup.position.set(0, -3.7, 0);
+        manGroup.add(torsoGroup);
+
+        const headGroup = new THREE.Group();
+        const headGeo = new THREE.SphereGeometry(0.35, 24, 24);
+        const head = new THREE.Mesh(headGeo, skinMaterial);
+        headGroup.add(head);
+
+        const hairGeo = new THREE.SphereGeometry(0.37, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2);
+        const hair = new THREE.Mesh(hairGeo, hairMaterial);
+        hair.position.y = 0.1;
+        headGroup.add(hair);
+
+        const eyeGeo = new THREE.SphereGeometry(0.05, 12, 12);
+        const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.3, metalness: 0.1 });
+        const eye1 = new THREE.Mesh(eyeGeo, eyeMaterial);
+        eye1.position.set(0.12, 0.05, 0.3);
+        headGroup.add(eye1);
+
+        const eye2 = eye1.clone();
+        eye2.position.set(-0.12, 0.05, 0.3);
+        headGroup.add(eye2);
+
+        const noseGeo = new THREE.ConeGeometry(0.05, 0.1, 8);
+        const nose = new THREE.Mesh(noseGeo, skinMaterial);
+        nose.rotation.x = Math.PI / 2;
+        nose.position.set(0, 0, 0.35);
+        headGroup.add(nose);
+
+        const mouthGeo = new THREE.BoxGeometry(0.1, 0.02, 0.05);
+        const mouthMaterial = new THREE.MeshStandardMaterial({ color: 0x8b0000, roughness: 0.8 });
+        const mouth = new THREE.Mesh(mouthGeo, mouthMaterial);
+        mouth.position.set(0, -0.1, 0.33);
+        headGroup.add(mouth);
+
+        headGroup.position.set(0, -3.15, 1.0);
+        manGroup.add(headGroup);
+
+        const legGeo2 = new THREE.CylinderGeometry(0.18, 0.15, 1.4, 12);
+
+        const leg1 = new THREE.Mesh(legGeo2, pantsMaterial);
+        leg1.rotation.x = Math.PI / 2;
+        leg1.rotation.y = Math.PI / 4;
+        leg1.position.set(0.35, -3.7, -1.1);
+        manGroup.add(leg1);
+
+        const leg2 = leg1.clone();
+        leg2.position.set(-0.35, -3.7, -1.1);
+        leg2.rotation.y = -Math.PI / 4;
+        manGroup.add(leg2);
+
+        const armGeo = new THREE.CylinderGeometry(0.12, 0.1, 1.1, 12);
+
+        const arm1 = new THREE.Mesh(armGeo, skinMaterial);
+        arm1.rotation.z = Math.PI / 2;
+        arm1.position.set(0.75, -3.7, 0.2);
+        manGroup.add(arm1);
+
+        const arm2 = arm1.clone();
+        arm2.position.set(-0.75, -3.7, 0.2);
+        manGroup.add(arm2);
+
+        const handGeo = new THREE.SphereGeometry(0.08, 12, 12);
+        const hand1 = new THREE.Mesh(handGeo, skinMaterial);
+        hand1.position.set(1.3, -3.7, 0.2);
+        manGroup.add(hand1);
+
+        const hand2 = hand1.clone();
+        hand2.position.set(-1.3, -3.7, 0.2);
+        manGroup.add(hand2);
+
+        const fingerGeo = new THREE.CylinderGeometry(0.02, 0.015, 0.15, 8);
+        for (let i = 0; i < 4; i++) {
+            const finger1 = new THREE.Mesh(fingerGeo, skinMaterial);
+            finger1.rotation.z = Math.PI / 2;
+            finger1.position.set(1.35 + i * 0.05, -3.7, 0.25);
+            manGroup.add(finger1);
+
+            const finger2 = finger1.clone();
+            finger2.position.set(-1.35 - i * 0.05, -3.7, 0.25);
+            manGroup.add(finger2);
         }
 
-        const data = await response.json();
-        return data.items?.[0]?.id?.videoId || null;
-    }
+        const beltGeo = new THREE.BoxGeometry(1.15, 0.08, 0.25);
+        const belt = new THREE.Mesh(beltGeo, beltMaterial);
+        belt.position.set(0, -3.5, 0.3);
+        manGroup.add(belt);
 
-    async function preloadLiveStatus() {
-        try {
-            activeLiveVideoId = await fetchActiveLiveVideoId();
-            liveCheckLoaded = true;
-            console.log('[YouTube Live] activeLiveVideoId =', activeLiveVideoId);
-        } catch (error) {
-            liveCheckLoaded = true;
-            activeLiveVideoId = null;
-            console.error('[YouTube Live] error checking live status:', error);
+        const shoeMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.5, metalness: 0.1 });
+        const shoeGeo = new THREE.BoxGeometry(0.25, 0.1, 0.4);
+
+        const shoe1 = new THREE.Mesh(shoeGeo, shoeMaterial);
+        shoe1.position.set(0.35, -4.4, -0.8);
+        manGroup.add(shoe1);
+
+        const shoe2 = shoe1.clone();
+        shoe2.position.set(-0.35, -4.4, -0.8);
+        manGroup.add(shoe2);
+
+        manGroup.rotation.y = Math.PI / 6;
+        scene.add(manGroup);
+
+        const radioGroup = new THREE.Group();
+        const radioBodyMaterial = new THREE.MeshStandardMaterial({ color: 0x3d3d3d, roughness: 0.6, metalness: 0.2 });
+        const radioDetailMaterial = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.5, metalness: 0.3 });
+        const radioAntennaMaterial = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.3, metalness: 0.7 });
+
+        const radioBodyGeo = new THREE.BoxGeometry(0.35, 0.2, 0.15);
+        const radioBody = new THREE.Mesh(radioBodyGeo, radioBodyMaterial);
+        radioGroup.add(radioBody);
+
+        const radioTopGeo = new THREE.BoxGeometry(0.35, 0.08, 0.15);
+        const radioTop = new THREE.Mesh(radioTopGeo, radioDetailMaterial);
+        radioTop.position.set(0, 0.14, 0);
+        radioGroup.add(radioTop);
+
+        const dialGeo = new THREE.BoxGeometry(0.15, 0.02, 0.08);
+        const dialMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4, metalness: 0.1 });
+        const dial = new THREE.Mesh(dialGeo, dialMaterial);
+        dial.position.set(0.08, 0.18, 0);
+        radioGroup.add(dial);
+
+        const knobGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.02, 16);
+        const knob = new THREE.Mesh(knobGeo, radioDetailMaterial);
+        knob.rotation.x = Math.PI / 2;
+        knob.position.set(-0.08, 0.18, 0.05);
+        radioGroup.add(knob);
+
+        const antennaGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.3, 8);
+        const antenna = new THREE.Mesh(antennaGeo, radioAntennaMaterial);
+        antenna.position.set(0.12, 0.35, 0);
+        radioGroup.add(antenna);
+
+        const antennaBaseGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.03, 16);
+        const antennaBase = new THREE.Mesh(antennaBaseGeo, radioAntennaMaterial);
+        antennaBase.position.set(0.12, 0.2, 0);
+        radioGroup.add(antennaBase);
+
+        const clipGeo = new THREE.BoxGeometry(0.05, 0.15, 0.02);
+        const clip = new THREE.Mesh(clipGeo, radioDetailMaterial);
+        clip.position.set(-0.15, 0, 0.07);
+        radioGroup.add(clip);
+
+        const grilleMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.8 });
+        const grilleGeo = new THREE.BoxGeometry(0.2, 0.1, 0.01);
+        const grille = new THREE.Mesh(grilleGeo, grilleMaterial);
+        grille.position.set(0, 0.05, 0.075);
+        radioGroup.add(grille);
+
+        const holeGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.02, 8);
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                const hole = new THREE.Mesh(holeGeo, radioDetailMaterial);
+                hole.rotation.x = Math.PI / 2;
+                hole.position.set(i * 0.05, 0.05 + j * 0.03, 0.08);
+                radioGroup.add(hole);
+            }
         }
-    }
 
-    preloadLiveStatus();
+        radioGroup.position.set(1.2, -3.6, 0.8);
+        radioGroup.rotation.y = -Math.PI / 4;
+        scene.add(radioGroup);
 
-    // CONTROLES DE CÁMARA
-    let isDragging = false;
-    let pointerMoved = false;
-    let previousMousePosition = { x: 0, y: 0 };
-    let cameraAngle = 0;
-    let cameraHeight = 12;
-    let cameraRadius = 18;
+        const tvGroup = new THREE.Group();
 
-    let isTvZooming = false;
-    let cinematicCamera = null;
+        const tvFrameMaterial = new THREE.MeshStandardMaterial({
+            color: 0xe6dfd4,
+            roughness: 0.52,
+            metalness: 0.15
+        });
 
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-    const clickableObjects = [...pockets, tvScreen];
+        const tvScreenMaterial = new THREE.MeshStandardMaterial({
+            color: 0xd7ebff,
+            roughness: 0.08,
+            metalness: 0.02,
+            emissive: 0x8fcfff,
+            emissiveIntensity: 1.05
+        });
 
-    function setPointerFromClient(clientX, clientY) {
-        mouse.x = (clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(clientY / window.innerHeight) * 2 + 1;
-    }
+        const tvStandMaterial = new THREE.MeshStandardMaterial({
+            color: 0xd1cbc0,
+            roughness: 0.45,
+            metalness: 0.12
+        });
 
-    function getTargetByPocketId(pocketId) {
-        if (pocketId === 'tl') return 'reglas/';
-        if (pocketId === 'tc') return 'elo/';
-        if (pocketId === 'tr') return 'login.html';
-        if (pocketId === 'bl') return 'exam/';
-        if (pocketId === 'bc') return 'liga/';
-        if (pocketId === 'br') return 'historial/';
-        return null;
-    }
+        const tvBackMaterial = new THREE.MeshStandardMaterial({
+            color: 0xf0ebe4,
+            roughness: 0.6,
+            metalness: 0.08
+        });
 
-    function flashTvNoLive() {
-        const previousEmissive = tvScreen.material.emissive.getHex();
-        const previousIntensity = tvScreen.material.emissiveIntensity;
+        const tvFrameGeo = new THREE.BoxGeometry(8.8, 5.1, 0.34);
+        const tvFrame = new THREE.Mesh(tvFrameGeo, tvFrameMaterial);
+        tvFrame.castShadow = true;
+        tvFrame.receiveShadow = true;
+        tvGroup.add(tvFrame);
 
-        tvScreen.material.emissive.setHex(0xff914d);
-        tvScreen.material.emissiveIntensity = 1.9;
+        const tvBackGeo = new THREE.BoxGeometry(8.4, 4.7, 0.28);
+        const tvBack = new THREE.Mesh(tvBackGeo, tvBackMaterial);
+        tvBack.position.z = -0.08;
+        tvBack.castShadow = true;
+        tvBack.receiveShadow = true;
+        tvGroup.add(tvBack);
 
-        setTimeout(() => {
-            tvScreen.material.emissive.setHex(previousEmissive);
-            tvScreen.material.emissiveIntensity = previousIntensity;
-        }, 350);
-    }
+        const tvScreenGeo = new THREE.BoxGeometry(7.75, 4.05, 0.06);
+        const tvScreen = new THREE.Mesh(tvScreenGeo, tvScreenMaterial);
+        tvScreen.position.z = 0.18;
+        tvScreen.userData = { isTV: true };
+        tvGroup.add(tvScreen);
 
-    function animateCameraToTV(onComplete) {
-        if (isTvZooming) return;
+        const tvGlassGeo = new THREE.BoxGeometry(7.55, 3.85, 0.02);
+        const tvGlassMat = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.16,
+            roughness: 0.05,
+            metalness: 0,
+            clearcoat: 1,
+            clearcoatRoughness: 0.05
+        });
+        const tvGlass = new THREE.Mesh(tvGlassGeo, tvGlassMat);
+        tvGlass.position.z = 0.22;
+        tvGroup.add(tvGlass);
 
-        isTvZooming = true;
+        const tvBottomGeo = new THREE.BoxGeometry(8.9, 0.34, 0.36);
+        const tvBottom = new THREE.Mesh(tvBottomGeo, tvFrameMaterial);
+        tvBottom.position.set(0, -2.58, 0);
+        tvBottom.castShadow = true;
+        tvBottom.receiveShadow = true;
+        tvGroup.add(tvBottom);
 
-        const startPosition = camera.position.clone();
-        const startTarget = new THREE.Vector3(0, 0, 0);
+        const tvStandNeckGeo = new THREE.BoxGeometry(0.68, 1.25, 0.3);
+        const tvStandNeck = new THREE.Mesh(tvStandNeckGeo, tvStandMaterial);
+        tvStandNeck.position.set(0, -3.4, 0);
+        tvStandNeck.castShadow = true;
+        tvStandNeck.receiveShadow = true;
+        tvGroup.add(tvStandNeck);
 
-        const endPosition = new THREE.Vector3(0, 5.3, -2.6);
-        const endTarget = new THREE.Vector3(0, 4.15, -9.4);
+        const tvBaseGeo = new THREE.CylinderGeometry(1.45, 1.8, 0.2, 28);
+        const tvBase = new THREE.Mesh(tvBaseGeo, tvStandMaterial);
+        tvBase.position.set(0, -4.1, 0);
+        tvBase.castShadow = true;
+        tvBase.receiveShadow = true;
+        tvGroup.add(tvBase);
 
-        const startTime = performance.now();
-        const duration = 1200;
+        const tvLight = new THREE.PointLight(0xa8d8ff, 1.6, 26, 2);
+        tvLight.position.set(0, 0.2, 3);
+        tvGroup.add(tvLight);
 
-        function step(now) {
-            const t = Math.min((now - startTime) / duration, 1);
-            const eased = t < 0.5
-                ? 4 * t * t * t
-                : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        tvGroup.position.set(0, 4.1, -9.4);
+        tvGroup.rotation.y = 0;
+        scene.add(tvGroup);
 
-            const currentPosition = startPosition.clone().lerp(endPosition, eased);
-            const currentTarget = startTarget.clone().lerp(endTarget, eased);
+        let isDragging = false;
+        let pointerMoved = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let cameraAngle = 0;
+        let cameraHeight = 12;
+        let cameraRadius = 18;
 
-            cinematicCamera = {
-                position: currentPosition,
-                target: currentTarget
-            };
+        let isTvZooming = false;
+        let cinematicCamera = null;
 
-            if (t < 1) {
-                requestAnimationFrame(step);
-            } else {
-                if (typeof onComplete === 'function') {
-                    onComplete();
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const clickableObjects = [...pockets, tvScreen];
+
+        function setPointerFromClient(clientX, clientY) {
+            mouse.x = (clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+        }
+
+        function getTargetByPocketId(pocketId) {
+            if (pocketId === 'tl') return 'reglas/';
+            if (pocketId === 'tc') return 'elo/';
+            if (pocketId === 'tr') return 'login.html';
+            if (pocketId === 'bl') return 'exam/';
+            if (pocketId === 'bc') return 'liga/';
+            if (pocketId === 'br') return 'historial/';
+            return null;
+        }
+
+        function animateCameraToTV(onComplete) {
+            if (isTvZooming) return;
+
+            isTvZooming = true;
+
+            const startPosition = camera.position.clone();
+            const startTarget = new THREE.Vector3(0, 0, 0);
+
+            const endPosition = new THREE.Vector3(0, 5.2, -2.2);
+            const endTarget = new THREE.Vector3(0, 4.1, -9.4);
+
+            const startTime = performance.now();
+            const duration = 1300;
+
+            function step(now) {
+                const t = Math.min((now - startTime) / duration, 1);
+                const eased = t < 0.5
+                    ? 4 * t * t * t
+                    : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+                const currentPosition = startPosition.clone().lerp(endPosition, eased);
+                const currentTarget = startTarget.clone().lerp(endTarget, eased);
+
+                cinematicCamera = {
+                    position: currentPosition,
+                    target: currentTarget
+                };
+
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    if (typeof onComplete === 'function') {
+                        onComplete();
+                    }
                 }
             }
+
+            requestAnimationFrame(step);
         }
 
-        requestAnimationFrame(step);
-    }
+        function handleTVActivation() {
+            if (isTvZooming) return;
 
-    async function handleTVActivation() {
-        if (isTvZooming) return;
-
-        if (!liveCheckLoaded) {
-            await preloadLiveStatus();
-        }
-
-        if (activeLiveVideoId) {
             animateCameraToTV(() => {
-                window.location.href = `live/?v=${encodeURIComponent(activeLiveVideoId)}`;
+                window.location.href = 'live/';
             });
-            return;
         }
 
-        flashTvNoLive();
-        console.log('[TV] no hay directo activo');
-    }
+        function handlePointerActivate(clientX, clientY) {
+            if (isTvZooming) return;
 
-    function handlePointerActivate(clientX, clientY) {
-        if (isTvZooming) return;
+            setPointerFromClient(clientX, clientY);
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(clickableObjects, false);
 
-        setPointerFromClient(clientX, clientY);
-        raycaster.setFromCamera(mouse, camera);
+            if (!intersects.length) return;
 
-        const intersects = raycaster.intersectObjects(clickableObjects, false);
-        if (!intersects.length) return;
+            const clickedObject = intersects[0].object;
 
-        const clickedObject = intersects[0].object;
+            if (clickedObject.userData?.isTV) {
+                handleTVActivation();
+                return;
+            }
 
-        if (clickedObject.userData?.isTV) {
-            handleTVActivation();
-            return;
+            if (clickedObject.userData?.id) {
+                const target = getTargetByPocketId(clickedObject.userData.id);
+                animateBallToPocket(clickedObject.position.clone(), target);
+            }
         }
 
-        if (clickedObject.userData?.id) {
-            const target = getTargetByPocketId(clickedObject.userData.id);
-            animateBallToPocket(clickedObject.position.clone(), target);
-        }
-    }
+        function updateInteractiveCursor(clientX, clientY) {
+            if (isDragging || isTvZooming) {
+                renderer.domElement.style.cursor = 'default';
+                return;
+            }
 
-    function updateInteractiveCursor(clientX, clientY) {
-        if (isDragging || isTvZooming) {
-            renderer.domElement.style.cursor = 'default';
-            return;
-        }
+            setPointerFromClient(clientX, clientY);
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(clickableObjects, false);
 
-        setPointerFromClient(clientX, clientY);
-        raycaster.setFromCamera(mouse, camera);
+            if (!intersects.length) {
+                renderer.domElement.style.cursor = 'default';
+                return;
+            }
 
-        const intersects = raycaster.intersectObjects(clickableObjects, false);
-        if (!intersects.length) {
-            renderer.domElement.style.cursor = 'default';
-            return;
-        }
-
-        const hoveredObject = intersects[0].object;
-        if (hoveredObject.userData?.isTV || hoveredObject.userData?.id) {
-            renderer.domElement.style.cursor = 'pointer';
-            return;
-        }
-
-        renderer.domElement.style.cursor = 'default';
-    }
-
-    function animateBallToPocket(targetPosition, finalTarget = null) {
-        const startPosition = cueBall.position.clone();
-        const duration = 800;
-        const startTime = Date.now();
-
-        function animateMatch() {
-            const elapsed = Date.now() - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const easeProgress = 1 - Math.pow(1 - progress, 3);
-
-            cueBall.position.lerpVectors(startPosition, targetPosition, easeProgress);
-            cueBall.position.y = 0.4 + Math.sin(progress * Math.PI) * 0.1;
-
-            if (progress < 1) {
-                requestAnimationFrame(animateMatch);
+            const hoveredObject = intersects[0].object;
+            if (hoveredObject.userData?.isTV || hoveredObject.userData?.id) {
+                renderer.domElement.style.cursor = 'pointer';
             } else {
-                cueBall.scale.setScalar(0);
-                setTimeout(() => {
-                    if (finalTarget) {
-                        window.location.href = finalTarget;
-                    }
-                }, 300);
+                renderer.domElement.style.cursor = 'default';
             }
         }
 
-        animateMatch();
-    }
+        function animateBallToPocket(targetPosition, finalTarget = null) {
+            cueBall.scale.setScalar(1);
 
-    document.addEventListener('mousedown', (e) => {
-        if (isTvZooming) return;
-        isDragging = true;
-        pointerMoved = false;
-        previousMousePosition = { x: e.clientX, y: e.clientY };
-    });
+            const startPosition = cueBall.position.clone();
+            const duration = 800;
+            const startTime = Date.now();
 
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-    });
+            function animateMatch() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
 
-    document.addEventListener('mousemove', (e) => {
-        if (isTvZooming) return;
+                cueBall.position.lerpVectors(startPosition, targetPosition, easeProgress);
+                cueBall.position.y = 0.4 + Math.sin(progress * Math.PI) * 0.1;
 
-        if (isDragging) {
-            const deltaMove = {
-                x: e.clientX - previousMousePosition.x,
-                y: e.clientY - previousMousePosition.y
-            };
-
-            if (Math.abs(deltaMove.x) > 1 || Math.abs(deltaMove.y) > 1) {
-                pointerMoved = true;
+                if (progress < 1) {
+                    requestAnimationFrame(animateMatch);
+                } else {
+                    cueBall.scale.setScalar(0);
+                    setTimeout(() => {
+                        if (finalTarget) {
+                            window.location.href = finalTarget;
+                        }
+                    }, 300);
+                }
             }
 
-            cameraAngle -= deltaMove.x * 0.01;
-            cameraHeight += deltaMove.y * 0.05;
-            cameraHeight = Math.max(5, Math.min(20, cameraHeight));
-
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-            return;
+            animateMatch();
         }
 
-        updateInteractiveCursor(e.clientX, e.clientY);
-    });
-
-    document.addEventListener('click', (e) => {
-        if (isTvZooming) return;
-        if (pointerMoved) {
-            pointerMoved = false;
-            return;
-        }
-        handlePointerActivate(e.clientX, e.clientY);
-    });
-
-    document.addEventListener('touchstart', (e) => {
-        if (isTvZooming) return;
-        if (e.touches && e.touches[0]) {
+        document.addEventListener('mousedown', (e) => {
+            if (isTvZooming) return;
             isDragging = true;
             pointerMoved = false;
-            previousMousePosition = {
-                x: e.touches[0].clientX,
-                y: e.touches[0].clientY
-            };
-        }
-    }, { passive: true });
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
 
-    document.addEventListener('touchmove', (e) => {
-        if (isTvZooming) return;
-        if (isDragging && e.touches && e.touches[0]) {
-            const deltaMove = {
-                x: e.touches[0].clientX - previousMousePosition.x,
-                y: e.touches[0].clientY - previousMousePosition.y
-            };
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
 
-            if (Math.abs(deltaMove.x) > 2 || Math.abs(deltaMove.y) > 2) {
-                pointerMoved = true;
+        document.addEventListener('mousemove', (e) => {
+            if (isTvZooming) return;
+
+            if (isDragging) {
+                const deltaMove = {
+                    x: e.clientX - previousMousePosition.x,
+                    y: e.clientY - previousMousePosition.y
+                };
+
+                if (Math.abs(deltaMove.x) > 1 || Math.abs(deltaMove.y) > 1) {
+                    pointerMoved = true;
+                }
+
+                cameraAngle -= deltaMove.x * 0.01;
+                cameraHeight += deltaMove.y * 0.05;
+                cameraHeight = Math.max(5, Math.min(20, cameraHeight));
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+                return;
             }
 
-            cameraAngle -= deltaMove.x * 0.01;
-            cameraHeight += deltaMove.y * 0.05;
-            cameraHeight = Math.max(5, Math.min(20, cameraHeight));
+            updateInteractiveCursor(e.clientX, e.clientY);
+        });
 
-            previousMousePosition = {
-                x: e.touches[0].clientX,
-                y: e.touches[0].clientY
-            };
+        document.addEventListener('click', (e) => {
+            if (isTvZooming) return;
+            if (pointerMoved) {
+                pointerMoved = false;
+                return;
+            }
+            handlePointerActivate(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('touchstart', (e) => {
+            if (isTvZooming) return;
+            if (e.touches && e.touches[0]) {
+                isDragging = true;
+                pointerMoved = false;
+                previousMousePosition = {
+                    x: e.touches[0].clientX,
+                    y: e.touches[0].clientY
+                };
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isTvZooming) return;
+            if (isDragging && e.touches && e.touches[0]) {
+                const deltaMove = {
+                    x: e.touches[0].clientX - previousMousePosition.x,
+                    y: e.touches[0].clientY - previousMousePosition.y
+                };
+
+                if (Math.abs(deltaMove.x) > 2 || Math.abs(deltaMove.y) > 2) {
+                    pointerMoved = true;
+                }
+
+                cameraAngle -= deltaMove.x * 0.01;
+                cameraHeight += deltaMove.y * 0.05;
+                cameraHeight = Math.max(5, Math.min(20, cameraHeight));
+
+                previousMousePosition = {
+                    x: e.touches[0].clientX,
+                    y: e.touches[0].clientY
+                };
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            if (isTvZooming) return;
+
+            const changedTouch = e.changedTouches && e.changedTouches[0];
+            const wasDrag = pointerMoved;
+
+            isDragging = false;
+            pointerMoved = false;
+
+            if (!changedTouch || wasDrag) return;
+            handlePointerActivate(changedTouch.clientX, changedTouch.clientY);
+        }, { passive: true });
+
+        const markers = {
+            'tl': document.getElementById('marker-tl'),
+            'tc': document.getElementById('marker-tc'),
+            'tr': document.getElementById('marker-tr'),
+            'bl': document.getElementById('marker-bl'),
+            'bc': document.getElementById('marker-bc'),
+            'br': document.getElementById('marker-br')
+        };
+
+        function updateMarkers() {
+            pocketPositions.forEach(pocketData => {
+                const marker = markers[pocketData.id];
+                if (!marker) return;
+
+                const pos = new THREE.Vector3(
+                    pocketData.pos[0],
+                    pocketData.pos[1] + 1,
+                    pocketData.pos[2]
+                );
+
+                pos.project(camera);
+
+                const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
+
+                if (pos.z < 1) {
+                    marker.style.left = x + 'px';
+                    marker.style.top = y + 'px';
+                    marker.style.transform = 'translate(-50%, -50%)';
+                    marker.style.opacity = '1';
+                } else {
+                    marker.style.opacity = '0';
+                }
+            });
         }
-    }, { passive: true });
 
-    document.addEventListener('touchend', (e) => {
-        if (isTvZooming) return;
-
-        const changedTouch = e.changedTouches && e.changedTouches[0];
-        const wasDrag = pointerMoved;
-
-        isDragging = false;
-        pointerMoved = false;
-
-        if (!changedTouch || wasDrag) return;
-        handlePointerActivate(changedTouch.clientX, changedTouch.clientY);
-    }, { passive: true });
-
-    // MARCADORES HTML
-    const markers = {
-        'tl': document.getElementById('marker-tl'),
-        'tc': document.getElementById('marker-tc'),
-        'tr': document.getElementById('marker-tr'),
-        'bl': document.getElementById('marker-bl'),
-        'bc': document.getElementById('marker-bc'),
-        'br': document.getElementById('marker-br')
-    };
-
-    function updateMarkers() {
-        pocketPositions.forEach(pocketData => {
-            const marker = markers[pocketData.id];
+        Object.keys(markers).forEach(id => {
+            const marker = markers[id];
             if (!marker) return;
 
-            const pos = new THREE.Vector3(
-                pocketData.pos[0],
-                pocketData.pos[1] + 1,
-                pocketData.pos[2]
-            );
+            marker.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const target = marker.getAttribute('data-target');
+                const pocketData = pocketPositions.find(p => p.id === id);
+                if (!pocketData || !target) return;
 
-            pos.project(camera);
+                animateBallToPocket(
+                    new THREE.Vector3(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]),
+                    target
+                );
+            });
+        });
 
-            const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
-            const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
+        function animate() {
+            requestAnimationFrame(animate);
 
-            if (pos.z < 1) {
-                marker.style.left = x + 'px';
-                marker.style.top = y + 'px';
-                marker.style.transform = 'translate(-50%, -50%)';
-                marker.style.opacity = '1';
+            if (cinematicCamera) {
+                camera.position.copy(cinematicCamera.position);
+                camera.lookAt(cinematicCamera.target);
             } else {
-                marker.style.opacity = '0';
+                camera.position.x = Math.sin(cameraAngle) * cameraRadius;
+                camera.position.z = Math.cos(cameraAngle) * cameraRadius;
+                camera.position.y = cameraHeight;
+                camera.lookAt(0, 0, 0);
             }
+
+            updateMarkers();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
-    }
 
-    Object.keys(markers).forEach(id => {
-        const marker = markers[id];
-        if (!marker) return;
+        window.addEventListener('load', () => {
+            const l = document.getElementById('loading');
+            if (l) l.style.display = 'none';
+        });
 
-        marker.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const target = marker.getAttribute('data-target');
-            const pocketData = pocketPositions.find(p => p.id === id);
-            if (!pocketData || !target) return;
+        setTimeout(() => {
+            const l = document.getElementById('loading');
+            if (l) l.style.display = 'none';
+        }, 1500);
 
-            animateBallToPocket(
-                new THREE.Vector3(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]),
-                target
+        const faviconCanvas = document.createElement('canvas');
+        faviconCanvas.width = 32;
+        faviconCanvas.height = 32;
+        const faviconCtx = faviconCanvas.getContext('2d');
+
+        function updateFavicon() {
+            const time = Date.now() * 0.005;
+            const rotation = Math.sin(time) * 0.15;
+
+            faviconCtx.clearRect(0, 0, 32, 32);
+
+            const cx = 16;
+            const cy = 16;
+            const radius = 14;
+
+            const gradient = faviconCtx.createRadialGradient(
+                cx - 3, cy - 3, 0,
+                cx, cy, radius
             );
-        });
-    });
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(0.3, '#ffffff');
+            gradient.addColorStop(0.5, '#0a0a0a');
+            gradient.addColorStop(1, '#000000');
 
-    function animate() {
-        requestAnimationFrame(animate);
+            faviconCtx.beginPath();
+            faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+            faviconCtx.fillStyle = gradient;
+            faviconCtx.fill();
 
-        if (cinematicCamera) {
-            camera.position.copy(cinematicCamera.position);
-            camera.lookAt(cinematicCamera.target);
-        } else {
-            camera.position.x = Math.sin(cameraAngle) * cameraRadius;
-            camera.position.z = Math.cos(cameraAngle) * cameraRadius;
-            camera.position.y = cameraHeight;
-            camera.lookAt(0, 0, 0);
+            faviconCtx.save();
+            faviconCtx.translate(cx, cy);
+            faviconCtx.scale(1 + rotation * 0.5, 1);
+            faviconCtx.translate(-cx, -cy);
+
+            faviconCtx.fillStyle = '#ffffff';
+            faviconCtx.font = 'bold 14px Arial';
+            faviconCtx.textAlign = 'center';
+            faviconCtx.textBaseline = 'middle';
+            faviconCtx.fillText('8', cx, cy + 1);
+
+            faviconCtx.restore();
+
+            faviconCtx.beginPath();
+            faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+            faviconCtx.strokeStyle = '#d4af37';
+            faviconCtx.lineWidth = 2;
+            faviconCtx.stroke();
+
+            const link = document.getElementById('favicon');
+            if (link) {
+                link.href = faviconCanvas.toDataURL('image/png');
+            }
+
+            requestAnimationFrame(updateFavicon);
         }
 
-        updateMarkers();
-        renderer.render(scene, camera);
-    }
+        updateFavicon();
+    </script>
 
-    animate();
-
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // LOADING
-    window.addEventListener('load', () => {
-        const l = document.getElementById('loading');
-        if (l) l.style.display = 'none';
-    });
-
-    setTimeout(() => {
-        const l = document.getElementById('loading');
-        if (l) l.style.display = 'none';
-    }, 1500);
-
-    // FAVICON ANIMADO
-    const faviconCanvas = document.createElement('canvas');
-    faviconCanvas.width = 32;
-    faviconCanvas.height = 32;
-    const faviconCtx = faviconCanvas.getContext('2d');
-
-    function updateFavicon() {
-        const time = Date.now() * 0.005;
-        const rotation = Math.sin(time) * 0.15;
-
-        faviconCtx.clearRect(0, 0, 32, 32);
-
-        const cx = 16;
-        const cy = 16;
-        const radius = 14;
-
-        const gradient = faviconCtx.createRadialGradient(
-            cx - 3, cy - 3, 0,
-            cx, cy, radius
-        );
-        gradient.addColorStop(0, '#ffffff');
-        gradient.addColorStop(0.3, '#ffffff');
-        gradient.addColorStop(0.5, '#0a0a0a');
-        gradient.addColorStop(1, '#000000');
-
-        faviconCtx.beginPath();
-        faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
-        faviconCtx.fillStyle = gradient;
-        faviconCtx.fill();
-
-        faviconCtx.save();
-        faviconCtx.translate(cx, cy);
-        faviconCtx.scale(1 + rotation * 0.5, 1);
-        faviconCtx.translate(-cx, -cy);
-
-        faviconCtx.fillStyle = '#ffffff';
-        faviconCtx.font = 'bold 14px Arial';
-        faviconCtx.textAlign = 'center';
-        faviconCtx.textBaseline = 'middle';
-        faviconCtx.fillText('8', cx, cy + 1);
-
-        faviconCtx.restore();
-
-        faviconCtx.beginPath();
-        faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
-        faviconCtx.strokeStyle = '#d4af37';
-        faviconCtx.lineWidth = 2;
-        faviconCtx.stroke();
-
-        const link = document.getElementById('favicon');
-        if (link) {
-            link.href = faviconCanvas.toDataURL('image/png');
-        }
-
-        requestAnimationFrame(updateFavicon);
-    }
-
-    updateFavicon();
-</script>
-    
     <script src="js/translations.js"></script>
     <script>
         if (typeof createLanguageSelector === 'function') {
