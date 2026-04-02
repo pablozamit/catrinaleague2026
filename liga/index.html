@@ -523,9 +523,9 @@
             { id: 1, players: ['johnny', 'andres', 'mo', 'david', 'nica', 'danilo'] },
             { id: 2, players: ['artur', 'sergio', 'alexf', 'jorge', 'alexb', 'sol'] },
             { id: 3, players: ['amauris', 'sasa', 'angel', 'erfan', 'nino', 'damian'] },
-            { id: 4, players: ['jack', 'jonathan', 'connor', 'charles', 'lucas', 'favio'] },
-            { id: 5, players: ['fer', 'katee', 'enrique', 'mina', 'ruth', 'rauls'] },
-            { id: 6, players: ['pablo', 'joe', 'lucasc', 'joel', 'roman', 'manuela'] },
+            { id: 4, name: 'ITCHY ARMPITS', players: ['jack', 'jonathan', 'connor', 'charles', 'lucas', 'favio'] },
+            { id: 5, name: 'MACHACADORAS CON ACTITUD', players: ['fer', 'katee', 'enrique', 'mina', 'ruth', 'rauls'] },
+            { id: 6, name: 'MICROPLÁSTICOS EN LOS COJONES S.L.', players: ['pablo', 'joe', 'lucasc', 'joel', 'roman', 'manuela'] },
             { id: 'G', isGlobal: true }
         ];
 
@@ -630,7 +630,7 @@
                 teamStats.innerText = `Clasificación de Equipos`;
                 document.getElementById('tableHeader').children[1].innerText = "Equipo";
             } else {
-                teamTitle.innerText = `EQUIPO ${team.id}`;
+                teamTitle.innerText = team.name || `EQUIPO ${team.id}`;
                 teamStats.innerText = `Grupo ${team.id} / ${teamData.length - 1}`;
                 document.getElementById('tableHeader').children[1].innerText = "Jugador";
             }
