@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="nav_videoteca">La Catrina - Videoteca</title>
+    <link rel="icon" type="image/png" id="favicon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #d4af37;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bar-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)),
+                        url('../material/imagen2.jpeg') center/cover;
+            z-index: -1;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            width: 100%;
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+            position: relative;
+        }
+
+        .header h1 {
+            font-family: 'Georgia', serif;
+            font-size: 2.5rem;
+            color: #d4af37;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            flex: 1;
+            width: 90%;
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding-bottom: 4rem;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border: 2px solid #d4af37;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .back-link {
+            margin-top: 2rem;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .back-link:hover {
+            color: #d4af37;
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .footer {
+            padding: 2rem;
+            color: #444;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        #langSelectorContainer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bar-bg"></div>
+
+    <div class="header">
+        <div id="langSelectorContainer"></div>
+        <h1 data-i18n="nav_videoteca">VIDEOTECA</h1>
+        <p style="color: #888; letter-spacing: 4px; margin-top: 0.5rem;" data-i18n="videoteca_subtitle">PARTIDOS HISTÓRICOS</p>
+    </div>
+
+    <div class="container">
+        <div class="video-wrapper">
+            <iframe
+                src="https://www.youtube.com/embed/videoseries?list=PLRc6SHie1llWuFXfM8EjW5mFLgCjLyYls"
+                title="La Catrina Videoteca"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="../" class="back-link" data-i18n="videoteca_back">Volver al Salón</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        La Catrina Pool League <span>v1.0.0</span>
+    </div>
+
+    <script src="../js/translations.js"></script>
+    <script>
+        if (typeof createLanguageSelector === 'function') {
+            document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
+        }
+
+        const faviconCanvas = document.createElement('canvas');
+        faviconCanvas.width = 32;
+        faviconCanvas.height = 32;
+        const faviconCtx = faviconCanvas.getContext('2d');
+
+        function updateFavicon() {
+            const time = Date.now() * 0.005;
+            const rotation = Math.sin(time) * 0.15;
+
+            faviconCtx.clearRect(0, 0, 32, 32);
+            const cx = 16, cy = 16, radius = 14;
+
+            const gradient = faviconCtx.createRadialGradient(cx - 3, cy - 3, 0, cx, cy, radius);
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(0.3, '#ffffff');
+            gradient.addColorStop(0.5, '#0a0a0a');
+            gradient.addColorStop(1, '#000000');
+
+            faviconCtx.beginPath();
+            faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+            faviconCtx.fillStyle = gradient;
+            faviconCtx.fill();
+
+            faviconCtx.save();
+            faviconCtx.translate(cx, cy);
+            faviconCtx.scale(1 + rotation * 0.5, 1);
+            faviconCtx.translate(-cx, -cy);
+            faviconCtx.fillStyle = '#ffffff';
+            faviconCtx.font = 'bold 14px Arial';
+            faviconCtx.textAlign = 'center';
+            faviconCtx.textBaseline = 'middle';
+            faviconCtx.fillText('8', cx, cy + 1);
+            faviconCtx.restore();
+
+            faviconCtx.beginPath();
+            faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+            faviconCtx.strokeStyle = '#d4af37';
+            faviconCtx.lineWidth = 2;
+            faviconCtx.stroke();
+
+            const link = document.getElementById('favicon');
+            if (link) {
+                link.href = faviconCanvas.toDataURL('image/png');
+            }
+            requestAnimationFrame(updateFavicon);
+        }
+        updateFavicon();
+    </script>
+</body>
+</html>
