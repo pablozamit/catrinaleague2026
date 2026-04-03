@@ -213,7 +213,7 @@
         <div class="pocket-label" data-i18n="nav_history">Historial</div>
     </div>
 
-    <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras, la televisión o el calendario</div>
+    <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras, la televisión, el calendario, la caja de VHS o el periódico</div>
 
     <div class="version-footer">
         La Catrina Pool League <span>v1.0.0</span>
@@ -875,6 +875,125 @@
         calendarGroup.rotation.y = -0.08;
         scene.add(calendarGroup);
 
+        // =========================
+        // CAJA DE VHS (VIDEOTECA)
+        // =========================
+        const vhsGroup = new THREE.Group();
+        const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x966f47, roughness: 0.9 });
+        const tapeMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4 });
+
+        const boxBody = new THREE.Mesh(new THREE.BoxGeometry(2, 1.2, 1.5), boxMaterial);
+        boxBody.castShadow = true;
+        boxBody.receiveShadow = true;
+        boxBody.userData = { isVHS: true };
+        vhsGroup.add(boxBody);
+
+        const flapGeo = new THREE.BoxGeometry(2.1, 0.1, 0.8);
+        const flap1 = new THREE.Mesh(flapGeo, boxMaterial);
+        flap1.position.set(0, 0.6, 0.4);
+        flap1.rotation.x = 0.2;
+        flap1.userData = { isVHS: true };
+        vhsGroup.add(flap1);
+
+        const flap2 = flap1.clone();
+        flap2.position.set(0, 0.6, -0.4);
+        flap2.rotation.x = -0.2;
+        flap2.userData = { isVHS: true };
+        vhsGroup.add(flap2);
+
+        const tapeGeo = new THREE.BoxGeometry(0.2, 0.8, 1.1);
+        const tapes = [];
+        for (let i = 0; i < 5; i++) {
+            const tape = new THREE.Mesh(tapeGeo, tapeMaterial);
+            tape.position.set(-0.6 + i * 0.3, 0.4, 0);
+            tape.castShadow = true;
+            tape.userData = { isVHS: true };
+            vhsGroup.add(tape);
+            tapes.push(tape);
+        }
+
+        const jumpingTape = tapes[2];
+
+        vhsGroup.position.set(-6.2, -3.4, -8.8);
+        vhsGroup.rotation.y = 0.5;
+        scene.add(vhsGroup);
+
+        // =========================
+        // CORCHO Y PERIODICO (RESULTADOS)
+        // =========================
+        const corkGroup = new THREE.Group();
+        const corkMaterial = new THREE.MeshStandardMaterial({ color: 0xba8c63, roughness: 1.0 });
+        const corkBoard = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.2, 0.1), corkMaterial);
+        corkBoard.castShadow = true;
+        corkBoard.receiveShadow = true;
+        corkGroup.add(corkBoard);
+
+        const frameMat = new THREE.MeshStandardMaterial({ color: 0x5d4037, roughness: 0.7 });
+        const frameT = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.15, 0.15), frameMat);
+        frameT.position.y = 1.1;
+        corkGroup.add(frameT);
+        const frameB = frameT.clone();
+        frameB.position.y = -1.1;
+        corkGroup.add(frameB);
+        const frameL = new THREE.Mesh(new THREE.BoxGeometry(0.15, 2.35, 0.15), frameMat);
+        frameL.position.x = -1.6;
+        corkGroup.add(frameL);
+        const frameR = frameL.clone();
+        frameR.position.x = 1.6;
+        corkGroup.add(frameR);
+
+        const newspaperGroup = new THREE.Group();
+        newspaperGroup.position.set(0, 0, 0.06);
+        corkGroup.add(newspaperGroup);
+
+        const newsCanvas = document.createElement('canvas');
+        newsCanvas.width = 512;
+        newsCanvas.height = 700;
+        const newsCtx = newsCanvas.getContext('2d');
+        newsCtx.fillStyle = '#f0ece2';
+        newsCtx.fillRect(0, 0, 512, 700);
+        newsCtx.fillStyle = '#000000';
+        newsCtx.font = 'bold 72px Times New Roman';
+        newsCtx.textAlign = 'center';
+        newsCtx.fillText('RESULTADOS', 256, 140);
+        newsCtx.strokeStyle = '#1a1a1a';
+        newsCtx.lineWidth = 4;
+        newsCtx.beginPath();
+        newsCtx.moveTo(50, 140);
+        newsCtx.lineTo(462, 140);
+        newsCtx.stroke();
+
+        newsCtx.fillStyle = '#333';
+        for(let i=0; i<12; i++) {
+            newsCtx.fillRect(50, 180 + i*40, 412, 20);
+        }
+
+        const newsTexture = new THREE.CanvasTexture(newsCanvas);
+        const newsMat = new THREE.MeshStandardMaterial({ map: newsTexture, side: THREE.DoubleSide });
+        const paperMaterial = new THREE.MeshStandardMaterial({ color: 0xf4f4f4, roughness: 0.8, side: THREE.DoubleSide });
+
+        const newsPages = [];
+        for(let i=0; i<3; i++) {
+            const pagePivot = new THREE.Group();
+            pagePivot.position.set(-0.75, 0, i * 0.01);
+            const pageMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 2), i === 0 ? newsMat : paperMaterial);
+            pageMesh.position.set(0.75, 0, 0);
+            pageMesh.userData = { isNewspaper: true };
+            pagePivot.add(pageMesh);
+            newspaperGroup.add(pagePivot);
+            newsPages.push(pagePivot);
+        }
+
+        const pinGroup = new THREE.Group();
+        pinGroup.position.set(0, 0.95, 0.05);
+        const pinHead = new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshStandardMaterial({ color: 0xcc0000, metalness: 0.3 }));
+        pinGroup.add(pinHead);
+        newspaperGroup.add(pinGroup);
+
+        corkGroup.position.set(-6.2, 4.15, -9.2);
+        corkGroup.rotation.y = 0.08;
+        scene.add(corkGroup);
+
         let isDragging = false;
         let pointerMoved = false;
         let previousMousePosition = { x: 0, y: 0 };
@@ -884,11 +1003,22 @@
 
         let isTvZooming = false;
         let isCalendarAnimating = false;
+        let isVHSAnimating = false;
+        let isNewspaperAnimating = false;
         let cinematicCamera = null;
 
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
-        const clickableObjects = [...pockets, tvScreen, calendarPage];
+        const clickableObjects = [
+            ...pockets,
+            tvScreen,
+            calendarPage,
+            boxBody,
+            flap1,
+            flap2,
+            ...tapes,
+            ...newsPages.map(p => p.children[0])
+        ];
 
         function setPointerFromClient(clientX, clientY) {
             mouse.x = (clientX / window.innerWidth) * 2 - 1;
@@ -952,7 +1082,7 @@
         }
 
         function handleCalendarActivation() {
-            if (isCalendarAnimating || isTvZooming) return;
+            if (isCalendarAnimating || isTvZooming || isVHSAnimating || isNewspaperAnimating) return;
 
             isCalendarAnimating = true;
 
@@ -976,8 +1106,58 @@
             requestAnimationFrame(step);
         }
 
+        function handleVHSActivation() {
+            if (isVHSAnimating || isTvZooming || isCalendarAnimating || isNewspaperAnimating) return;
+            isVHSAnimating = true;
+
+            const start = performance.now();
+            const duration = 1000;
+            const startY = jumpingTape.position.y;
+
+            function step(now) {
+                const t = Math.min((now - start) / duration, 1);
+                const jump = Math.sin(t * Math.PI) * 0.8;
+                jumpingTape.position.y = startY + jump;
+                jumpingTape.rotation.x = t * Math.PI * 4;
+                jumpingTape.rotation.z = t * Math.PI * 2;
+
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    window.location.href = 'videoteca/';
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function handleNewspaperActivation() {
+            if (isNewspaperAnimating || isTvZooming || isCalendarAnimating || isVHSAnimating) return;
+            isNewspaperAnimating = true;
+
+            const start = performance.now();
+            const duration = 3000;
+
+            function step(now) {
+                const t = Math.min((now - start) / duration, 1);
+
+                newsPages.forEach((page, index) => {
+                    const delay = index * 0.15;
+                    const pageT = Math.max(0, Math.min((t - delay) / 0.7, 1));
+                    const eased = 1 - Math.pow(1 - pageT, 2);
+                    page.rotation.y = -Math.PI * 0.85 * eased;
+                });
+
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    window.location.href = 'resultados/';
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
         function handlePointerActivate(clientX, clientY) {
-            if (isTvZooming || isCalendarAnimating) return;
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
 
             setPointerFromClient(clientX, clientY);
             raycaster.setFromCamera(mouse, camera);
@@ -997,6 +1177,16 @@
                 return;
             }
 
+            if (clickedObject.userData?.isVHS) {
+                handleVHSActivation();
+                return;
+            }
+
+            if (clickedObject.userData?.isNewspaper) {
+                handleNewspaperActivation();
+                return;
+            }
+
             if (clickedObject.userData?.id) {
                 const target = getTargetByPocketId(clickedObject.userData.id);
                 animateBallToPocket(clickedObject.position.clone(), target);
@@ -1004,7 +1194,7 @@
         }
 
         function updateInteractiveCursor(clientX, clientY) {
-            if (isDragging || isTvZooming || isCalendarAnimating) {
+            if (isDragging || isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) {
                 renderer.domElement.style.cursor = 'default';
                 return;
             }
@@ -1019,7 +1209,9 @@
             }
 
             const hoveredObject = intersects[0].object;
-            if (hoveredObject.userData?.isTV || hoveredObject.userData?.isCalendar || hoveredObject.userData?.id) {
+            if (hoveredObject.userData?.isTV || hoveredObject.userData?.isCalendar ||
+                hoveredObject.userData?.isVHS || hoveredObject.userData?.isNewspaper ||
+                hoveredObject.userData?.id) {
                 renderer.domElement.style.cursor = 'pointer';
             } else {
                 renderer.domElement.style.cursor = 'default';
@@ -1057,7 +1249,7 @@
         }
 
         document.addEventListener('mousedown', (e) => {
-            if (isTvZooming || isCalendarAnimating) return;
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
             isDragging = true;
             pointerMoved = false;
             previousMousePosition = { x: e.clientX, y: e.clientY };
@@ -1068,7 +1260,7 @@
         });
 
         document.addEventListener('mousemove', (e) => {
-            if (isTvZooming || isCalendarAnimating) return;
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
 
             if (isDragging) {
                 const deltaMove = {
@@ -1092,7 +1284,7 @@
         });
 
         document.addEventListener('click', (e) => {
-            if (isTvZooming || isCalendarAnimating) return;
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
             if (pointerMoved) {
                 pointerMoved = false;
                 return;
@@ -1101,7 +1293,7 @@
         });
 
         document.addEventListener('touchstart', (e) => {
-            if (isTvZooming || isCalendarAnimating) return;
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
             if (e.touches && e.touches[0]) {
                 isDragging = true;
                 pointerMoved = false;
@@ -1113,7 +1305,7 @@
         }, { passive: true });
 
         document.addEventListener('touchmove', (e) => {
-            if (isTvZooming || isCalendarAnimating) return;
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
             if (isDragging && e.touches && e.touches[0]) {
                 const deltaMove = {
                     x: e.touches[0].clientX - previousMousePosition.x,
@@ -1136,7 +1328,7 @@
         }, { passive: true });
 
         document.addEventListener('touchend', (e) => {
-            if (isTvZooming || isCalendarAnimating) return;
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
 
             const changedTouch = e.changedTouches && e.changedTouches[0];
             const wasDrag = pointerMoved;

@@ -13,6 +13,8 @@ const translations = {
         back: '← Volver',
         back_to_table: '← Volver a la mesa',
         back_to_ranking: '← Volver al Ranking',
+        videoteca_subtitle: 'PARTIDOS HISTÓRICOS',
+        videoteca_back: 'Volver al Salón',
         logout: 'Cerrar Sesión',
         change_password: 'Cambiar Contraseña',
         
@@ -22,9 +24,10 @@ const translations = {
         nav_league: 'Liga',
         nav_login: 'Login / Resultados',
         nav_history: 'Historial',
+        nav_videoteca: 'Videoteca',
         nav_coming_soon: 'Próximamente',
         nav_exam: 'Examen de la Liga',
-        instructions: 'Arrastra para rotar • Haz clic en las troneras',
+        instructions: 'Arrastra para rotar • Haz clic en las troneras, la televisión, el calendario, la caja de VHS o el periódico',
         
         // Laboratorio
         lab_title: 'Laboratorio',
@@ -352,6 +355,8 @@ const translations = {
         back: '← Back',
         back_to_table: '← Back to Table',
         back_to_ranking: '← Back to Ranking',
+        videoteca_subtitle: 'HISTORICAL MATCHES',
+        videoteca_back: 'Back to the Lounge',
         logout: 'Logout',
         change_password: 'Change Password',
         
@@ -360,9 +365,10 @@ const translations = {
         nav_ranking: 'ELO Ranking',
         nav_league: 'League',
         nav_login: 'Login / Results',
+        nav_videoteca: 'Video Library',
         nav_coming_soon: 'Coming Soon',
         nav_lab: 'Laboratory',
-        instructions: 'Drag to rotate • Click on pockets',
+        instructions: 'Drag to rotate • Click on pockets, the TV, the calendar, the VHS box or the newspaper',
         
         // Laboratory
         lab_title: 'Laboratory',
