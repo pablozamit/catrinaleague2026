@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de Partidos - La Catrina Pool League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/style.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+        }
+
+        .header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: #d4af37;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            letter-spacing: 4px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .calendar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .calendar-wrapper {
+            background: rgba(255, 255, 255, 1);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        iframe {
+            width: 100%;
+            height: 80vh;
+            min-height: 600px;
+            border: none;
+            display: block;
+        }
+
+        .info-box {
+            max-width: 1200px;
+            margin: 1rem auto;
+            padding: 0 2rem;
+        }
+
+        .info-box p {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 1.5rem 2rem;
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #fff;
+        }
+
+        .back-link::before {
+            content: '← ';
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            iframe {
+                height: 60vh;
+                min-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-link">Volver al inicio</a>
+
+    <div class="header">
+        <h1>AGENDA DE PARTIDOS</h1>
+        <p>Consulta y programa tus próximos encuentros</p>
+    </div>
+
+    <div class="calendar-container">
+        <div class="calendar-wrapper">
+            <iframe
+                src="https://calendar.google.com/calendar/embed?src=26b2b14efdb88c0f380cab93f59b346739701deea26a01c7be0fa6d14b20a491%40group.calendar.google.com&ctz=Europe%2FMadrid&mode=WEEK&hl=es&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=1"
+                title="Calendario de Partidos"
+                scrolling="no">
+            </iframe>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <p>
+            Los horarios marcados en verde son partidas confirmadas. <br>
+            <strong>Nota:</strong> Si tras agendar tu partido no ves el nuevo evento o los cambios reflejados, por favor refresca la página.
+        </p>
+    </div>
+
+    <div class="calendar-container" style="margin-top: 2rem;">
+        <h2 style="text-align: center; color: #d4af37; margin-bottom: 1rem; font-family: 'Cinzel', serif;">RESERVAR PARTIDO</h2>
+        <form id="bookingForm" style="max-width: 500px; margin: 0 auto; background: rgba(255,255,255,0.05); padding: 2rem; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.3);">
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37; font-weight: 600;">Jugador Local</label>
+                <select id="player1" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: #fff; font-size: 16px;">
+                    <option value="">Seleccionar jugador...</option>
+                </select>
+            </div>
+
+            <div style="text-align: center; color: #888; font-size: 14px; margin: -5px 0 10px 0;">VS</div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37; font-weight: 600;">Jugador Visitante</label>
+                <select id="player2" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: #fff; font-size: 16px;">
+                    <option value="">Seleccionar jugador...</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37; font-weight: 600;">Fecha</label>
+                <input type="date" id="date" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: #fff; font-size: 16px;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 8px; color: #d4af37; font-weight: 600;">Hora</label>
+                <select id="timeSlot" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: #fff; font-size: 16px;">
+                    <option value="">Seleccionar fecha primero...</option>
+                </select>
+                <small id="timeNote" style="color: #888; display: block; margin-top: 5px;"></small>
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 15px; background: #d4af37; color: #1a1a2e; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">RESERVAR</button>
+
+            <div id="message" style="margin-top: 1rem; padding: 15px; border-radius: 8px; text-align: center; display: none;"></div>
+        </form>
+    </div>
+
+    <script>
+        const jugadores = [
+            'Johnny', 'Artur', 'Amauris', 'Fer', 'Jack', 'Pablo', 'Joe', 'Jonathan',
+            'Katee', 'Sasa', 'Sergio L.', 'Mo', 'Conor', 'Alex Funke', 'Lucas crema',
+            'Karim', 'Enrique', 'Mr. Angel', 'Erfan', 'Joël', 'Paul F.', 'David',
+            'Mina', 'Luco', 'Ruth', 'Alejandro B.', 'Carlos', 'Román', 'Nino',
+            'Danilo', 'Sol', 'Manuela', 'Damian Mascarella', 'Nica', 'Raúl S.', 'Favius'
+        ];
+
+        const player1Select = document.getElementById('player1');
+        const player2Select = document.getElementById('player2');
+
+        jugadores.forEach(jugador => {
+            player1Select.innerHTML += '<option value="' + jugador + '">' + jugador + '</option>';
+            player2Select.innerHTML += '<option value="' + jugador + '">' + jugador + '</option>';
+        });
+
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date').min = today;
+
+        const BLOQUES_HORARIOS = {
+            'mon-thu': ['19:00','19:15','19:30','19:45','20:00','20:15','20:30','20:45','21:00','21:15','21:30','21:45','22:00','22:15','22:30','22:45','23:00','23:15','23:30','23:45','00:00','00:15'],
+            'fri-sat': ['18:00','18:15','18:30','18:45','19:00','19:15','19:30','19:45','20:00','20:15','20:30','20:45','21:00','21:15','21:30','21:45','22:00','22:15','22:30','22:45','23:00','23:15','23:30','23:45','00:00','00:15']
+        };
+
+        const timeSlotSelect = document.getElementById('timeSlot');
+        const timeNote = document.getElementById('timeNote');
+
+        document.getElementById('date').addEventListener('change', function() {
+            const fecha = new Date(this.value + 'T12:00:00');
+            const diaSemana = fecha.getDay();
+
+            timeSlotSelect.innerHTML = '<option value="">Seleccionar horario...</option>';
+
+            if (diaSemana === 0) {
+                timeNote.textContent = 'Domingos cerrado';
+                return;
+            }
+
+            const bloques = (diaSemana === 5 || diaSemana === 6) ? BLOQUES_HORARIOS['fri-sat'] : BLOQUES_HORARIOS['mon-thu'];
+
+            if (diaSemana === 5 || diaSemana === 6) {
+                timeNote.textContent = 'Viernes/Sábado: 18:00 - 01:00 (bloques de 45 min)';
+            } else {
+                timeNote.textContent = 'Lunes-Jueves: 19:00 - 01:00 (bloques de 45 min)';
+            }
+
+            bloques.forEach(hora => {
+                const [h, m] = hora.split(':').map(Number);
+                let hFin = h, mFin = m + 45;
+                if (mFin >= 60) { hFin++; mFin -= 60; }
+                const finStr = String(hFin).padStart(2,'0') + ':' + String(mFin).padStart(2,'0');
+                timeSlotSelect.innerHTML += '<option value="' + hora + '">' + hora + ' - ' + finStr + '</option>';
+            });
+        });
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const player1 = document.getElementById('player1').value;
+            const player2 = document.getElementById('player2').value;
+            const date = document.getElementById('date').value;
+            const timeSlot = document.getElementById('timeSlot').value;
+            const message = document.getElementById('message');
+
+            if (player1 === player2) {
+                message.textContent = 'Los jugadores deben ser diferentes';
+                message.className = 'error';
+                message.style.cssText = 'background: rgba(244, 67, 54, 0.2); border: 1px solid #f44336; color: #f44336; display: block;';
+                return;
+            }
+
+            message.textContent = 'Contacto con el administrador para confirmar la reserva...';
+            message.style.cssText = 'background: rgba(212, 175, 55, 0.2); border: 1px solid #d4af37; color: #d4af37; display: block;';
+        });
+    </script>
+    <script type="module">
+        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/chat.bundle.es.js';
+
+        createChat({
+            webhookUrl: 'https://n8n.srv907628.hstgr.cloud/webhook/1c543332-a2d1-479f-805d-3d0977af5d93/chat'
+        });
+    </script>
+</body>
+</html>

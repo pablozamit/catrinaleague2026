@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajendar - La Catrina Pool League</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+        }
+        #twitter-video-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Overlay for interaction to allow autoplay with sound */
+        #interaction-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            color: #d4af37;
+            cursor: pointer;
+            text-align: center;
+            padding: 20px;
+        }
+        #interaction-overlay h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        #interaction-overlay p {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="interaction-overlay">
+        <h2>PRESIONA PARA REPRODUCIR</h2>
+        <p>Debido a políticas del navegador, se requiere una interacción para activar el sonido.</p>
+    </div>
+
+    <div id="twitter-video-container">
+        <blockquote class="twitter-video" data-autoplay="true" data-theme="dark" data-lang="es">
+            <a href="https://twitter.com/x/status/2039712105838915907"></a>
+        </blockquote>
+    </div>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script>
+        document.getElementById('interaction-overlay').addEventListener('click', function() {
+            this.style.display = 'none';
+            // The twitter widget should handle autoplay if it's already loaded
+            // or it will start once the overlay is gone and the user has interacted.
+        });
+    </script>
+</body>
+</html>
