@@ -117,6 +117,93 @@
       .panel { padding: 12px; border-radius: 18px; }
       .calendar-shell, iframe { min-height: calc(100vh - 220px); }
     }
+
+    .matches-section {
+      margin-top: 40px;
+      padding: 0 10px;
+    }
+    .section-title {
+      color: var(--gold);
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      text-align: center;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .weeks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .week-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      transition: transform 0.2s ease;
+    }
+    .week-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--gold);
+    }
+    .week-card h3 {
+      color: var(--gold);
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      text-align: center;
+    }
+    .match-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .player { flex: 1; }
+    .player-1 { text-align: right; }
+    .vs {
+      color: var(--gold);
+      font-weight: bold;
+      margin: 0 10px;
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+    .player-2 { text-align: left; }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+      padding-bottom: 20px;
+    }
+    .btn-results {
+      display: inline-block;
+      background: var(--gold);
+      color: #000;
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 999px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+    }
+    .btn-results:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 30px rgba(212, 175, 55, 0.3);
+      background: #f3e7c2;
+    }
+
+    @media (max-width: 600px) {
+      .weeks-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -135,6 +222,199 @@
     <main class="panel">
       <div class="calendar-shell">
         <iframe src="https://calendar.google.com/calendar/embed?height=800&wkst=2&ctz=Europe%2FMadrid&showPrint=0&title=Liga%20La%20Catrina%202026&mode=WEEK&showTabs=0&showCalendars=0&src=MjZiMmIxNGVmZGI4OGMwZjM4MGNhYjkzZjU5YjM0NjczOTcwMWRlZWEyNmEwMWM3YmUwZmE2ZDE0YjIwYTQ5MUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=ZXMuc3BhaW4jaG9saWRheUBncm91cC52LmNhbGVuZGFyLmdvb2dsZS5jb20&color=%237cb342&color=%23009688" width="100%" height="100%" frameborder="0" scrolling="no"></iframe>
+      </div>
+
+      <div class="matches-section">
+        <h2 class="section-title">Calendario de Partidos</h2>
+        <div class="weeks-grid">
+          <!-- SEMANA 1 -->
+          <div class="week-card">
+            <h3>SEMANA 1</h3>
+            <div class="match-item"><span class="player player-1">Alejandro B.</span><span class="vs">vs</span><span class="player player-2">Danilo</span></div>
+            <div class="match-item"><span class="player player-1">Alex F.</span><span class="vs">vs</span><span class="player player-2">Andrés</span></div>
+            <div class="match-item"><span class="player player-1">Amauris</span><span class="vs">vs</span><span class="player player-2">Jack</span></div>
+            <div class="match-item"><span class="player player-1">Artur</span><span class="vs">vs</span><span class="player player-2">Johnny</span></div>
+            <div class="match-item"><span class="player player-1">Charles</span><span class="vs">vs</span><span class="player player-2">Erfan</span></div>
+            <div class="match-item"><span class="player player-1">Connor</span><span class="vs">vs</span><span class="player player-2">Ángel</span></div>
+            <div class="match-item"><span class="player player-1">Damián</span><span class="vs">vs</span><span class="player player-2">Favio</span></div>
+            <div class="match-item"><span class="player player-1">David</span><span class="vs">vs</span><span class="player player-2">Jorge</span></div>
+            <div class="match-item"><span class="player player-1">Enrique</span><span class="vs">vs</span><span class="player player-2">Joel</span></div>
+            <div class="match-item"><span class="player player-1">Fer</span><span class="vs">vs</span><span class="player player-2">Pablo</span></div>
+            <div class="match-item"><span class="player player-1">Joe</span><span class="vs">vs</span><span class="player player-2">Katee</span></div>
+            <div class="match-item"><span class="player player-1">Jonathan</span><span class="vs">vs</span><span class="player player-2">Sasa</span></div>
+            <div class="match-item"><span class="player player-1">Lucas</span><span class="vs">vs</span><span class="player player-2">Ruth</span></div>
+            <div class="match-item"><span class="player player-1">Luco</span><span class="vs">vs</span><span class="player player-2">Nino</span></div>
+            <div class="match-item"><span class="player player-1">Manu</span><span class="vs">vs</span><span class="player player-2">Raúl</span></div>
+            <div class="match-item"><span class="player player-1">Mina</span><span class="vs">vs</span><span class="player player-2">Roman</span></div>
+            <div class="match-item"><span class="player player-1">Mo</span><span class="vs">vs</span><span class="player player-2">Sergio</span></div>
+            <div class="match-item"><span class="player player-1">Nica</span><span class="vs">vs</span><span class="player player-2">Sol</span></div>
+          </div>
+
+          <!-- SEMANA 2 -->
+          <div class="week-card">
+            <h3>SEMANA 2</h3>
+            <div class="match-item"><span class="player player-1">Alejandro B.</span><span class="vs">vs</span><span class="player player-2">Ruth</span></div>
+            <div class="match-item"><span class="player player-1">Alex F.</span><span class="vs">vs</span><span class="player player-2">Enrique</span></div>
+            <div class="match-item"><span class="player player-1">Amauris</span><span class="vs">vs</span><span class="player player-2">Johnny</span></div>
+            <div class="match-item"><span class="player player-1">Andrés</span><span class="vs">vs</span><span class="player player-2">Ángel</span></div>
+            <div class="match-item"><span class="player player-1">Artur</span><span class="vs">vs</span><span class="player player-2">Fer</span></div>
+            <div class="match-item"><span class="player player-1">Charles</span><span class="vs">vs</span><span class="player player-2">Roman</span></div>
+            <div class="match-item"><span class="player player-1">Connor</span><span class="vs">vs</span><span class="player player-2">Joel</span></div>
+            <div class="match-item"><span class="player player-1">Damián</span><span class="vs">vs</span><span class="player player-2">Nica</span></div>
+            <div class="match-item"><span class="player player-1">Danilo</span><span class="vs">vs</span><span class="player player-2">Nino</span></div>
+            <div class="match-item"><span class="player player-1">David</span><span class="vs">vs</span><span class="player player-2">Erfan</span></div>
+            <div class="match-item"><span class="player player-1">Favio</span><span class="vs">vs</span><span class="player player-2">Manu</span></div>
+            <div class="match-item"><span class="player player-1">Jack</span><span class="vs">vs</span><span class="player player-2">Pablo</span></div>
+            <div class="match-item"><span class="player player-1">Joe</span><span class="vs">vs</span><span class="player player-2">Jonathan</span></div>
+            <div class="match-item"><span class="player player-1">Jorge</span><span class="vs">vs</span><span class="player player-2">Mina</span></div>
+            <div class="match-item"><span class="player player-1">Katee</span><span class="vs">vs</span><span class="player player-2">Sergio</span></div>
+            <div class="match-item"><span class="player player-1">Lucas</span><span class="vs">vs</span><span class="player player-2">Luco</span></div>
+            <div class="match-item"><span class="player player-1">Mo</span><span class="vs">vs</span><span class="player player-2">Sasa</span></div>
+            <div class="match-item"><span class="player player-1">Raúl</span><span class="vs">vs</span><span class="player player-2">Sol</span></div>
+          </div>
+
+          <!-- SEMANA 3 -->
+          <div class="week-card">
+            <h3>SEMANA 3</h3>
+            <div class="match-item"><span class="player player-1">Alejandro B.</span><span class="vs">vs</span><span class="player player-2">Lucas</span></div>
+            <div class="match-item"><span class="player player-1">Alex F.</span><span class="vs">vs</span><span class="player player-2">Joel</span></div>
+            <div class="match-item"><span class="player player-1">Amauris</span><span class="vs">vs</span><span class="player player-2">Fer</span></div>
+            <div class="match-item"><span class="player player-1">Andrés</span><span class="vs">vs</span><span class="player player-2">Connor</span></div>
+            <div class="match-item"><span class="player player-1">Artur</span><span class="vs">vs</span><span class="player player-2">Pablo</span></div>
+            <div class="match-item"><span class="player player-1">Charles</span><span class="vs">vs</span><span class="player player-2">David</span></div>
+            <div class="match-item"><span class="player player-1">Damián</span><span class="vs">vs</span><span class="player player-2">Raúl</span></div>
+            <div class="match-item"><span class="player player-1">Danilo</span><span class="vs">vs</span><span class="player player-2">Luco</span></div>
+            <div class="match-item"><span class="player player-1">Enrique</span><span class="vs">vs</span><span class="player player-2">Ángel</span></div>
+            <div class="match-item"><span class="player player-1">Erfan</span><span class="vs">vs</span><span class="player player-2">Mina</span></div>
+            <div class="match-item"><span class="player player-1">Favio</span><span class="vs">vs</span><span class="player player-2">Nica</span></div>
+            <div class="match-item"><span class="player player-1">Jack</span><span class="vs">vs</span><span class="player player-2">Johnny</span></div>
+            <div class="match-item"><span class="player player-1">Joe</span><span class="vs">vs</span><span class="player player-2">Sergio</span></div>
+            <div class="match-item"><span class="player player-1">Jonathan</span><span class="vs">vs</span><span class="player player-2">Mo</span></div>
+            <div class="match-item"><span class="player player-1">Jorge</span><span class="vs">vs</span><span class="player player-2">Roman</span></div>
+            <div class="match-item"><span class="player player-1">Katee</span><span class="vs">vs</span><span class="player player-2">Sasa</span></div>
+            <div class="match-item"><span class="player player-1">Manu</span><span class="vs">vs</span><span class="player player-2">Sol</span></div>
+            <div class="match-item"><span class="player player-1">Nino</span><span class="vs">vs</span><span class="player player-2">Ruth</span></div>
+          </div>
+
+          <!-- SEMANA 4 -->
+          <div class="week-card">
+            <h3>SEMANA 4</h3>
+            <div class="match-item"><span class="player player-1">Alejandro B.</span><span class="vs">vs</span><span class="player player-2">Luco</span></div>
+            <div class="match-item"><span class="player player-1">Alex F.</span><span class="vs">vs</span><span class="player player-2">Connor</span></div>
+            <div class="match-item"><span class="player player-1">Amauris</span><span class="vs">vs</span><span class="player player-2">Pablo</span></div>
+            <div class="match-item"><span class="player player-1">Andrés</span><span class="vs">vs</span><span class="player player-2">Enrique</span></div>
+            <div class="match-item"><span class="player player-1">Artur</span><span class="vs">vs</span><span class="player player-2">Jack</span></div>
+            <div class="match-item"><span class="player player-1">Charles</span><span class="vs">vs</span><span class="player player-2">Jorge</span></div>
+            <div class="match-item"><span class="player player-1">Damián</span><span class="vs">vs</span><span class="player player-2">Manu</span></div>
+            <div class="match-item"><span class="player player-1">Danilo</span><span class="vs">vs</span><span class="player player-2">Ruth</span></div>
+            <div class="match-item"><span class="player player-1">David</span><span class="vs">vs</span><span class="player player-2">Mina</span></div>
+            <div class="match-item"><span class="player player-1">Erfan</span><span class="vs">vs</span><span class="player player-2">Roman</span></div>
+            <div class="match-item"><span class="player player-1">Favio</span><span class="vs">vs</span><span class="player player-2">Sol</span></div>
+            <div class="match-item"><span class="player player-1">Fer</span><span class="vs">vs</span><span class="player player-2">Johnny</span></div>
+            <div class="match-item"><span class="player player-1">Joe</span><span class="vs">vs</span><span class="player player-2">Sasa</span></div>
+            <div class="match-item"><span class="player player-1">Joel</span><span class="vs">vs</span><span class="player player-2">Ángel</span></div>
+            <div class="match-item"><span class="player player-1">Jonathan</span><span class="vs">vs</span><span class="player player-2">Sergio</span></div>
+            <div class="match-item"><span class="player player-1">Katee</span><span class="vs">vs</span><span class="player player-2">Mo</span></div>
+            <div class="match-item"><span class="player player-1">Lucas</span><span class="vs">vs</span><span class="player player-2">Nino</span></div>
+            <div class="match-item"><span class="player player-1">Nica</span><span class="vs">vs</span><span class="player player-2">Raúl</span></div>
+          </div>
+
+          <!-- SEMANA 5 -->
+          <div class="week-card">
+            <h3>SEMANA 5</h3>
+            <div class="match-item"><span class="player player-1">Alejandro B.</span><span class="vs">vs</span><span class="player player-2">Nino</span></div>
+            <div class="match-item"><span class="player player-1">Alex F.</span><span class="vs">vs</span><span class="player player-2">Ángel</span></div>
+            <div class="match-item"><span class="player player-1">Amauris</span><span class="vs">vs</span><span class="player player-2">Artur</span></div>
+            <div class="match-item"><span class="player player-1">Andrés</span><span class="vs">vs</span><span class="player player-2">Joel</span></div>
+            <div class="match-item"><span class="player player-1">Charles</span><span class="vs">vs</span><span class="player player-2">Mina</span></div>
+            <div class="match-item"><span class="player player-1">Connor</span><span class="vs">vs</span><span class="player player-2">Enrique</span></div>
+            <div class="match-item"><span class="player player-1">Damián</span><span class="vs">vs</span><span class="player player-2">Sol</span></div>
+            <div class="match-item"><span class="player player-1">Danilo</span><span class="vs">vs</span><span class="player player-2">Lucas</span></div>
+            <div class="match-item"><span class="player player-1">David</span><span class="vs">vs</span><span class="player player-2">Roman</span></div>
+            <div class="match-item"><span class="player player-1">Erfan</span><span class="vs">vs</span><span class="player player-2">Jorge</span></div>
+            <div class="match-item"><span class="player player-1">Favio</span><span class="vs">vs</span><span class="player player-2">Raúl</span></div>
+            <div class="match-item"><span class="player player-1">Fer</span><span class="vs">vs</span><span class="player player-2">Jack</span></div>
+            <div class="match-item"><span class="player player-1">Joe</span><span class="vs">vs</span><span class="player player-2">Mo</span></div>
+            <div class="match-item"><span class="player player-1">Johnny</span><span class="vs">vs</span><span class="player player-2">Pablo</span></div>
+            <div class="match-item"><span class="player player-1">Jonathan</span><span class="vs">vs</span><span class="player player-2">Katee</span></div>
+            <div class="match-item"><span class="player player-1">Luco</span><span class="vs">vs</span><span class="player player-2">Ruth</span></div>
+            <div class="match-item"><span class="player player-1">Manu</span><span class="vs">vs</span><span class="player player-2">Nica</span></div>
+            <div class="match-item"><span class="player player-1">Sasa</span><span class="vs">vs</span><span class="player player-2">Sergio</span></div>
+          </div>
+
+          <!-- SEMANA 6 -->
+          <div class="week-card">
+            <h3>SEMANA 6</h3>
+            <div class="match-item"><span class="player player-1">Alejandro B.</span><span class="vs">vs</span><span class="player player-2">Damián</span></div>
+            <div class="match-item"><span class="player player-1">Alex F.</span><span class="vs">vs</span><span class="player player-2">Erfan</span></div>
+            <div class="match-item"><span class="player player-1">Amauris</span><span class="vs">vs</span><span class="player player-2">Jonathan</span></div>
+            <div class="match-item"><span class="player player-1">Andrés</span><span class="vs">vs</span><span class="player player-2">Jorge</span></div>
+            <div class="match-item"><span class="player player-1">Artur</span><span class="vs">vs</span><span class="player player-2">Sasa</span></div>
+            <div class="match-item"><span class="player player-1">Charles</span><span class="vs">vs</span><span class="player player-2">Ángel</span></div>
+            <div class="match-item"><span class="player player-1">Connor</span><span class="vs">vs</span><span class="player player-2">Mina</span></div>
+            <div class="match-item"><span class="player player-1">Danilo</span><span class="vs">vs</span><span class="player player-2">Sol</span></div>
+            <div class="match-item"><span class="player player-1">David</span><span class="vs">vs</span><span class="player player-2">Joel</span></div>
+            <div class="match-item"><span class="player player-1">Enrique</span><span class="vs">vs</span><span class="player player-2">Roman</span></div>
+            <div class="match-item"><span class="player player-1">Favio</span><span class="vs">vs</span><span class="player player-2">Nino</span></div>
+            <div class="match-item"><span class="player player-1">Fer</span><span class="vs">vs</span><span class="player player-2">Joe</span></div>
+            <div class="match-item"><span class="player player-1">Jack</span><span class="vs">vs</span><span class="player player-2">Katee</span></div>
+            <div class="match-item"><span class="player player-1">Johnny</span><span class="vs">vs</span><span class="player player-2">Sergio</span></div>
+            <div class="match-item"><span class="player player-1">Lucas</span><span class="vs">vs</span><span class="player player-2">Nica</span></div>
+            <div class="match-item"><span class="player player-1">Luco</span><span class="vs">vs</span><span class="player player-2">Raúl</span></div>
+            <div class="match-item"><span class="player player-1">Manu</span><span class="vs">vs</span><span class="player player-2">Ruth</span></div>
+            <div class="match-item"><span class="player player-1">Mo</span><span class="vs">vs</span><span class="player player-2">Pablo</span></div>
+          </div>
+
+          <!-- SEMANA 7 -->
+          <div class="week-card">
+            <h3>SEMANA 7</h3>
+            <div class="match-item"><span class="player player-1">Alejandro B.</span><span class="vs">vs</span><span class="player player-2">Favio</span></div>
+            <div class="match-item"><span class="player player-1">Alex F.</span><span class="vs">vs</span><span class="player player-2">Charles</span></div>
+            <div class="match-item"><span class="player player-1">Amauris</span><span class="vs">vs</span><span class="player player-2">Katee</span></div>
+            <div class="match-item"><span class="player player-1">Andrés</span><span class="vs">vs</span><span class="player player-2">Erfan</span></div>
+            <div class="match-item"><span class="player player-1">Artur</span><span class="vs">vs</span><span class="player player-2">Jonathan</span></div>
+            <div class="match-item"><span class="player player-1">Connor</span><span class="vs">vs</span><span class="player player-2">Roman</span></div>
+            <div class="match-item"><span class="player player-1">Damián</span><span class="vs">vs</span><span class="player player-2">Danilo</span></div>
+            <div class="match-item"><span class="player player-1">David</span><span class="vs">vs</span><span class="player player-2">Enrique</span></div>
+            <div class="match-item"><span class="player player-1">Fer</span><span class="vs">vs</span><span class="player player-2">Mo</span></div>
+            <div class="match-item"><span class="player player-1">Jack</span><span class="vs">vs</span><span class="player player-2">Joe</span></div>
+            <div class="match-item"><span class="player player-1">Joel</span><span class="vs">vs</span><span class="player player-2">Jorge</span></div>
+            <div class="match-item"><span class="player player-1">Johnny</span><span class="vs">vs</span><span class="player player-2">Sasa</span></div>
+            <div class="match-item"><span class="player player-1">Lucas</span><span class="vs">vs</span><span class="player player-2">Sol</span></div>
+            <div class="match-item"><span class="player player-1">Luco</span><span class="vs">vs</span><span class="player player-2">Manu</span></div>
+            <div class="match-item"><span class="player player-1">Mina</span><span class="vs">vs</span><span class="player player-2">Ángel</span></div>
+            <div class="match-item"><span class="player player-1">Nica</span><span class="vs">vs</span><span class="player player-2">Ruth</span></div>
+            <div class="match-item"><span class="player player-1">Nino</span><span class="vs">vs</span><span class="player player-2">Raúl</span></div>
+            <div class="match-item"><span class="player player-1">Pablo</span><span class="vs">vs</span><span class="player player-2">Sergio</span></div>
+          </div>
+
+          <!-- SEMANA 8 -->
+          <div class="week-card">
+            <h3>SEMANA 8</h3>
+            <div class="match-item"><span class="player player-1">Alejandro B.</span><span class="vs">vs</span><span class="player player-2">Raúl</span></div>
+            <div class="match-item"><span class="player player-1">Alex F.</span><span class="vs">vs</span><span class="player player-2">Mina</span></div>
+            <div class="match-item"><span class="player player-1">Amauris</span><span class="vs">vs</span><span class="player player-2">Joe</span></div>
+            <div class="match-item"><span class="player player-1">Andrés</span><span class="vs">vs</span><span class="player player-2">Charles</span></div>
+            <div class="match-item"><span class="player player-1">Artur</span><span class="vs">vs</span><span class="player player-2">Katee</span></div>
+            <div class="match-item"><span class="player player-1">Connor</span><span class="vs">vs</span><span class="player player-2">David</span></div>
+            <div class="match-item"><span class="player player-1">Damián</span><span class="vs">vs</span><span class="player player-2">Lucas</span></div>
+            <div class="match-item"><span class="player player-1">Danilo</span><span class="vs">vs</span><span class="player player-2">Favio</span></div>
+            <div class="match-item"><span class="player player-1">Enrique</span><span class="vs">vs</span><span class="player player-2">Jorge</span></div>
+            <div class="match-item"><span class="player player-1">Erfan</span><span class="vs">vs</span><span class="player player-2">Joel</span></div>
+            <div class="match-item"><span class="player player-1">Fer</span><span class="vs">vs</span><span class="player player-2">Sergio</span></div>
+            <div class="match-item"><span class="player player-1">Jack</span><span class="vs">vs</span><span class="player player-2">Mo</span></div>
+            <div class="match-item"><span class="player player-1">Johnny</span><span class="vs">vs</span><span class="player player-2">Jonathan</span></div>
+            <div class="match-item"><span class="player player-1">Luco</span><span class="vs">vs</span><span class="player player-2">Nica</span></div>
+            <div class="match-item"><span class="player player-1">Manu</span><span class="vs">vs</span><span class="player player-2">Nino</span></div>
+            <div class="match-item"><span class="player player-1">Pablo</span><span class="vs">vs</span><span class="player player-2">Sasa</span></div>
+            <div class="match-item"><span class="player player-1">Roman</span><span class="vs">vs</span><span class="player player-2">Ángel</span></div>
+            <div class="match-item"><span class="player player-1">Ruth</span><span class="vs">vs</span><span class="player player-2">Sol</span></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a href="../resultados" class="btn-results">Ir a Registrar Resultados</a>
+        </div>
       </div>
     </main>
 
