@@ -38,8 +38,9 @@
             overflow: hidden;
         }
 
+        /* ── HEADER COMPACTO ── */
         .header-section {
-            padding: 4vw;
+            padding: 2vw 4vw;
             background: var(--black);
             position: relative;
             overflow: hidden;
@@ -72,23 +73,23 @@
 
         .title-main {
             font-family: var(--font-display);
-            font-size: 20vw;
+            font-size: 10vw;
             letter-spacing: -0.02em;
             width: 100%;
-            margin-bottom: -1vw;
+            margin-bottom: -0.5vw;
             color: var(--gold);
         }
 
         .title-sub {
             font-family: var(--font-display);
-            font-size: 12vw;
+            font-size: 6vw;
             letter-spacing: -0.01em;
             color: var(--white);
         }
 
         .meta-block {
             font-family: var(--font-ui);
-            font-size: 2.5vw;
+            font-size: 1.8vw;
             line-height: 1.2;
             width: 40%;
             margin-left: auto;
@@ -99,13 +100,14 @@
 
         .sub-meta {
             font-family: var(--font-serif);
-            font-size: 3vw;
+            font-size: 1.8vw;
             line-height: 1.1;
-            margin-top: 2vw;
-            width: 70%;
+            margin-top: 1vw;
+            width: 100%;
             color: var(--white);
-            opacity: 0.7;
+            opacity: 0.5;
         }
+        /* ── FIN HEADER COMPACTO ── */
 
         .team-buttons {
             display: flex;
@@ -322,7 +324,6 @@
         .player-name-btn:hover,
         .player-name-btn:focus-visible {
             color: var(--gold-light);
-            opacity: 1;
         }
 
         .player-name-btn:focus-visible {
@@ -571,10 +572,11 @@
         }
 
         @media (min-width: 768px) {
-            .title-main { font-size: 10rem; }
-            .title-sub { font-size: 6rem; }
-            .meta-block { font-size: 0.9rem; width: 25%; }
-            .sub-meta { font-size: 1.2rem; width: 60%; }
+            .header-section { padding: 1.5rem 3rem; }
+            .title-main { font-size: 4.5rem; }
+            .title-sub { font-size: 2.8rem; }
+            .meta-block { font-size: 0.8rem; width: 25%; }
+            .sub-meta { font-size: 0.8rem; margin-top: 0.5rem; }
             .team-btn { font-size: 1.5rem; width: 50px; height: 50px; }
             .team-title { font-size: 3rem; }
             .team-stats { font-size: 0.8rem; }
@@ -719,21 +721,11 @@
             if (!timestamp) return '—';
             const date = new Date(timestamp);
             if (Number.isNaN(date.getTime())) return '—';
-
             return new Intl.DateTimeFormat('es-ES', {
                 day: '2-digit',
                 month: '2-digit',
                 year: '2-digit'
             }).format(date);
-        }
-
-        function escapeHtml(value) {
-            return String(value || '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
         }
 
         async function loadTeamData() {
@@ -747,13 +739,7 @@
                     if (team.isGlobal) {
                         const nonGlobalTeams = teams.filter(t => !t.isGlobal);
                         players = nonGlobalTeams.map(t => {
-                            let tPlayed = 0;
-                            let tWins = 0;
-                            let tLosses = 0;
-                            let tFramesWon = 0;
-                            let tFramesLost = 0;
-                            let tPts = 0;
-
+                            let tPlayed = 0, tWins = 0, tLosses = 0, tFramesWon = 0, tFramesLost = 0, tPts = 0;
                             t.players.forEach(p => {
                                 const pStats = stats[p] || {};
                                 tPlayed += pStats.played || 0;
@@ -763,11 +749,9 @@
                                 tFramesLost += pStats.framesLost || 0;
                                 tPts += pStats.points || 0;
                             });
-
                             const tPerc = (tFramesWon + tFramesLost) > 0
                                 ? ((tFramesWon / (tFramesWon + tFramesLost)) * 100).toFixed(1) + '%'
                                 : '0.0%';
-
                             return {
                                 name: t.name || `Equipo ${t.id}`,
                                 isTeam: true,
@@ -788,7 +772,6 @@
                             const perc = (fW + fL) > 0
                                 ? ((fW / (fW + fL)) * 100).toFixed(1) + '%'
                                 : '0.0%';
-
                             return {
                                 name: playerName,
                                 played: playerStats.played || 0,
@@ -819,7 +802,6 @@
 
         function normalizeMatch(id, rawMatch) {
             const raw = rawMatch || {};
-
             const player1 = formatDisplayName(raw.player1);
             const player2 = formatDisplayName(raw.player2);
             const winnerId = formatDisplayName(raw.winnerId || raw.winner);
@@ -841,13 +823,12 @@
                 winnerPointsAwarded: raw.winnerPointsAwarded ?? null,
                 loserPointsAwarded: raw.loserPointsAwarded ?? null,
                 meritAwarded: Boolean(raw.merit_awarded),
-                raw: raw
+                raw
             };
 
             if (!normalized.winnerId && player1 && player2 && raw.winner) {
                 normalized.winnerId = formatDisplayName(raw.winner);
             }
-
             if (!normalized.loserId && normalized.winnerId && player1 && player2) {
                 const winnerKey = normalizeName(normalized.winnerId);
                 normalized.loserId = normalizeName(player1) === winnerKey ? player2 : player1;
@@ -860,7 +841,6 @@
             try {
                 const snapshot = await database.ref('liga/matches').once('value');
                 const matches = snapshot.val() || {};
-
                 return Object.entries(matches)
                     .map(([id, value]) => normalizeMatch(id, value))
                     .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
@@ -872,7 +852,6 @@
 
         function renderTeamButtons() {
             teamButtons.innerHTML = '';
-
             teams.forEach((team, index) => {
                 const btn = document.createElement('button');
                 btn.className = `team-btn ${index === currentTeamIndex ? 'active' : ''}`;
@@ -941,15 +920,11 @@
                 if (!team.isGlobal && (player.name === 'johnny' || player.name === 'artur')) {
                     rankDiv.classList.add('silhouette-effect');
                     rankDiv.setAttribute('data-player', player.name);
-
                     const bgDiv = document.createElement('div');
                     bgDiv.className = 'silhouette-bg';
-
                     if (player.name === 'johnny') bgDiv.style.backgroundImage = "url('/assets/players/johnnycard.png')";
                     if (player.name === 'artur') bgDiv.style.backgroundImage = "url('/assets/players/artur.jpg')";
-
                     rankDiv.appendChild(bgDiv);
-
                     const numberSpan = document.createElement('span');
                     numberSpan.className = 'player-number';
                     numberSpan.textContent = i + 1;
@@ -963,7 +938,6 @@
 
                 const animDiv = document.createElement('div');
                 animDiv.className = 'player-anim-cell';
-
                 if (!team.isGlobal && (player.name.toLowerCase() === 'johnny' || player.name.toLowerCase() === 'artur')) {
                     const video = document.createElement('video');
                     video.src = player.name.toLowerCase() === 'johnny'
@@ -976,18 +950,12 @@
                     video.playsInline = true;
                     animDiv.appendChild(video);
                 }
-
                 li.appendChild(animDiv);
 
                 const metrics = [
-                    player.played,
-                    player.wins,
-                    player.losses,
-                    player.framesWon,
-                    player.framesLost,
-                    player.percFrames
+                    player.played, player.wins, player.losses,
+                    player.framesWon, player.framesLost, player.percFrames
                 ];
-
                 metrics.forEach(val => {
                     const statDiv = document.createElement('div');
                     statDiv.className = 'player-stat';
@@ -1013,7 +981,6 @@
                     const loserKey = normalizeName(match.loserId);
                     const p1Key = normalizeName(match.player1);
                     const p2Key = normalizeName(match.player2);
-
                     return winnerKey === target || loserKey === target || p1Key === target || p2Key === target;
                 })
                 .map(match => {
@@ -1022,33 +989,25 @@
                     const p1Key = normalizeName(match.player1);
                     const p2Key = normalizeName(match.player2);
 
-                    let opponent = '';
-                    let playerScore = null;
-                    let opponentScore = null;
-                    let isWinner = false;
-                    let points = 0;
+                    let opponent = '', playerScore = null, opponentScore = null, isWinner = false, points = 0;
 
                     if (winnerKey || loserKey) {
                         isWinner = winnerKey === target;
                         opponent = isWinner ? (match.loserId || '—') : (match.winnerId || '—');
                         playerScore = isWinner ? match.winnerFrames : match.loserFrames;
                         opponentScore = isWinner ? match.loserFrames : match.winnerFrames;
-
                         if (isWinner) {
                             points = match.winnerPointsAwarded ?? 3;
                         } else {
-                            if (match.loserPointsAwarded !== null && match.loserPointsAwarded !== undefined) {
-                                points = match.loserPointsAwarded;
-                            } else {
-                                points = match.meritAwarded ? 1 : 0;
-                            }
+                            points = (match.loserPointsAwarded !== null && match.loserPointsAwarded !== undefined)
+                                ? match.loserPointsAwarded
+                                : (match.meritAwarded ? 1 : 0);
                         }
                     } else {
                         const isPlayer1 = p1Key === target;
                         opponent = isPlayer1 ? (match.player2 || '—') : (match.player1 || '—');
                         playerScore = isPlayer1 ? match.frames1 : match.frames2;
                         opponentScore = isPlayer1 ? match.frames2 : match.frames1;
-
                         const rawWinner = normalizeName(match.raw.winner);
                         isWinner = rawWinner ? rawWinner === target : Number(playerScore) > Number(opponentScore);
                         points = isWinner ? 3 : (match.meritAwarded ? 1 : 0);
@@ -1081,7 +1040,6 @@
 
         function showPlayerHistory(playerName) {
             const rows = getPlayerHistoryRows(playerName);
-
             modalPlayerName.textContent = playerName.toUpperCase();
             modalSubtitle.textContent = rows.length === 1
                 ? '1 resultado histórico'
@@ -1132,7 +1090,6 @@
                     loadTeamData(),
                     loadMatches()
                 ]);
-
                 renderTeamButtons();
                 renderTeam(currentTeamIndex);
                 loadingScreen.classList.add('hidden');
@@ -1143,17 +1100,11 @@
         }
 
         closeModal.addEventListener('click', closePlayerModal);
-
         modal.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                closePlayerModal();
-            }
+            if (event.target === modal) closePlayerModal();
         });
-
         window.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && modal.classList.contains('is-open')) {
-                closePlayerModal();
-            }
+            if (event.key === 'Escape' && modal.classList.contains('is-open')) closePlayerModal();
         });
 
         init();
