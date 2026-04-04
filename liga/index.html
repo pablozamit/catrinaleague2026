@@ -38,7 +38,6 @@
             overflow: hidden;
         }
 
-        /* ── HEADER COMPACTO ── */
         .header-section {
             padding: 2vw 4vw;
             background: var(--black);
@@ -107,7 +106,6 @@
             color: var(--white);
             opacity: 0.5;
         }
-        /* ── FIN HEADER COMPACTO ── */
 
         .team-buttons {
             display: flex;
@@ -217,21 +215,10 @@
             z-index: 2;
         }
 
-        .table-header span {
-            text-align: center;
-        }
-
-        .table-header span:nth-child(2) {
-            text-align: left;
-        }
-
-        .table-header span:nth-child(10) {
-            text-align: right;
-        }
-
-        .table-header span:nth-child(3) {
-            opacity: 0.5;
-        }
+        .table-header span { text-align: center; }
+        .table-header span:nth-child(2) { text-align: left; }
+        .table-header span:nth-child(10) { text-align: right; }
+        .table-header span:nth-child(3) { opacity: 0.5; }
 
         .player-list {
             list-style: none;
@@ -284,13 +271,8 @@
             z-index: 0;
         }
 
-        .player-rank.silhouette-effect:hover .silhouette-bg {
-            opacity: 0.85;
-        }
-
-        .player-rank.silhouette-effect:hover {
-            transform: scale(1.03);
-        }
+        .player-rank.silhouette-effect:hover .silhouette-bg { opacity: 0.85; }
+        .player-rank.silhouette-effect:hover { transform: scale(1.03); }
 
         .player-number {
             position: relative;
@@ -298,12 +280,10 @@
             color: rgba(255, 255, 255, 0.95);
             font-size: 3vw;
             font-weight: bold;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 1), -1px -1px 4px rgba(0, 0, 0, 1);
+            text-shadow: 1px 1px 4px rgba(0,0,0,1), -1px -1px 4px rgba(0,0,0,1);
         }
 
-        .player-name-cell {
-            min-width: 0;
-        }
+        .player-name-cell { min-width: 0; }
 
         .player-name-btn {
             all: unset;
@@ -318,7 +298,7 @@
             text-overflow: ellipsis;
             color: var(--white);
             cursor: pointer;
-            transition: color 0.2s ease, opacity 0.2s ease;
+            transition: color 0.2s ease;
         }
 
         .player-name-btn:hover,
@@ -405,20 +385,19 @@
             50% { opacity: 1; }
         }
 
+        /* ── MODAL ── */
         .modal {
             display: none;
             position: fixed;
             z-index: 1000;
             inset: 0;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0,0,0,0.9);
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
 
-        .modal.is-open {
-            display: flex;
-        }
+        .modal.is-open { display: flex; }
 
         .modal-content {
             position: relative;
@@ -429,7 +408,7 @@
             width: 100%;
             max-width: 760px;
             border-radius: 12px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5), 0 0 15px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5), 0 0 15px rgba(212,175,55,0.2);
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -448,9 +427,7 @@
         }
 
         .close:hover,
-        .close:focus-visible {
-            color: var(--gold);
-        }
+        .close:focus-visible { color: var(--gold); }
 
         .modal-player-name {
             font-family: var(--font-display);
@@ -459,7 +436,7 @@
             margin-bottom: 8px;
             text-align: center;
             text-transform: uppercase;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 1px solid rgba(212,175,55,0.3);
             padding-bottom: 10px;
         }
 
@@ -472,13 +449,12 @@
             letter-spacing: 0.08em;
         }
 
-        .history-container {
-            margin-top: 10px;
-        }
+        .history-container { margin-top: 10px; }
 
+        /* Grid del historial: Oponente | Resultado | Fecha — SIN columna Pts */
         .history-header-row {
             display: grid;
-            grid-template-columns: 2fr 1fr 0.8fr 1.2fr;
+            grid-template-columns: 2fr 1fr 1.2fr;
             gap: 10px;
             padding: 10px;
             font-family: var(--font-ui);
@@ -490,15 +466,11 @@
             border-bottom: 2px solid var(--gold);
         }
 
-        .history-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
+        .history-list { list-style: none; margin: 0; padding: 0; }
 
         .history-row {
             display: grid;
-            grid-template-columns: 2fr 1fr 0.8fr 1.2fr;
+            grid-template-columns: 2fr 1fr 1.2fr;
             gap: 10px;
             padding: 15px 10px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -508,9 +480,7 @@
             color: var(--white);
         }
 
-        .history-row:last-child {
-            border-bottom: none;
-        }
+        .history-row:last-child { border-bottom: none; }
 
         .history-row .opponent {
             font-weight: 600;
@@ -526,11 +496,6 @@
             font-family: var(--font-display);
         }
 
-        .history-row .pts {
-            text-align: center;
-            font-weight: bold;
-        }
-
         .history-row .date {
             text-align: center;
             color: rgba(255,255,255,0.7);
@@ -539,17 +504,17 @@
 
         .history-row.win {
             border-left: 4px solid #4caf50;
-            background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(76,175,80,0.1) 0%, transparent 100%);
         }
 
         .history-row.loss {
             border-left: 4px solid #f44336;
-            background: linear-gradient(90deg, rgba(244, 67, 54, 0.1) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(244,67,54,0.1) 0%, transparent 100%);
         }
 
         .history-row.merit {
             border-left: 4px solid var(--gold);
-            background: linear-gradient(90deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(212,175,55,0.1) 0%, transparent 100%);
         }
 
         .no-matches {
@@ -562,13 +527,10 @@
         @media (max-width: 767px) {
             .history-header-row,
             .history-row {
-                grid-template-columns: 1.5fr 1fr 0.8fr;
+                grid-template-columns: 1.5fr 1fr;
             }
-
             .history-header-row span:last-child,
-            .history-row .date {
-                display: none;
-            }
+            .history-row .date { display: none; }
         }
 
         @media (min-width: 768px) {
@@ -581,13 +543,11 @@
             .team-title { font-size: 3rem; }
             .team-stats { font-size: 0.8rem; }
             .table-header { font-size: 0.75rem; padding: 10px 0; letter-spacing: 0.08em; }
-
             .table-header,
             .player-row {
                 grid-template-columns: 40px minmax(120px, 2fr) 60px repeat(6, 60px) 55px;
                 gap: 8px;
             }
-
             .player-rank { font-size: 1.4rem; }
             .player-name-btn,
             .player-name-static { font-size: 1.1rem; }
@@ -614,7 +574,6 @@
                     LA CATRINA<br>POOL LEAGUE<br>TEMPORADA 1
                 </div>
             </div>
-
             <div class="sub-meta">
                 Sistema de puntuación: Victoria (3 pts) · Punto de mérito (1 pt) · Derrota (0 pts)
             </div>
@@ -656,9 +615,8 @@
             <div class="history-container">
                 <div class="history-header-row">
                     <span>Oponente</span>
-                    <span style="text-align: center;">Resultado</span>
-                    <span style="text-align: center;">Pts</span>
-                    <span style="text-align: center;">Fecha</span>
+                    <span style="text-align:center;">Resultado</span>
+                    <span style="text-align:center;">Fecha</span>
                 </div>
                 <div id="historyList" class="history-list"></div>
             </div>
@@ -697,17 +655,16 @@
         let teamData = [];
         let ligaMatches = [];
 
-        const teamTitle = document.getElementById('teamTitle');
-        const teamStats = document.getElementById('teamStats');
-        const playerList = document.getElementById('playerList');
-        const teamButtons = document.getElementById('teamButtons');
-        const loadingScreen = document.getElementById('loadingScreen');
-
-        const modal = document.getElementById('playerModal');
-        const closeModal = document.getElementById('closeModal');
+        const teamTitle      = document.getElementById('teamTitle');
+        const teamStats      = document.getElementById('teamStats');
+        const playerList     = document.getElementById('playerList');
+        const teamButtons    = document.getElementById('teamButtons');
+        const loadingScreen  = document.getElementById('loadingScreen');
+        const modal          = document.getElementById('playerModal');
+        const closeModal     = document.getElementById('closeModal');
         const modalPlayerName = document.getElementById('modalPlayerName');
-        const modalSubtitle = document.getElementById('modalSubtitle');
-        const historyList = document.getElementById('historyList');
+        const modalSubtitle  = document.getElementById('modalSubtitle');
+        const historyList    = document.getElementById('historyList');
 
         function normalizeName(value) {
             return String(value || '').trim().toLowerCase();
@@ -722,130 +679,93 @@
             const date = new Date(timestamp);
             if (Number.isNaN(date.getTime())) return '—';
             return new Intl.DateTimeFormat('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: '2-digit'
+                day: '2-digit', month: '2-digit', year: '2-digit'
             }).format(date);
         }
 
         async function loadTeamData() {
-            try {
-                const snapshot = await database.ref('liga/stats').once('value');
-                const stats = snapshot.val() || {};
+            const snapshot = await database.ref('liga/stats').once('value');
+            const stats = snapshot.val() || {};
 
-                return teams.map(team => {
-                    let players = [];
+            return teams.map(team => {
+                let players = [];
 
-                    if (team.isGlobal) {
-                        const nonGlobalTeams = teams.filter(t => !t.isGlobal);
-                        players = nonGlobalTeams.map(t => {
-                            let tPlayed = 0, tWins = 0, tLosses = 0, tFramesWon = 0, tFramesLost = 0, tPts = 0;
-                            t.players.forEach(p => {
-                                const pStats = stats[p] || {};
-                                tPlayed += pStats.played || 0;
-                                tWins += pStats.wins || 0;
-                                tLosses += pStats.losses || 0;
-                                tFramesWon += pStats.framesWon || 0;
-                                tFramesLost += pStats.framesLost || 0;
-                                tPts += pStats.points || 0;
-                            });
-                            const tPerc = (tFramesWon + tFramesLost) > 0
-                                ? ((tFramesWon / (tFramesWon + tFramesLost)) * 100).toFixed(1) + '%'
-                                : '0.0%';
-                            return {
-                                name: t.name || `Equipo ${t.id}`,
-                                isTeam: true,
-                                played: tPlayed,
-                                wins: tWins,
-                                losses: tLosses,
-                                framesWon: tFramesWon,
-                                framesLost: tFramesLost,
-                                percFrames: tPerc,
-                                points: tPts
-                            };
+                if (team.isGlobal) {
+                    players = teams.filter(t => !t.isGlobal).map(t => {
+                        let tPlayed = 0, tWins = 0, tLosses = 0, tFW = 0, tFL = 0, tPts = 0;
+                        t.players.forEach(p => {
+                            const s = stats[p] || {};
+                            tPlayed += s.played || 0;
+                            tWins   += s.wins   || 0;
+                            tLosses += s.losses || 0;
+                            tFW     += s.framesWon  || 0;
+                            tFL     += s.framesLost || 0;
+                            tPts    += s.points || 0;
                         });
-                    } else {
-                        players = team.players.map(playerName => {
-                            const playerStats = stats[playerName] || {};
-                            const fW = playerStats.framesWon || 0;
-                            const fL = playerStats.framesLost || 0;
-                            const perc = (fW + fL) > 0
-                                ? ((fW / (fW + fL)) * 100).toFixed(1) + '%'
-                                : '0.0%';
-                            return {
-                                name: playerName,
-                                played: playerStats.played || 0,
-                                wins: playerStats.wins || 0,
-                                losses: playerStats.losses || 0,
-                                framesWon: fW,
-                                framesLost: fL,
-                                percFrames: perc,
-                                points: playerStats.points || 0
-                            };
-                        });
-                    }
+                        const perc = (tFW + tFL) > 0 ? ((tFW / (tFW + tFL)) * 100).toFixed(1) + '%' : '0.0%';
+                        return {
+                            name: t.name || `Equipo ${t.id}`,
+                            isTeam: true,
+                            played: tPlayed, wins: tWins, losses: tLosses,
+                            framesWon: tFW, framesLost: tFL, percFrames: perc, points: tPts
+                        };
+                    });
+                } else {
+                    players = team.players.map(playerName => {
+                        const s = stats[playerName] || {};
+                        const fW = s.framesWon  || 0;
+                        const fL = s.framesLost || 0;
+                        const perc = (fW + fL) > 0 ? ((fW / (fW + fL)) * 100).toFixed(1) + '%' : '0.0%';
+                        return {
+                            name: playerName,
+                            played: s.played || 0, wins: s.wins || 0, losses: s.losses || 0,
+                            framesWon: fW, framesLost: fL, percFrames: perc, points: s.points || 0
+                        };
+                    });
+                }
 
-                    players.sort((a, b) => b.points - a.points);
-
-                    return {
-                        id: team.id,
-                        name: team.name || `EQUIPO ${team.id}`,
-                        isGlobal: team.isGlobal,
-                        players
-                    };
-                });
-            } catch (error) {
-                console.error("Error cargando stats de liga:", error);
-                throw error;
-            }
+                players.sort((a, b) => b.points - a.points);
+                return { id: team.id, name: team.name || `EQUIPO ${team.id}`, isGlobal: team.isGlobal, players };
+            });
         }
 
-        function normalizeMatch(id, rawMatch) {
-            const raw = rawMatch || {};
-            const player1 = formatDisplayName(raw.player1);
-            const player2 = formatDisplayName(raw.player2);
+        function normalizeMatch(id, raw) {
+            raw = raw || {};
+            const player1  = formatDisplayName(raw.player1);
+            const player2  = formatDisplayName(raw.player2);
             const winnerId = formatDisplayName(raw.winnerId || raw.winner);
-            const loserId = formatDisplayName(raw.loserId || raw.loser);
+            const loserId  = formatDisplayName(raw.loserId  || raw.loser);
 
-            const normalized = {
-                id,
-                timestamp: raw.timestamp || 0,
-                winnerId,
-                loserId,
-                player1,
-                player2,
-                winnerTeam: raw.winnerTeam ?? null,
-                loserTeam: raw.loserTeam ?? null,
+            const m = {
+                id, timestamp: raw.timestamp || 0,
+                winnerId, loserId, player1, player2,
                 winnerFrames: raw.winnerFrames ?? null,
-                loserFrames: raw.loserFrames ?? null,
+                loserFrames:  raw.loserFrames  ?? null,
                 frames1: raw.frames1 ?? null,
                 frames2: raw.frames2 ?? null,
                 winnerPointsAwarded: raw.winnerPointsAwarded ?? null,
-                loserPointsAwarded: raw.loserPointsAwarded ?? null,
+                loserPointsAwarded:  raw.loserPointsAwarded  ?? null,
                 meritAwarded: Boolean(raw.merit_awarded),
                 raw
             };
 
-            if (!normalized.winnerId && player1 && player2 && raw.winner) {
-                normalized.winnerId = formatDisplayName(raw.winner);
-            }
-            if (!normalized.loserId && normalized.winnerId && player1 && player2) {
-                const winnerKey = normalizeName(normalized.winnerId);
-                normalized.loserId = normalizeName(player1) === winnerKey ? player2 : player1;
+            if (!m.loserId && m.winnerId && player1 && player2) {
+                const wk = normalizeName(m.winnerId);
+                m.loserId = normalizeName(player1) === wk ? player2 : player1;
             }
 
-            return normalized;
+            return m;
         }
 
         async function loadMatches() {
             try {
                 const snapshot = await database.ref('liga/matches').once('value');
-                const matches = snapshot.val() || {};
-                return Object.entries(matches)
-                    .map(([id, value]) => normalizeMatch(id, value))
+                const data = snapshot.val() || {};
+                return Object.entries(data)
+                    .map(([id, v]) => normalizeMatch(id, v))
                     .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-            } catch (error) {
-                console.error("Error cargando partidas:", error);
+            } catch (e) {
+                console.error("Error cargando partidas:", e);
                 return [];
             }
         }
@@ -880,32 +800,31 @@
                 return wrapper;
             }
 
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'player-name-btn';
-            button.textContent = playerName;
-            button.setAttribute('aria-label', `Ver historial de ${playerName}`);
-            button.addEventListener('click', (event) => {
-                event.stopPropagation();
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'player-name-btn';
+            btn.textContent = playerName;
+            btn.setAttribute('aria-label', `Ver historial de ${playerName}`);
+            btn.addEventListener('click', e => {
+                e.stopPropagation();
                 showPlayerHistory(playerName);
             });
-
-            wrapper.appendChild(button);
+            wrapper.appendChild(btn);
             return wrapper;
         }
 
         function renderTeam(index) {
             const team = teamData[index];
-            const tableHeaderName = document.getElementById('tableHeader').children[1];
+            const headerName = document.getElementById('tableHeader').children[1];
 
             if (team.isGlobal) {
                 teamTitle.innerText = 'GRUPO GLOBAL';
                 teamStats.innerText = 'Clasificación de Equipos';
-                tableHeaderName.innerText = 'Equipo';
+                headerName.innerText = 'Equipo';
             } else {
                 teamTitle.innerText = team.name || `EQUIPO ${team.id}`;
                 teamStats.innerText = `Grupo ${team.id} / ${teamData.length - 1}`;
-                tableHeaderName.innerText = 'Jugador';
+                headerName.innerText = 'Jugador';
             }
 
             playerList.innerHTML = '';
@@ -914,28 +833,31 @@
                 const li = document.createElement('li');
                 li.className = 'player-row';
 
+                // Rank
                 const rankDiv = document.createElement('div');
                 rankDiv.className = 'player-rank';
 
                 if (!team.isGlobal && (player.name === 'johnny' || player.name === 'artur')) {
                     rankDiv.classList.add('silhouette-effect');
-                    rankDiv.setAttribute('data-player', player.name);
                     const bgDiv = document.createElement('div');
                     bgDiv.className = 'silhouette-bg';
-                    if (player.name === 'johnny') bgDiv.style.backgroundImage = "url('/assets/players/johnnycard.png')";
-                    if (player.name === 'artur') bgDiv.style.backgroundImage = "url('/assets/players/artur.jpg')";
+                    bgDiv.style.backgroundImage = player.name === 'johnny'
+                        ? "url('/assets/players/johnnycard.png')"
+                        : "url('/assets/players/artur.jpg')";
                     rankDiv.appendChild(bgDiv);
-                    const numberSpan = document.createElement('span');
-                    numberSpan.className = 'player-number';
-                    numberSpan.textContent = i + 1;
-                    rankDiv.appendChild(numberSpan);
+                    const numSpan = document.createElement('span');
+                    numSpan.className = 'player-number';
+                    numSpan.textContent = i + 1;
+                    rankDiv.appendChild(numSpan);
                 } else {
                     rankDiv.textContent = i + 1;
                 }
-
                 li.appendChild(rankDiv);
+
+                // Name
                 li.appendChild(createNameCell(player.name, team.isGlobal));
 
+                // Anim
                 const animDiv = document.createElement('div');
                 animDiv.className = 'player-anim-cell';
                 if (!team.isGlobal && (player.name.toLowerCase() === 'johnny' || player.name.toLowerCase() === 'artur')) {
@@ -944,25 +866,21 @@
                         ? '../material/johnny_animation.mp4'
                         : '../material/artur_animation.mp4';
                     video.className = 'player-animation';
-                    video.autoplay = true;
-                    video.loop = true;
-                    video.muted = true;
-                    video.playsInline = true;
+                    video.autoplay = video.loop = video.muted = video.playsInline = true;
                     animDiv.appendChild(video);
                 }
                 li.appendChild(animDiv);
 
-                const metrics = [
-                    player.played, player.wins, player.losses,
-                    player.framesWon, player.framesLost, player.percFrames
-                ];
-                metrics.forEach(val => {
-                    const statDiv = document.createElement('div');
-                    statDiv.className = 'player-stat';
-                    statDiv.textContent = val;
-                    li.appendChild(statDiv);
-                });
+                // Stats
+                [player.played, player.wins, player.losses, player.framesWon, player.framesLost, player.percFrames]
+                    .forEach(val => {
+                        const d = document.createElement('div');
+                        d.className = 'player-stat';
+                        d.textContent = val;
+                        li.appendChild(d);
+                    });
 
+                // Pts
                 const ptsDiv = document.createElement('div');
                 ptsDiv.className = 'player-pts';
                 ptsDiv.textContent = player.points;
@@ -976,51 +894,42 @@
             const target = normalizeName(playerName);
 
             return ligaMatches
-                .filter(match => {
-                    const winnerKey = normalizeName(match.winnerId);
-                    const loserKey = normalizeName(match.loserId);
-                    const p1Key = normalizeName(match.player1);
-                    const p2Key = normalizeName(match.player2);
-                    return winnerKey === target || loserKey === target || p1Key === target || p2Key === target;
+                .filter(m => {
+                    return normalizeName(m.winnerId) === target
+                        || normalizeName(m.loserId)  === target
+                        || normalizeName(m.player1)  === target
+                        || normalizeName(m.player2)  === target;
                 })
-                .map(match => {
-                    const winnerKey = normalizeName(match.winnerId);
-                    const loserKey = normalizeName(match.loserId);
-                    const p1Key = normalizeName(match.player1);
-                    const p2Key = normalizeName(match.player2);
+                .map(m => {
+                    const wk = normalizeName(m.winnerId);
+                    const lk = normalizeName(m.loserId);
+                    const p1 = normalizeName(m.player1);
 
-                    let opponent = '', playerScore = null, opponentScore = null, isWinner = false, points = 0;
+                    let opponent, playerScore, opponentScore, isWinner;
 
-                    if (winnerKey || loserKey) {
-                        isWinner = winnerKey === target;
-                        opponent = isWinner ? (match.loserId || '—') : (match.winnerId || '—');
-                        playerScore = isWinner ? match.winnerFrames : match.loserFrames;
-                        opponentScore = isWinner ? match.loserFrames : match.winnerFrames;
-                        if (isWinner) {
-                            points = match.winnerPointsAwarded ?? 3;
-                        } else {
-                            points = (match.loserPointsAwarded !== null && match.loserPointsAwarded !== undefined)
-                                ? match.loserPointsAwarded
-                                : (match.meritAwarded ? 1 : 0);
-                        }
+                    if (wk || lk) {
+                        isWinner     = wk === target;
+                        opponent     = isWinner ? (m.loserId  || '—') : (m.winnerId || '—');
+                        playerScore  = isWinner ? m.winnerFrames : m.loserFrames;
+                        opponentScore = isWinner ? m.loserFrames : m.winnerFrames;
                     } else {
-                        const isPlayer1 = p1Key === target;
-                        opponent = isPlayer1 ? (match.player2 || '—') : (match.player1 || '—');
-                        playerScore = isPlayer1 ? match.frames1 : match.frames2;
-                        opponentScore = isPlayer1 ? match.frames2 : match.frames1;
-                        const rawWinner = normalizeName(match.raw.winner);
-                        isWinner = rawWinner ? rawWinner === target : Number(playerScore) > Number(opponentScore);
-                        points = isWinner ? 3 : (match.meritAwarded ? 1 : 0);
+                        const isP1   = p1 === target;
+                        opponent     = isP1 ? (m.player2 || '—') : (m.player1 || '—');
+                        playerScore  = isP1 ? m.frames1 : m.frames2;
+                        opponentScore = isP1 ? m.frames2 : m.frames1;
+                        const rw     = normalizeName(m.raw.winner);
+                        isWinner     = rw ? rw === target : Number(playerScore) > Number(opponentScore);
                     }
+
+                    const status = isWinner ? 'win' : (m.meritAwarded && normalizeName(m.loserId) === target ? 'merit' : 'loss');
 
                     return {
                         opponent,
-                        playerScore: playerScore ?? '—',
+                        playerScore:   playerScore   ?? '—',
                         opponentScore: opponentScore ?? '—',
-                        points,
-                        status: isWinner ? 'win' : (points === 1 ? 'merit' : 'loss'),
-                        date: formatDate(match.timestamp),
-                        timestamp: match.timestamp || 0
+                        status,
+                        date:      formatDate(m.timestamp),
+                        timestamp: m.timestamp || 0
                     };
                 })
                 .sort((a, b) => b.timestamp - a.timestamp);
@@ -1040,8 +949,9 @@
 
         function showPlayerHistory(playerName) {
             const rows = getPlayerHistoryRows(playerName);
+
             modalPlayerName.textContent = playerName.toUpperCase();
-            modalSubtitle.textContent = rows.length === 1
+            modalSubtitle.textContent   = rows.length === 1
                 ? '1 resultado histórico'
                 : `${rows.length} resultados históricos`;
 
@@ -1065,17 +975,12 @@
                 score.className = 'score';
                 score.textContent = `${item.playerScore} - ${item.opponentScore}`;
 
-                const pts = document.createElement('span');
-                pts.className = 'pts';
-                pts.textContent = item.points;
-
                 const date = document.createElement('span');
                 date.className = 'date';
                 date.textContent = item.date;
 
                 row.appendChild(opponent);
                 row.appendChild(score);
-                row.appendChild(pts);
                 row.appendChild(date);
 
                 historyList.appendChild(row);
@@ -1086,25 +991,20 @@
 
         async function init() {
             try {
-                [teamData, ligaMatches] = await Promise.all([
-                    loadTeamData(),
-                    loadMatches()
-                ]);
+                [teamData, ligaMatches] = await Promise.all([loadTeamData(), loadMatches()]);
                 renderTeamButtons();
                 renderTeam(currentTeamIndex);
                 loadingScreen.classList.add('hidden');
             } catch (error) {
                 console.error('Error loading team data:', error);
-                loadingScreen.innerHTML = '<div class="loading-text" style="font-size: 1rem;">Error cargando datos</div>';
+                loadingScreen.innerHTML = '<div class="loading-text" style="font-size:1rem;">Error cargando datos</div>';
             }
         }
 
         closeModal.addEventListener('click', closePlayerModal);
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) closePlayerModal();
-        });
-        window.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && modal.classList.contains('is-open')) closePlayerModal();
+        modal.addEventListener('click', e => { if (e.target === modal) closePlayerModal(); });
+        window.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && modal.classList.contains('is-open')) closePlayerModal();
         });
 
         init();
