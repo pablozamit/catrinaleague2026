@@ -13,7 +13,7 @@
             --white: #f5f5f5;
             --muted: #666;
             --felt: #1a4d2e;
-            
+
             --font-display: 'Cinzel', serif;
             --font-serif: 'EB Garamond', serif;
             --font-ui: 'Inter', sans-serif;
@@ -34,6 +34,10 @@
             min-height: 100vh;
         }
 
+        body.modal-open {
+            overflow: hidden;
+        }
+
         .header-section {
             padding: 4vw;
             background: var(--black);
@@ -47,7 +51,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 radial-gradient(ellipse at 20% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
                 radial-gradient(ellipse at 80% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 50%);
             opacity: 0.5;
@@ -146,10 +150,12 @@
         }
 
         .data-section {
+            position: relative;
             background-color: var(--black);
             color: var(--white);
             padding: 4vw;
             min-height: calc(100vh - 50vw);
+            overflow: hidden;
         }
 
         .bg-letters {
@@ -170,6 +176,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
+            gap: 16px;
             border-bottom: 1px solid rgba(255,255,255,0.2);
             padding-bottom: 2vw;
             margin-bottom: 3vw;
@@ -190,6 +197,7 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: rgba(255,255,255,0.5);
+            text-align: right;
         }
 
         .table-header {
@@ -207,9 +215,21 @@
             z-index: 2;
         }
 
-        .table-header span { text-align: center; }
-        .table-header span:nth-child(2) { text-align: left; }
-        .table-header span:nth-child(10) { text-align: right; }
+        .table-header span {
+            text-align: center;
+        }
+
+        .table-header span:nth-child(2) {
+            text-align: left;
+        }
+
+        .table-header span:nth-child(10) {
+            text-align: right;
+        }
+
+        .table-header span:nth-child(3) {
+            opacity: 0.5;
+        }
 
         .player-list {
             list-style: none;
@@ -224,12 +244,11 @@
             align-items: center;
             padding: 3vw 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s ease;
         }
 
         .player-row:hover {
-            background-color: rgba(212, 175, 55, 0.1);
+            background-color: rgba(212, 175, 55, 0.06);
         }
 
         .player-row:first-child .player-rank {
@@ -246,10 +265,8 @@
             background-position: center;
             background-repeat: no-repeat;
             transition: all 0.3s ease;
-            cursor: pointer;
         }
 
-        /* Estilos específicos para la prueba de Johnny y Artur */
         .player-rank.silhouette-effect {
             background-color: transparent;
             position: relative;
@@ -258,10 +275,7 @@
 
         .silhouette-bg {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background-size: cover;
             background-position: center;
             filter: grayscale(80%) brightness(0.5) contrast(2);
@@ -276,7 +290,6 @@
             transform: scale(1.03);
         }
 
-        /* Número legible sobre la silueta */
         .player-number {
             position: relative;
             z-index: 1;
@@ -286,149 +299,42 @@
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 1), -1px -1px 4px rgba(0, 0, 0, 1);
         }
 
-        @media (min-width: 768px) {
-            .player-number {
-                font-size: 1.8rem;
-            }
+        .player-name-cell {
+            min-width: 0;
         }
 
-        @media (min-width: 768px) {
-            .player-number {
-                font-size: 1.5rem;
-            }
-        }
-
-        /* Estilos para el modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
+        .player-name-btn {
+            all: unset;
+            display: block;
             width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.9);
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-content {
-            position: relative;
-            background-color: var(--black);
-            margin: auto;
-            padding: 30px;
-            border: 2px solid var(--gold);
-            width: 100%;
-            max-width: 600px;
-            border-radius: 12px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5), 0 0 15px rgba(212, 175, 55, 0.2);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            color: var(--white);
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .close:hover {
-            color: var(--gold);
-        }
-
-        .modal-player-name {
-            font-family: var(--font-display);
-            font-size: 2rem;
-            color: var(--gold);
-            margin-bottom: 20px;
-            text-align: center;
-            text-transform: uppercase;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-            padding-bottom: 10px;
-        }
-
-        .history-container {
-            margin-top: 10px;
-        }
-
-        .history-header-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            padding: 10px;
-            font-family: var(--font-ui);
-            font-size: 0.8rem;
-            color: var(--gold);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: bold;
-            border-bottom: 2px solid var(--gold);
-        }
-
-        .history-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .history-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            padding: 15px 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            align-items: center;
-            font-family: var(--font-ui);
-            font-size: 0.95rem;
-            color: var(--white);
-        }
-
-        .history-row:last-child {
-            border-bottom: none;
-        }
-
-        .history-row .opponent {
+            min-width: 0;
+            font-family: var(--font-serif);
+            font-size: 4vw;
             font-weight: 600;
-            text-transform: capitalize;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--white);
+            cursor: pointer;
+            transition: color 0.2s ease, opacity 0.2s ease;
         }
 
-        .history-row .score {
-            text-align: center;
-            font-family: var(--font-display);
+        .player-name-btn:hover,
+        .player-name-btn:focus-visible {
+            color: var(--gold-light);
+            opacity: 1;
         }
 
-        .history-row .pts {
-            text-align: center;
-            font-weight: bold;
+        .player-name-btn:focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 4px;
+            border-radius: 4px;
         }
 
-        .history-row.win {
-            border-left: 4px solid #4caf50;
-            background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, transparent 100%);
-        }
-
-        .history-row.loss {
-            border-left: 4px solid #f44336;
-            background: linear-gradient(90deg, rgba(244, 67, 54, 0.1) 0%, transparent 100%);
-        }
-
-        .history-row.merit {
-            border-left: 4px solid var(--gold);
-            background: linear-gradient(90deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
-        }
-
-        .no-matches {
-            padding: 30px;
-            text-align: center;
-            color: var(--muted);
-            font-style: italic;
-        }
-
-        .player-name {
+        .player-name-static {
+            display: block;
+            width: 100%;
+            min-width: 0;
             font-family: var(--font-serif);
             font-size: 4vw;
             font-weight: 600;
@@ -451,10 +357,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-        }
-
-        .table-header span:nth-child(3) {
-            opacity: 0.5;
         }
 
         .player-stat {
@@ -502,6 +404,172 @@
             50% { opacity: 1; }
         }
 
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.is-open {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: var(--black);
+            margin: auto;
+            padding: 30px;
+            border: 2px solid var(--gold);
+            width: 100%;
+            max-width: 760px;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5), 0 0 15px rgba(212, 175, 55, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: var(--white);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+            background: transparent;
+            border: 0;
+        }
+
+        .close:hover,
+        .close:focus-visible {
+            color: var(--gold);
+        }
+
+        .modal-player-name {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 8px;
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .modal-subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.65);
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .history-container {
+            margin-top: 10px;
+        }
+
+        .history-header-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 0.8fr 1.2fr;
+            gap: 10px;
+            padding: 10px;
+            font-family: var(--font-ui);
+            font-size: 0.78rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: bold;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .history-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .history-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 0.8fr 1.2fr;
+            gap: 10px;
+            padding: 15px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            align-items: center;
+            font-family: var(--font-ui);
+            font-size: 0.95rem;
+            color: var(--white);
+        }
+
+        .history-row:last-child {
+            border-bottom: none;
+        }
+
+        .history-row .opponent {
+            font-weight: 600;
+            text-transform: capitalize;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-row .score {
+            text-align: center;
+            font-family: var(--font-display);
+        }
+
+        .history-row .pts {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .history-row .date {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+        }
+
+        .history-row.win {
+            border-left: 4px solid #4caf50;
+            background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, transparent 100%);
+        }
+
+        .history-row.loss {
+            border-left: 4px solid #f44336;
+            background: linear-gradient(90deg, rgba(244, 67, 54, 0.1) 0%, transparent 100%);
+        }
+
+        .history-row.merit {
+            border-left: 4px solid var(--gold);
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
+        }
+
+        .no-matches {
+            padding: 30px;
+            text-align: center;
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        @media (max-width: 767px) {
+            .history-header-row,
+            .history-row {
+                grid-template-columns: 1.5fr 1fr 0.8fr;
+            }
+
+            .history-header-row span:last-child,
+            .history-row .date {
+                display: none;
+            }
+        }
+
         @media (min-width: 768px) {
             .title-main { font-size: 10rem; }
             .title-sub { font-size: 6rem; }
@@ -511,15 +579,19 @@
             .team-title { font-size: 3rem; }
             .team-stats { font-size: 0.8rem; }
             .table-header { font-size: 0.75rem; padding: 10px 0; letter-spacing: 0.08em; }
-            .table-header, .player-row {
+
+            .table-header,
+            .player-row {
                 grid-template-columns: 40px minmax(120px, 2fr) 60px repeat(6, 60px) 55px;
                 gap: 8px;
             }
+
             .player-rank { font-size: 1.4rem; }
-            .player-name { font-size: 1.1rem; }
+            .player-name-btn,
+            .player-name-static { font-size: 1.1rem; }
             .player-stat { font-size: 1.1rem; }
             .player-pts { font-size: 1.4rem; }
-            .player-number { font-size: 1.2rem; }
+            .player-number { font-size: 1.5rem; }
             .player-row { padding: 14px 0; }
             .player-animation { width: 50px; height: 35px; }
         }
@@ -540,7 +612,7 @@
                     LA CATRINA<br>POOL LEAGUE<br>TEMPORADA 1
                 </div>
             </div>
-            
+
             <div class="sub-meta">
                 Sistema de puntuación: Victoria (3 pts) · Punto de mérito (1 pt) · Derrota (0 pts)
             </div>
@@ -551,7 +623,7 @@
 
     <main class="data-section">
         <div class="bg-letters">TEAM</div>
-        
+
         <div class="team-header">
             <div class="team-title" id="teamTitle">EQUIPO 1</div>
             <div class="team-stats" id="teamStats">Grupo 1 / 6</div>
@@ -573,20 +645,20 @@
         <ul class="player-list" id="playerList"></ul>
     </main>
 
-    <div id="playerModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
+    <div id="playerModal" class="modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalPlayerName">
+            <button class="close" id="closeModal" aria-label="Cerrar historial">&times;</button>
             <div class="modal-player-name" id="modalPlayerName">NOMBRE</div>
+            <div class="modal-subtitle" id="modalSubtitle">Historial completo</div>
 
             <div class="history-container">
                 <div class="history-header-row">
                     <span>Oponente</span>
                     <span style="text-align: center;">Resultado</span>
                     <span style="text-align: center;">Pts</span>
+                    <span style="text-align: center;">Fecha</span>
                 </div>
-                <div id="historyList" class="history-list">
-                    <!-- Dinámico -->
-                </div>
+                <div id="historyList" class="history-list"></div>
             </div>
         </div>
     </div>
@@ -629,6 +701,41 @@
         const teamButtons = document.getElementById('teamButtons');
         const loadingScreen = document.getElementById('loadingScreen');
 
+        const modal = document.getElementById('playerModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalPlayerName = document.getElementById('modalPlayerName');
+        const modalSubtitle = document.getElementById('modalSubtitle');
+        const historyList = document.getElementById('historyList');
+
+        function normalizeName(value) {
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function formatDisplayName(value) {
+            return String(value || '').trim();
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '—';
+            const date = new Date(timestamp);
+            if (Number.isNaN(date.getTime())) return '—';
+
+            return new Intl.DateTimeFormat('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: '2-digit'
+            }).format(date);
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         async function loadTeamData() {
             try {
                 const snapshot = await database.ref('liga/stats').once('value');
@@ -636,11 +743,17 @@
 
                 return teams.map(team => {
                     let players = [];
-                    
+
                     if (team.isGlobal) {
                         const nonGlobalTeams = teams.filter(t => !t.isGlobal);
                         players = nonGlobalTeams.map(t => {
-                            let tPlayed=0, tWins=0, tLosses=0, tFramesWon=0, tFramesLost=0, tPts=0;
+                            let tPlayed = 0;
+                            let tWins = 0;
+                            let tLosses = 0;
+                            let tFramesWon = 0;
+                            let tFramesLost = 0;
+                            let tPts = 0;
+
                             t.players.forEach(p => {
                                 const pStats = stats[p] || {};
                                 tPlayed += pStats.played || 0;
@@ -650,7 +763,11 @@
                                 tFramesLost += pStats.framesLost || 0;
                                 tPts += pStats.points || 0;
                             });
-                            const tPerc = (tFramesWon + tFramesLost) > 0 ? ((tFramesWon / (tFramesWon + tFramesLost)) * 100).toFixed(1) + '%' : '0.0%';
+
+                            const tPerc = (tFramesWon + tFramesLost) > 0
+                                ? ((tFramesWon / (tFramesWon + tFramesLost)) * 100).toFixed(1) + '%'
+                                : '0.0%';
+
                             return {
                                 name: t.name || `Equipo ${t.id}`,
                                 isTeam: true,
@@ -668,7 +785,10 @@
                             const playerStats = stats[playerName] || {};
                             const fW = playerStats.framesWon || 0;
                             const fL = playerStats.framesLost || 0;
-                            const perc = (fW + fL) > 0 ? ((fW / (fW + fL)) * 100).toFixed(1) + '%' : '0.0%';
+                            const perc = (fW + fL) > 0
+                                ? ((fW / (fW + fL)) * 100).toFixed(1) + '%'
+                                : '0.0%';
+
                             return {
                                 name: playerName,
                                 played: playerStats.played || 0,
@@ -686,7 +806,7 @@
 
                     return {
                         id: team.id,
-                        name: team.name, // CORRECCIÓN AQUÍ
+                        name: team.name || `EQUIPO ${team.id}`,
                         isGlobal: team.isGlobal,
                         players
                     };
@@ -697,12 +817,67 @@
             }
         }
 
+        function normalizeMatch(id, rawMatch) {
+            const raw = rawMatch || {};
+
+            const player1 = formatDisplayName(raw.player1);
+            const player2 = formatDisplayName(raw.player2);
+            const winnerId = formatDisplayName(raw.winnerId || raw.winner);
+            const loserId = formatDisplayName(raw.loserId || raw.loser);
+
+            const normalized = {
+                id,
+                timestamp: raw.timestamp || 0,
+                winnerId,
+                loserId,
+                player1,
+                player2,
+                winnerTeam: raw.winnerTeam ?? null,
+                loserTeam: raw.loserTeam ?? null,
+                winnerFrames: raw.winnerFrames ?? null,
+                loserFrames: raw.loserFrames ?? null,
+                frames1: raw.frames1 ?? null,
+                frames2: raw.frames2 ?? null,
+                winnerPointsAwarded: raw.winnerPointsAwarded ?? null,
+                loserPointsAwarded: raw.loserPointsAwarded ?? null,
+                meritAwarded: Boolean(raw.merit_awarded),
+                raw: raw
+            };
+
+            if (!normalized.winnerId && player1 && player2 && raw.winner) {
+                normalized.winnerId = formatDisplayName(raw.winner);
+            }
+
+            if (!normalized.loserId && normalized.winnerId && player1 && player2) {
+                const winnerKey = normalizeName(normalized.winnerId);
+                normalized.loserId = normalizeName(player1) === winnerKey ? player2 : player1;
+            }
+
+            return normalized;
+        }
+
+        async function loadMatches() {
+            try {
+                const snapshot = await database.ref('liga/matches').once('value');
+                const matches = snapshot.val() || {};
+
+                return Object.entries(matches)
+                    .map(([id, value]) => normalizeMatch(id, value))
+                    .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            } catch (error) {
+                console.error("Error cargando partidas:", error);
+                return [];
+            }
+        }
+
         function renderTeamButtons() {
             teamButtons.innerHTML = '';
+
             teams.forEach((team, index) => {
                 const btn = document.createElement('button');
                 btn.className = `team-btn ${index === currentTeamIndex ? 'active' : ''}`;
                 btn.textContent = team.id;
+                btn.type = 'button';
                 btn.onclick = () => switchTeam(index);
                 teamButtons.appendChild(btn);
             });
@@ -714,58 +889,86 @@
             renderTeam(index);
         }
 
+        function createNameCell(playerName, isGlobal) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'player-name-cell';
+
+            if (isGlobal) {
+                const span = document.createElement('span');
+                span.className = 'player-name-static';
+                span.textContent = playerName;
+                wrapper.appendChild(span);
+                return wrapper;
+            }
+
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'player-name-btn';
+            button.textContent = playerName;
+            button.setAttribute('aria-label', `Ver historial de ${playerName}`);
+            button.addEventListener('click', (event) => {
+                event.stopPropagation();
+                showPlayerHistory(playerName);
+            });
+
+            wrapper.appendChild(button);
+            return wrapper;
+        }
+
         function renderTeam(index) {
             const team = teamData[index];
-            
+            const tableHeaderName = document.getElementById('tableHeader').children[1];
+
             if (team.isGlobal) {
-                teamTitle.innerText = `GRUPO GLOBAL`;
-                teamStats.innerText = `Clasificación de Equipos`;
-                document.getElementById('tableHeader').children[1].innerText = "Equipo";
+                teamTitle.innerText = 'GRUPO GLOBAL';
+                teamStats.innerText = 'Clasificación de Equipos';
+                tableHeaderName.innerText = 'Equipo';
             } else {
                 teamTitle.innerText = team.name || `EQUIPO ${team.id}`;
                 teamStats.innerText = `Grupo ${team.id} / ${teamData.length - 1}`;
-                document.getElementById('tableHeader').children[1].innerText = "Jugador";
+                tableHeaderName.innerText = 'Jugador';
             }
-    
+
             playerList.innerHTML = '';
+
             team.players.forEach((player, i) => {
                 const li = document.createElement('li');
                 li.className = 'player-row';
-                
-                if (!team.isGlobal) {
-                    li.onclick = () => showPlayerHistory(player.name);
-                }
 
-                // Rank
                 const rankDiv = document.createElement('div');
                 rankDiv.className = 'player-rank';
-                
+
                 if (!team.isGlobal && (player.name === 'johnny' || player.name === 'artur')) {
                     rankDiv.classList.add('silhouette-effect');
                     rankDiv.setAttribute('data-player', player.name);
+
                     const bgDiv = document.createElement('div');
                     bgDiv.className = 'silhouette-bg';
-                    if (player.name === 'johnny') bgDiv.style.backgroundImage = `url('/assets/players/johnnycard.png')`;
-                    if (player.name === 'artur') bgDiv.style.backgroundImage = `url('/assets/players/artur.jpg')`;
+
+                    if (player.name === 'johnny') bgDiv.style.backgroundImage = "url('/assets/players/johnnycard.png')";
+                    if (player.name === 'artur') bgDiv.style.backgroundImage = "url('/assets/players/artur.jpg')";
+
                     rankDiv.appendChild(bgDiv);
-                    rankDiv.innerHTML += `<span class="player-number">${i + 1}</span>`;
+
+                    const numberSpan = document.createElement('span');
+                    numberSpan.className = 'player-number';
+                    numberSpan.textContent = i + 1;
+                    rankDiv.appendChild(numberSpan);
                 } else {
                     rankDiv.textContent = i + 1;
                 }
+
                 li.appendChild(rankDiv);
-                
-                // Name
-                const nameDiv = document.createElement('div');
-                nameDiv.className = 'player-name';
-                nameDiv.textContent = player.name;
-                li.appendChild(nameDiv);
-                
-                // Anim
+                li.appendChild(createNameCell(player.name, team.isGlobal));
+
                 const animDiv = document.createElement('div');
                 animDiv.className = 'player-anim-cell';
+
                 if (!team.isGlobal && (player.name.toLowerCase() === 'johnny' || player.name.toLowerCase() === 'artur')) {
                     const video = document.createElement('video');
-                    video.src = player.name.toLowerCase() === 'johnny' ? '../material/johnny_animation.mp4' : '../material/artur_animation.mp4';
+                    video.src = player.name.toLowerCase() === 'johnny'
+                        ? '../material/johnny_animation.mp4'
+                        : '../material/artur_animation.mp4';
                     video.className = 'player-animation';
                     video.autoplay = true;
                     video.loop = true;
@@ -773,39 +976,154 @@
                     video.playsInline = true;
                     animDiv.appendChild(video);
                 }
+
                 li.appendChild(animDiv);
-                
-                // Metrics
+
                 const metrics = [
-                    player.played, player.wins, player.losses, 
-                    player.framesWon, player.framesLost, player.percFrames
+                    player.played,
+                    player.wins,
+                    player.losses,
+                    player.framesWon,
+                    player.framesLost,
+                    player.percFrames
                 ];
+
                 metrics.forEach(val => {
                     const statDiv = document.createElement('div');
                     statDiv.className = 'player-stat';
                     statDiv.textContent = val;
                     li.appendChild(statDiv);
                 });
-                
-                // Pts
+
                 const ptsDiv = document.createElement('div');
                 ptsDiv.className = 'player-pts';
                 ptsDiv.textContent = player.points;
                 li.appendChild(ptsDiv);
-                
+
                 playerList.appendChild(li);
             });
         }
 
-        async function loadMatches() {
-            try {
-                const snapshot = await database.ref('liga/matches').once('value');
-                const matches = snapshot.val() || {};
-                return Object.values(matches).sort((a, b) => b.timestamp - a.timestamp);
-            } catch (error) {
-                console.error("Error cargando partidas:", error);
-                return [];
+        function getPlayerHistoryRows(playerName) {
+            const target = normalizeName(playerName);
+
+            return ligaMatches
+                .filter(match => {
+                    const winnerKey = normalizeName(match.winnerId);
+                    const loserKey = normalizeName(match.loserId);
+                    const p1Key = normalizeName(match.player1);
+                    const p2Key = normalizeName(match.player2);
+
+                    return winnerKey === target || loserKey === target || p1Key === target || p2Key === target;
+                })
+                .map(match => {
+                    const winnerKey = normalizeName(match.winnerId);
+                    const loserKey = normalizeName(match.loserId);
+                    const p1Key = normalizeName(match.player1);
+                    const p2Key = normalizeName(match.player2);
+
+                    let opponent = '';
+                    let playerScore = null;
+                    let opponentScore = null;
+                    let isWinner = false;
+                    let points = 0;
+
+                    if (winnerKey || loserKey) {
+                        isWinner = winnerKey === target;
+                        opponent = isWinner ? (match.loserId || '—') : (match.winnerId || '—');
+                        playerScore = isWinner ? match.winnerFrames : match.loserFrames;
+                        opponentScore = isWinner ? match.loserFrames : match.winnerFrames;
+
+                        if (isWinner) {
+                            points = match.winnerPointsAwarded ?? 3;
+                        } else {
+                            if (match.loserPointsAwarded !== null && match.loserPointsAwarded !== undefined) {
+                                points = match.loserPointsAwarded;
+                            } else {
+                                points = match.meritAwarded ? 1 : 0;
+                            }
+                        }
+                    } else {
+                        const isPlayer1 = p1Key === target;
+                        opponent = isPlayer1 ? (match.player2 || '—') : (match.player1 || '—');
+                        playerScore = isPlayer1 ? match.frames1 : match.frames2;
+                        opponentScore = isPlayer1 ? match.frames2 : match.frames1;
+
+                        const rawWinner = normalizeName(match.raw.winner);
+                        isWinner = rawWinner ? rawWinner === target : Number(playerScore) > Number(opponentScore);
+                        points = isWinner ? 3 : (match.meritAwarded ? 1 : 0);
+                    }
+
+                    return {
+                        opponent,
+                        playerScore: playerScore ?? '—',
+                        opponentScore: opponentScore ?? '—',
+                        points,
+                        status: isWinner ? 'win' : (points === 1 ? 'merit' : 'loss'),
+                        date: formatDate(match.timestamp),
+                        timestamp: match.timestamp || 0
+                    };
+                })
+                .sort((a, b) => b.timestamp - a.timestamp);
+        }
+
+        function openModal() {
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('modal-open');
+        }
+
+        function closePlayerModal() {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+        }
+
+        function showPlayerHistory(playerName) {
+            const rows = getPlayerHistoryRows(playerName);
+
+            modalPlayerName.textContent = playerName.toUpperCase();
+            modalSubtitle.textContent = rows.length === 1
+                ? '1 resultado histórico'
+                : `${rows.length} resultados históricos`;
+
+            historyList.innerHTML = '';
+
+            if (rows.length === 0) {
+                historyList.innerHTML = '<div class="no-matches">Aún no ha jugado ninguna partida de liga.</div>';
+                openModal();
+                return;
             }
+
+            rows.forEach(item => {
+                const row = document.createElement('div');
+                row.className = `history-row ${item.status}`;
+
+                const opponent = document.createElement('span');
+                opponent.className = 'opponent';
+                opponent.textContent = item.opponent;
+
+                const score = document.createElement('span');
+                score.className = 'score';
+                score.textContent = `${item.playerScore} - ${item.opponentScore}`;
+
+                const pts = document.createElement('span');
+                pts.className = 'pts';
+                pts.textContent = item.points;
+
+                const date = document.createElement('span');
+                date.className = 'date';
+                date.textContent = item.date;
+
+                row.appendChild(opponent);
+                row.appendChild(score);
+                row.appendChild(pts);
+                row.appendChild(date);
+
+                historyList.appendChild(row);
+            });
+
+            openModal();
         }
 
         async function init() {
@@ -814,6 +1132,7 @@
                     loadTeamData(),
                     loadMatches()
                 ]);
+
                 renderTeamButtons();
                 renderTeam(currentTeamIndex);
                 loadingScreen.classList.add('hidden');
@@ -823,66 +1142,19 @@
             }
         }
 
-        function showPlayerHistory(playerName) {
-            const modal = document.getElementById('playerModal');
-            const modalTitle = document.getElementById('modalPlayerName');
-            const historyList = document.getElementById('historyList');
-            
-            modalTitle.textContent = playerName.toUpperCase();
-            historyList.innerHTML = '';
+        closeModal.addEventListener('click', closePlayerModal);
 
-            const playerMatches = ligaMatches.filter(m =>
-                (m.player1 && m.player1.toLowerCase() === playerName.toLowerCase()) ||
-                (m.player2 && m.player2.toLowerCase() === playerName.toLowerCase())
-            );
-
-            if (playerMatches.length === 0) {
-                historyList.innerHTML = '<div class="no-matches">Aún no ha jugado ninguna partida de liga.</div>';
-            } else {
-                playerMatches.forEach(match => {
-                    const p1 = (match.player1 || "").toLowerCase();
-                    const p2 = (match.player2 || "").toLowerCase();
-                    const targetPlayer = playerName.toLowerCase();
-
-                    const isPlayer1 = p1 === targetPlayer;
-                    const opponent = isPlayer1 ? match.player2 : match.player1;
-                    const playerScore = isPlayer1 ? match.frames1 : match.frames2;
-                    const opponentScore = isPlayer1 ? match.frames2 : match.frames1;
-
-                    const isWinner = match.winner && match.winner.toLowerCase() === targetPlayer;
-                    const pts = isWinner ? 3 : (match.merit_awarded && match.loser && match.loser.toLowerCase() === targetPlayer ? 1 : 0);
-
-                    const row = document.createElement('div');
-                    row.className = `history-row ${isWinner ? 'win' : (pts === 1 ? 'merit' : 'loss')}`;
-
-                    row.innerHTML = `
-                        <span class="opponent">${opponent}</span>
-                        <span class="score">${playerScore} - ${opponentScore}</span>
-                        <span class="pts">${pts}</span>
-                    `;
-
-                    historyList.appendChild(row);
-                });
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closePlayerModal();
             }
-            
-            modal.style.display = 'flex';
-        }
+        });
 
-        // Modal close logic
-        const modal = document.getElementById("playerModal");
-        const closeModal = document.getElementById("closeModal");
-
-        // Close when clicking on the X
-        closeModal.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        // Close when clicking outside the modal content
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+                closePlayerModal();
             }
-        }
+        });
 
         init();
     </script>
