@@ -54,20 +54,46 @@
 <body>
     <div id="interaction-overlay">
         <h2>PRESIONA PARA REPRODUCIR</h2>
-        <p>Debido a políticas del navegador, se requiere una interacción para activar el sonido.</p>
+        <p>Para activar el video con sonido a pantalla completa.</p>
     </div>
 
-    <div id="twitter-video-container">
-        <blockquote class="twitter-video" data-autoplay="true" data-theme="dark" data-lang="es">
-            <a href="https://twitter.com/x/status/2039712105838915907"></a>
-        </blockquote>
-    </div>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <video id="main-video" playsinline>
+        <source src="../ssstwitter.com_1775304662881.mp4" type="video/mp4">
+    </video>
+
+    <style>
+        #main-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+    </style>
+
     <script>
-        document.getElementById('interaction-overlay').addEventListener('click', function() {
-            this.style.display = 'none';
-            // The twitter widget should handle autoplay if it's already loaded
-            // or it will start once the overlay is gone and the user has interacted.
+        const video = document.getElementById('main-video');
+        const overlay = document.getElementById('interaction-overlay');
+        const videos = [
+            '../ssstwitter.com_1775304662881.mp4',
+            '../ssstwitter.com_1775304633916.mp4'
+        ];
+        let currentVideoIndex = 0;
+
+        overlay.addEventListener('click', function() {
+            overlay.style.display = 'none';
+            video.style.display = 'block';
+            video.play();
+        });
+
+        video.addEventListener('ended', function() {
+            currentVideoIndex++;
+            if (currentVideoIndex < videos.length) {
+                video.src = videos[currentVideoIndex];
+                video.play();
+            }
         });
     </script>
 </body>
