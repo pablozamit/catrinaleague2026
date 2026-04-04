@@ -27,7 +27,7 @@ const translations = {
         nav_videoteca: 'Videoteca',
         nav_coming_soon: 'Próximamente',
         nav_exam: 'Examen de la Liga',
-        instructions: 'Arrastra para rotar • Haz clic en las troneras, la televisión, el calendario, la caja de VHS o el periódico',
+        instructions: 'Arrastra para rotar • Haz clic en las troneras, la televisión, el calendario, la caja de VHS, el periódico o las cabinas telefónicas',
         
         // Laboratorio
         lab_title: 'Laboratorio',
@@ -368,7 +368,7 @@ const translations = {
         nav_videoteca: 'Video Library',
         nav_coming_soon: 'Coming Soon',
         nav_lab: 'Laboratory',
-        instructions: 'Drag to rotate • Click on pockets, the TV, the calendar, the VHS box or the newspaper',
+        instructions: 'Drag to rotate • Click on pockets, the TV, the calendar, the VHS box, the newspaper or the phone booths',
         
         // Laboratory
         lab_title: 'Laboratory',
