@@ -1099,10 +1099,10 @@
         redBooth.group.rotation.y = -0.35;
         scene.add(redBooth.group);
 
-        const blackBooth = createPhoneBooth(0x111111, 'ajendar');
-        blackBooth.group.position.set(-9.2, -4.3, -8.5);
-        blackBooth.group.rotation.y = 0.35;
-        scene.add(blackBooth.group);
+        const blueBooth = createPhoneBooth(0x0000aa, 'ajendar');
+        blueBooth.group.position.set(-9.2, -4.3, -8.5);
+        blueBooth.group.rotation.y = 0.35;
+        scene.add(blueBooth.group);
 
         let isDragging = false;
         let pointerMoved = false;
@@ -1130,7 +1130,7 @@
             ...tapes,
             ...newsPages.map(p => p.children[0]),
             ...redBooth.clickable,
-            ...blackBooth.clickable
+            ...blueBooth.clickable
         ];
 
         function setPointerFromClient(clientX, clientY) {
