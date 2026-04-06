@@ -113,7 +113,7 @@ const clasificaciones = {
     'erfan': 'C',
     'alexf': 'C',
     'katee': 'C',
-    'nica': 'C',
+    'ponci': 'C',
     'adri': 'C',
     'paul': 'C',
     'josh': 'C',
