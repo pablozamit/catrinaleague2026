@@ -3,1156 +3,560 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" id="favicon">
-    <title>Admin - La Catrina Pool League</title>
+    <title>Admin Liga - La Catrina</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --gold: #d4af37;
+            --black: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --white: #f5f5f5;
+            --error: #ff4444;
+            --success: #00c851;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            color: #fff;
-            min-height: 100vh;
-            padding: 20px;
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-            padding-top: 2rem;
-        }
-
-        h1 {
-            color: #d4af37;
-            font-size: 36px;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            color: #aaa;
-        }
-
-        .section {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 24px;
-            color: #d4af37;
-            margin-bottom: 20px;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
-            border: none;
-            border-radius: 8px;
-            color: #000;
-            font-weight: bold;
-            cursor: pointer;
-            margin-right: 12px;
-            margin-bottom: 12px;
-            transition: transform 0.2s ease;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Login form */
-        .login-protected {
-            display: none;
-        }
-
-        .login-form {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 12px;
-            padding: 32px;
-            max-width: 400px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .login-form h2 {
-            color: #d4af37;
-            margin-bottom: 24px;
-            font-size: 24px;
-        }
-
-        .login-form input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 16px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 16px;
-        }
-
-        .login-form input:focus {
-            outline: none;
-            border-color: #d4af37;
-        }
-
-        /* Admin content sections - only visible when authenticated */
-        .admin-only {
-            display: none;
-        }
-
-        .admin-visible {
-            display: block;
-        }
-
-        /* Admin match form styles */
-        .admin-match-section {
-            display: none;
-        }
-
-        .admin-match-section.visible {
-            display: block;
-        }
-
-        .form-row {
+        /* Login Overlay */
+        #login-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--black);
             display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .form-group {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #d4af37;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .form-group select, .form-group input {
-            width: 100%;
-            padding: 12px;
-            background: #0a0a0a;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 16px;
-        }
-
-        .form-group select:focus,
-        .form-group input:focus {
-            outline: none;
-            border-color: #d4af37;
-            background: #0a0a0a;
-        }
-
-        .form-group select option {
-            background: #0a0a0a;
-            color: #fff;
-        }
-
-        /* Winner selection with radio buttons */
-        .winner-selection {
-            margin-top: 16px;
-        }
-
-        .winner-option {
-            display: flex;
+            flex-direction: column;
             align-items: center;
-            padding: 16px 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 8px;
+            justify-content: center;
+            z-index: 1000;
         }
 
-        .winner-option:hover {
-            background: rgba(212, 175, 55, 0.1);
-            border-color: rgba(212, 175, 55, 0.5);
+        #login-overlay h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
+            margin-bottom: 2rem;
         }
 
-        .winner-option.selected {
-            background: rgba(212, 175, 55, 0.15);
-            border-color: #d4af37;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-        }
-
-        .winner-option input[type="radio"] {
-            margin-right: 12px;
-            accent-color: #d4af37;
-            transform: scale(1.2);
-        }
-
-        .winner-info {
-            margin-left: 8px;
-        }
-
-        .winner-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .winner-elo {
-            font-size: 14px;
-            color: #888;
-            margin-top: 2px;
-        }
-
-        /* Preview section */
-        .preview-section {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 16px;
-            display: none;
-        }
-
-        .preview-section.visible {
-            display: block;
-        }
-
-        .preview-title {
-            color: #d4af37;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        /* Status */
-        .status {
-            padding: 12px 16px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            margin-bottom: 16px;
-        }
-
-        .status.success {
-            background: rgba(74, 222, 128, 0.2);
-            border: 1px solid #4ade80;
-        }
-
-        .status.error {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid #ef4444;
-        }
-
-        .status.info {
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid #3b82f6;
-        }
-
-        .loading {
+        #login-overlay input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--gold);
+            background: var(--dark-gray);
+            color: white;
+            font-size: 1.2rem;
             text-align: center;
-            padding: 20px;
-            color: #aaa;
         }
 
-        /* Logout button */
-        .logout-btn {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-            background: transparent;
-            border: 1px solid #d4af37;
-            color: #d4af37;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .logout-btn:hover {
-            background: rgba(212, 175, 55, 0.1);
-        }
-
-        /* Leaderboard styles */
-        .period-select {
-            margin-bottom: 16px;
-        }
-
-        .period-select label {
-            display: block;
-            margin-bottom: 8px;
-            color: #d4af37;
-        }
-
-        .period-select select {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
-            color: #fff;
-        }
-
-        .leaderboard-container {
-            margin-top: 20px;
-        }
-
-        .leaderboard-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 8px;
+        /* Main Dashboard */
+        header {
+            padding: 1rem 2rem;
+            background: var(--dark-gray);
+            border-bottom: 2px solid var(--gold);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .leaderboard-item.champion {
-            border-color: #d4af37;
-            background: rgba(212, 175, 55, 0.1);
+        h1, h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--gold);
         }
 
-        .player-info {
+        .container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section {
+            background: var(--dark-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        th {
+            color: var(--gold);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        input[type="number"], input[type="text"] {
+            background: #000;
+            border: 1px solid #444;
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            width: 60px;
+        }
+
+        input[type="text"].wide {
+            width: 120px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+
+        .btn-gold { background: var(--gold); color: black; }
+        .btn-red { background: var(--error); color: white; }
+        .btn-blue { background: #33b5e5; color: white; }
+
+        .btn:hover { opacity: 0.8; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
         }
 
-        .rank {
-            font-weight: bold;
-            color: #d4af37;
-            min-width: 30px;
+        .form-group label {
+            font-size: 0.8rem;
+            color: var(--gold);
+            margin-bottom: 0.3rem;
         }
 
-        .wins {
-            color: #4ade80;
-            font-weight: bold;
+        .hidden { display: none !important; }
+
+        .status-msg {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 5px;
+            z-index: 2000;
         }
+        .status-success { background: var(--success); color: white; }
+        .status-error { background: var(--error); color: white; }
     </style>
 </head>
 <body>
+
+<div id="login-overlay">
+    <h1>PANEL ADMIN LIGA</h1>
+    <input type="password" id="admin-pass" placeholder="Contraseña..." onkeypress="if(event.key === 'Enter') checkPass()">
+    <p style="color: #666; margin-top: 1rem; font-size: 0.8rem;">Pulsa Enter para entrar</p>
+</div>
+
+<div id="admin-dashboard" class="hidden">
+    <header>
+        <h1>CATRINA LIGA ADMIN</h1>
+        <button class="btn btn-red" onclick="logout()">Cerrar Sesión</button>
+    </header>
+
     <div class="container">
-        <header>
-            <a href="../" class="logout-btn">← Volver</a>
-            <div style="position: absolute; top: 2rem; right: 2rem; display: flex; align-items: center; gap: 15px;">
-                <div id="langSelectorContainer"></div>
-                <div id="notificationBellContainer"></div>
-            </div>
-            <h1>Panel de Administración</h1>
-            <p class="subtitle">Sistema de Campeones - La Catrina Pool League</p>
-        </div>
 
-        <!-- Login Section - Only visible when not authenticated -->
-        <div id="loginSection" class="login-form">
-            <h2>🔐 Acceso Admin</h2>
-            <input type="email" id="adminEmail" placeholder="Email" />
-            <input type="password" id="adminPassword" placeholder="Contraseña" />
-            <button class="btn" onclick="adminLogin()">Entrar</button>
-            <div id="loginStatus"></div>
-        </div>
-
-        <!-- Admin Content - Only visible when authenticated -->
-        <div id="adminContent" class="admin-only">
-
-            <div class="section">
-                <div class="section-title">👑 Campeones</div>
-                <button class="btn" onclick="awardChampions('daily')">Campeón del Día (Ayer)</button>
-                <button class="btn" onclick="awardChampions('weekly')">Campeón de la Semana (Semana Pasada)</button>
-                <button class="btn" onclick="awardChampions('monthly')">Campeón del Mes (Mes Pasado)</button>
-                <button class="btn" onclick="awardChampions('quarterly')">Campeón del Trimestre (Trimestre Pasado)</button>
-                <button class="btn" onclick="awardChampions('yearly')">Campeón del Año (Año Pasado)</button>
-                <div id="awardStatus"></div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">➕ Añadir Partido Manualmente</div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Jugador 1:</label>
-                        <select id="player1" onchange="updateWinnerOptions()">
-                            <option value="">Seleccionar...</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Jugador 2:</label>
-                        <select id="player2" onchange="updateWinnerOptions()">
-                            <option value="">Seleccionar...</option>
-                        </select>
-                    </div>
+        <!-- SECCIÓN: NUEVO PARTIDO -->
+        <div class="section">
+            <h2>Registrar Nuevo Partido</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>ID Ganador</label>
+                    <input type="text" id="new-winner-id" class="wide" placeholder="ej: erfan">
                 </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Tipo de Partido:</label>
-                        <select id="matchType" onchange="updatePreview()">
-                            <option value="rey_mesa">Rey de la Mesa (×1.0)</option>
-                            <option value="torneo">Torneo (×1.5)</option>
-                            <option value="liga_grupos">Liga - Fase de Grupos (×2.0)</option>
-                            <option value="liga_finales">Liga - Playoffs (×2.5)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Marcador Final:</label>
-                        <div style="display: flex; gap: 8px;">
-                            <div style="flex: 1;">
-                                <label style="font-size: 12px; color: #888;">Ganador</label>
-                                <input type="number" id="winnerScore" value="3" min="1" max="3" onchange="updatePreview()">
-                            </div>
-                            <div style="flex: 1;">
-                                <label style="font-size: 12px; color: #888;">Perdedor</label>
-                                <input type="number" id="loserScore" value="0" min="0" max="2" onchange="updatePreview()">
-                            </div>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label>ID Perdedor</label>
+                    <input type="text" id="new-loser-id" class="wide" placeholder="ej: charles">
                 </div>
-                
-                <div class="winner-section">
-                    <div style="color: #d4af37; font-weight: 600; margin:16px 0 8px; font-size: 14px;">Ganador:</div>
-                    <div id="winnerOptions">
-                        <div class="status info">Selecciona ambos jugadores primero</div>
-                    </div>
+                <div class="form-group">
+                    <label>Frames Ganador</label>
+                    <input type="number" id="new-winner-frames" value="3">
                 </div>
-                
-                <div id="adminMatchPreview" class="preview-section">
-                    <div class="preview-title">📊 Previsualización ELO:</div>
-                    <div id="adminMatchPreviewContent"></div>
+                <div class="form-group">
+                    <label>Frames Perdedor</label>
+                    <input type="number" id="new-loser-frames" value="0">
                 </div>
-                
-                <button class="btn" onclick="addAdminMatch()">➕ Añadir Partido</button>
-                <div id="adminMatchStatus"></div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">📊 Ranking Actual</div>
-                
-                <div class="period-select">
-                    <label for="periodType">Seleccionar período:</label>
-                    <select id="periodType" onchange="loadCurrentLeaderboard()">
-                        <option value="daily">Hoy</option>
-                        <option value="weekly" selected>Esta Semana</option>
-                        <option value="monthly">Este Mes</option>
-                        <option value="quarterly">Este Trimestre</option>
-                        <option value="yearly">Este Año</option>
-                    </select>
+                <div class="form-group">
+                    <label>Puntos Ganador</label>
+                    <input type="number" id="new-winner-pts" value="3">
                 </div>
-                
-                <div id="leaderboardContainer">
-                    <div class="loading">Selecciona un período para ver el ranking</div>
+                <div class="form-group">
+                    <label>Puntos Perdedor</label>
+                    <input type="number" id="new-loser-pts" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Equipo Ganador (1-6)</label>
+                    <input type="number" id="new-winner-team" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Equipo Perdedor (1-6)</label>
+                    <input type="number" id="new-loser-team" value="1">
                 </div>
             </div>
-
-            <div class="section">
-                <div class="section-title">📋 Historial de Partidos</div>
-                <button class="btn" onclick="loadAllMatches()">🔄 Cargar Partidos</button>
-                <div id="matchesContainer">
-                    <div class="loading">Haz clic para cargar el historial de partidos</div>
-                </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="btn btn-gold" onclick="createNewMatch()">Añadir Partido</button>
+                <label style="font-size: 0.8rem; color: #aaa;">
+                    <input type="checkbox" id="auto-update-stats" checked>
+                    Actualizar estadísticas automáticamente
+                </label>
             </div>
         </div>
+
+        <!-- SECCIÓN: JUGADORES -->
+        <div class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Estadísticas de Jugadores</h2>
+                <button class="btn btn-blue" onclick="loadData()">Refrescar Datos</button>
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="players-table">
+                    <thead>
+                        <tr>
+                            <th>Jugador</th>
+                            <th>PJ</th>
+                            <th>PG</th>
+                            <th>PP</th>
+                            <th>JG</th>
+                            <th>JP</th>
+                            <th>Pts</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="players-body">
+                        <!-- Cargando... -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: PARTIDOS -->
+        <div class="section">
+            <h2>Historial de Partidos</h2>
+            <div style="overflow-x: auto;">
+                <table id="matches-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Ganador</th>
+                            <th>Perdedor</th>
+                            <th>Resultado</th>
+                            <th>Puntos G/P</th>
+                            <th>Equipos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matches-body">
+                        <!-- Cargando... -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
-    <!-- App Scripts -->
-    <script src="../js/translations.js"></script>
-    <script src="../js/firebase.js"></script>
-    <script src="../js/badges.js"></script>
-    <script src="../js/notifications.js"></script>
-
-    <script>
-        // Admin credentials (in production, these should be stored securely)
-        const ADMIN_USERS = {
-            'pablozamit@gmail.com': 'password123' // TEMPORARY - CHANGE IN PRODUCTION!
-        };
-
-        let isAdminAuthenticated = false;
-
-        // Check authentication on page load
-        function checkAdminAuth() {
-            const userStr = localStorage.getItem('adminAuth');
-            if (userStr) {
-                const userData = JSON.parse(userStr);
-                if (userData.isAuthenticated && Date.now() < userData.expiresAt) {
-                    isAdminAuthenticated = true;
-                    showAdminContent();
-                }
-            }
-        }
-
-        // Admin login
-        async function adminLogin() {
-            const email = document.getElementById('adminEmail').value.trim();
-            const password = document.getElementById('adminPassword').value.trim();
-            const statusDiv = document.getElementById('loginStatus');
-
-            if (!email || !password) {
-                statusDiv.innerHTML = '<div class="status error">❌ Ingresa email y contraseña</div>';
-                return;
-            }
-
-            statusDiv.innerHTML = '<div class="status info">⏳ Verificando...</div>';
-
-            // Check credentials
-            if (ADMIN_USERS[email] && ADMIN_USERS[email] === password) {
-                isAdminAuthenticated = true;
-                
-                // Save auth state
-                const userData = {
-                    isAuthenticated: true,
-                    expiresAt: Date.now() + (24 * 60 * 60 * 1000), // 24 hours
-                    email: email
-                };
-                localStorage.setItem('adminAuth', JSON.stringify(userData));
-                
-                showAdminContent();
-                statusDiv.innerHTML = '<div class="status success">✅ Acceso concedido</div>';
-                
-                // Clear login form
-                document.getElementById('adminEmail').value = '';
-                document.getElementById('adminPassword').value = '';
-                
-            } else {
-                statusDiv.innerHTML = '<div class="status error">❌ Credenciales incorrectas</div>';
-            }
-        }
-
-        // Logout
-        function adminLogout() {
-            isAdminAuthenticated = false;
-            localStorage.removeItem('adminAuth');
-            location.reload();
-        }
-
-        // Show admin content
-        function showAdminContent() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('adminContent').classList.remove('admin-only');
-            document.getElementById('adminContent').classList.add('admin-visible');
-            
-            // Load admin functions from firebase.js
-            // Wait for Firebase to be ready before loading data
-            waitForFirebase().then(() => {
-                loadAdminMatchUsers();
-                loadCurrentLeaderboard();
-            });
-        }
-
-        // Load users for admin match form
-        let allUsersData = [];
-
-        async function loadAdminMatchUsers() {
-            try {
-                // Check if database is available
-                if (typeof database === 'undefined' || !database.ref) {
-                    console.error('Firebase database not initialized');
-                    return;
-                }
-                
-                const usersSnap = await database.ref('users').once('value');
-                const users = usersSnap.val();
-                
-                if (!users) return;
-                
-                // Sort by username
-                allUsersData = Object.entries(users).map(([uid, user]) => ({
-                    uid,
-                    ...user
-                })).sort((a, b) => a.username.localeCompare(b.username));
-                
-                // Populate player selects
-                const player1Select = document.getElementById('player1');
-                const player2Select = document.getElementById('player2');
-                
-                player1Select.innerHTML = '<option value="">Seleccionar...</option>';
-                player2Select.innerHTML = '<option value="">Seleccionar...</option>';
-                
-                allUsersData.forEach(user => {
-                    const option1 = document.createElement('option');
-                    option1.value = user.uid;
-                    option1.textContent = user.username;
-                    player1Select.appendChild(option1);
-                    
-                    const option2 = document.createElement('option');
-                    option2.value = user.uid;
-                    option2.textContent = user.username;
-                    player2Select.appendChild(option2);
-                });
-                
-                console.log('✅ Loaded', allUsersData.length, 'users for admin match form');
-                
-            } catch (error) {
-                console.error('Error loading users:', error);
-            }
-        }
-
-        // Update winner options when both players are selected
-        function updateWinnerOptions() {
-            const player1Id = document.getElementById('player1').value;
-            const player2Id = document.getElementById('player2').value;
-            const winnerContainer = document.getElementById('winnerOptions');
-            
-            if (!player1Id || !player2Id) {
-                winnerContainer.innerHTML = '<div class="status info">Selecciona ambos jugadores primero</div>';
-                return;
-            }
-            
-            if (player1Id === player2Id) {
-                winnerContainer.innerHTML = '<div class="status error">Los jugadores deben ser diferentes</div>';
-                return;
-            }
-            
-            // Create radio button options for winner selection
-            const player1 = allUsersData.find(u => u.uid === player1Id);
-            const player2 = allUsersData.find(u => u.uid === player2Id);
-            
-            if (!player1 || !player2) return;
-            
-            winnerContainer.innerHTML = `
-                <div class="winner-option" onclick="selectWinner('${player1.uid}')">
-                    <input type="radio" name="winner" value="${player1.uid}">
-                    <div class="winner-info">
-                        <div class="winner-name">${player1.username}</div>
-                        <div class="winner-elo">ELO: ${player1.elo_rating || 1200}</div>
-                    </div>
-                </div>
-                <div class="winner-option" onclick="selectWinner('${player2.uid}')">
-                    <input type="radio" name="winner" value="${player2.uid}">
-                    <div class="winner-info">
-                        <div class="winner-name">${player2.username}</div>
-                        <div class="winner-elo">ELO: ${player2.elo_rating || 1200}</div>
-                    </div>
-                </div>
-            `;
-            
-            updatePreview();
-        }
-
-        // Select winner
-        function selectWinner(playerId) {
-            // Update visual selection
-            document.querySelectorAll('.winner-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-            
-            event.currentTarget.classList.add('selected');
-            
-            // Update selected radio button
-            const radioButton = event.currentTarget.querySelector('input[type="radio"]');
-            radioButton.checked = true;
-            
-            console.log('🎯 Selected winner:', playerId);
-            updatePreview();
-        }
-
-        // Get selected winner
-        function getSelectedWinner() {
-            const selectedRadio = document.querySelector('input[name="winner"]:checked');
-            return selectedRadio ? selectedRadio.value : null;
-        }
-
-        // Update ELO preview
-        async function updatePreview() {
-            const player1Id = document.getElementById('player1').value;
-            const player2Id = document.getElementById('player2').value;
-            const winnerId = getSelectedWinner();
-            const matchType = document.getElementById('matchType').value;
-            const winnerScore = parseInt(document.getElementById('winnerScore').value) || 3;
-            const loserScore = parseInt(document.getElementById('loserScore').value) || 0;
-            const statusDiv = document.getElementById('adminMatchStatus');
-            
-            if (!player1Id || !player2Id || !winnerId) {
-                document.getElementById('adminMatchPreview').classList.remove('visible');
-                return;
-            }
-            
-            if (player1Id === player2Id) {
-                return;
-            }
-            
-            try {
-                const player1 = allUsersData.find(u => u.uid === player1Id);
-                const player2 = allUsersData.find(u => u.uid === player2Id);
-                const winner = allUsersData.find(u => u.uid === winnerId);
-                const loser = winnerId === player1Id ? player2 : player1;
-                
-                if (!player1 || !player2 || !winner) return;
-                
-                const winnerElo = winner.elo_rating || 1200;
-                const loserElo = loser.elo_rating || 1200;
-                const winnerMatches = winner.matches_played || 0;
-                const loserMatches = loser.matches_played || 0;
-                
-                // Calculate ELO changes
-                const changes = calculateMatchEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType);
-                
-                document.getElementById('adminMatchPreview').classList.add('visible');
-                document.getElementById('adminMatchPreviewContent').innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
-                        <div>
-                            <strong>${player1.username}:</strong> ${winnerElo} → ${winnerId === player1Id ? changes.winnerElo : changes.loserElo} (${winnerId === player1Id ? changes.winnerChange : changes.loserChange >= 0 ? '+' : ''}${winnerId === player1Id ? changes.winnerChange : changes.loserChange})
-                        </div>
-                        <div style="color: #d4af37;">vs</div>
-                        <div>
-                            <strong>${player2.username}:</strong> ${loserElo} → ${winnerId === player2Id ? changes.winnerElo : changes.loserElo} (${winnerId === player2Id ? changes.winnerChange : changes.loserChange >= 0 ? '+' : ''}${winnerId === player2Id ? changes.winnerChange : changes.loserChange})
-                        </div>
-                    </div>
-                `;
-                
-            } catch (error) {
-                console.error('Error updating preview:', error);
-            }
-        }
-
-        // Add admin match
-        async function addAdminMatch() {
-            const player1Id = document.getElementById('player1').value;
-            const player2Id = document.getElementById('player2').value;
-            const winnerId = getSelectedWinner();
-            const matchType = document.getElementById('matchType').value;
-            const winnerScore = parseInt(document.getElementById('winnerScore').value) || 3;
-            const loserScore = parseInt(document.getElementById('loserScore').value) || 0;
-            const statusDiv = document.getElementById('adminMatchStatus');
-            
-            // Validation
-            if (!player1Id || !player2Id) {
-                statusDiv.innerHTML = '<div class="status error">❌ Selecciona ambos jugadores</div>';
-                return;
-            }
-            
-            if (player1Id === player2Id) {
-                statusDiv.innerHTML = '<div class="status error">❌ Los jugadores deben ser diferentes</div>';
-                return;
-            }
-            
-            if (!winnerId) {
-                statusDiv.innerHTML = '<div class="status error">❌ Selecciona el ganador</div>';
-                return;
-            }
-            
-            statusDiv.innerHTML = '<div class="status info">⏳ Añadiendo partido...</div>';
-            
-            try {
-                const player1 = allUsersData.find(u => u.uid === player1Id);
-                const player2 = allUsersData.find(u => u.uid === player2Id);
-                const winner = allUsersData.find(u => u.uid === winnerId);
-                const loser = winnerId === player1Id ? player2 : player1;
-                
-                const winnerElo = winner.elo_rating || 1200;
-                const loserElo = loser.elo_rating || 1200;
-                const winnerMatches = winner.matches_played || 0;
-                const loserMatches = loser.matches_played || 0;
-                
-                // Calculate ELO changes
-                const changes = calculateMatchEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType);
-                
-                // Create match data
-                const matchData = {
-                    player1_id: player1Id,
-                    player1_username: player1.username,
-                    player2_id: player2Id,
-                    player2_username: player2.username,
-                    winner_id: winnerId,
-                    match_type: matchType,
-                    status: 'confirmed',
-                    confirmed_at: Date.now(),
-                    confirmed_hour: new Date().getHours(),
-                    confirmed_minute: new Date().getMinutes(),
-                    confirmed_day_of_week: new Date().getDay(),
-                    is_weekend: new Date().getDay() === 0 || new Date().getDay() === 6,
-                    player1_score: winnerId === player1Id ? winnerScore : loserScore,
-                    player2_score: winnerId === player2Id ? winnerScore : loserScore,
-                    winner_score: winnerScore,
-                    loser_score: loserScore,
-                    winner_elo_change: changes.winnerChange,
-                    loser_elo_change: changes.loserChange,
-                    winner_new_elo: changes.winnerElo,
-                    loser_new_elo: changes.loserElo,
-                    created_at: Date.now(),
-                    submitted_by: 'admin',
-                    submitted_at: Date.now(),
-                    admin_match: true
-                };
-                
-                // Save match to Firebase
-                const matchRef = await database.ref('matches').push(matchData);
-                
-                // Update both players' stats
-                await database.ref(`users/${winnerId}/elo_rating`).set(changes.winnerElo);
-                await database.ref(`users/${loser.uid}/elo_rating`).set(changes.loserElo);
-                
-                // Update matches played
-                await database.ref(`users/${winnerId}/matches_played`).set(winnerMatches + 1);
-                await database.ref(`users/${loser.uid}/matches_played`).set(loserMatches + 1);
-                
-                // Update matches won for winner
-                await database.ref(`users/${winnerId}/matches_won`).set((winner.matches_won || 0) + 1);
-                
-                statusDiv.innerHTML = `
-                    <div class="status success">
-                        ✅ Partido añadido: ${player1.username} vs ${player2.username}
-                        <br>Resultado: ${winnerScore}-${loserScore}, Ganador: ${winner.username}
-                        <br>${winner.username}: ${winnerElo} → ${changes.winnerElo} (${changes.winnerChange >= 0 ? '+' : ''}${changes.winnerChange})
-                        <br>${loser.username}: ${loserElo} → ${changes.loserElo} (${changes.loserChange >= 0 ? '+' : ''}${changes.loserChange})
-                    </div>
-                `;
-                
-                // Reset form
-                document.getElementById('player1').selectedIndex = 0;
-                document.getElementById('player2').selectedIndex = 0;
-                document.getElementById('winnerOptions').innerHTML = '<div class="status info">Selecciona ambos jugadores primero</div>';
-                document.getElementById('adminMatchPreview').classList.remove('visible');
-                document.getElementById('winnerScore').value = 3;
-                document.getElementById('loserScore').value = 0;
-                document.getElementById('matchType').selectedIndex = 0;
-                
-                console.log('✅ Admin match added by admin');
-                
-            } catch (error) {
-                console.error('Error adding admin match:', error);
-                statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
-            }
-        }
-
-        // Award champions
-        async function awardChampions(periodType) {
-            const statusDiv = document.getElementById('awardStatus');
-            statusDiv.innerHTML = '<div class="status info">⏳ Calculando...</div>';
-            
-            try {
-                const result = await awardChampionBadges(periodType);
-                
-                if (!result) {
-                    statusDiv.innerHTML = '<div class="status error">❌ No hay datos para este período</div>';
-                    return;
-                }
-                
-                const championNames = result.champions.map(c => c.username).join(', ');
-                let message = `${championNames} (${result.maxWins} victorias)`;
-                
-                statusDiv.innerHTML = `<div class="status success">✅ ${message}</div>`;
-                
-            } catch (error) {
-                console.error('Error awarding champions:', error);
-                statusDiv.innerHTML = `<div class="status error">❌ Error: ${error.message}</div>`;
-            }
-        }
-
-        // Load current leaderboard
-        async function loadCurrentLeaderboard() {
-            const periodType = document.getElementById('periodType').value;
-            const container = document.getElementById('leaderboardContainer');
-            
-            container.innerHTML = '<div class="loading">Cargando...</div>';
-            
-            try {
-                const { leaders, periodKey } = await getCurrentLeaderboard(periodType);
-                
-                if (leaders.length === 0) {
-                    container.innerHTML = '<div class="loading">No hay datos para este período</div>';
-                    return;
-                }
-                
-                const maxWins = Math.max(...leaders.map(l => l.wins));
-                
-                const html = `
-                    <div style="margin-bottom: 16px; color: #aaa;">
-                        Periodo: <strong style="color: #d4af37;">${periodKey}</strong>
-                    </div>
-                    ${leaders.map((leader, index) => `
-                        <div class="leaderboard-item ${leader.wins === maxWins ? 'champion' : ''}">
-                            <div class="player-info">
-                                <span class="rank">#${index + 1}</span>
-                                <span>${leader.username}</span>
-                                ${leader.wins === maxWins ? '<span style="color: #d4af37;">👑</span>' : ''}
-                            </div>
-                            <span class="wins">${leader.wins} victorias</span>
-                        </div>
-                    `).join('')}
-                `;
-                
-                container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Error loading leaderboard:', error);
-                container.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
-            }
-        }
-
-        // Load all matches
-        async function loadAllMatches() {
-            const container = document.getElementById('matchesContainer');
-            container.innerHTML = '<div class="loading">Cargando partidos...</div>';
-            
-            try {
-                // Check if database is available
-                if (typeof database === 'undefined' || !database.ref) {
-                    container.innerHTML = '<div class="status error">❌ Firebase no está inicializado</div>';
-                    return;
-                }
-                
-                const matchesSnap = await database.ref('matches').orderByChild('timestamp').once('value');
-                const matches = matchesSnap.val();
-                
-                if (!matches) {
-                    container.innerHTML = '<div class="loading">No hay partidos registrados</div>';
-                    return;
-                }
-                
-                // Convert to array and sort by timestamp (newest first)
-                // Filter out hidden matches
-                const matchesArray = Object.entries(matches)
-                    .filter(([matchId, match]) => !match.hidden)
-                    .map(([matchId, match]) => ({ matchId, ...match }))
-                    .sort((a, b) => b.timestamp - a.timestamp);
-                
-                const html = `
-                    <div style="margin-bottom: 16px; color: #aaa;">
-                        Total: <strong style="color: #d4af37;">${matchesArray.length}</strong> partidos
-                    </div>
-                    ${matchesArray.map(match => {
-                        const date = new Date(match.timestamp).toLocaleString();
-                        const winner = match.winner_username || 'Desconocido';
-                        const loser = match.player1_username === winner ? match.player2_username : match.player1_username;
-                        
-                        return `
-                            <div class="leaderboard-item" style="margin-bottom: 12px; padding: 12px; position: relative;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                                    <div>
-                                        <strong>${winner}</strong> vs ${loser}
-                                        <br>
-                                        <span style="color: #888; font-size: 12px;">${date}</span>
-                                        <br>
-                                        <span style="color: ${match.winner_elo_change >= 0 ? '#4ade80' : '#ef4444'}">
-                                            ${winner}: ${match.winner_elo_change >= 0 ? '+' : ''}${match.winner_elo_change}
-                                        </span>
-                                        <span style="color: ${match.loser_elo_change >= 0 ? '#4ade80' : '#ef4444'}; margin-left: 10px;">
-                                            ${loser}: ${match.loser_elo_change >= 0 ? '+' : ''}${match.loser_elo_change}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <button class="btn" style="padding: 6px 12px; font-size: 12px;" 
-                                                onclick="deleteMatch('${match.matchId}', '${winner}', '${loser}', ${match.winner_elo_before}, ${match.loser_elo_before}, ${match.winner_elo_after}, ${match.loser_elo_after})">
-                                            🗑️ Eliminar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }).join('')}
-                `;
-                
-                container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Error loading matches:', error);
-                container.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
-            }
-        }
-
-        // Delete a match and revert ELO changes
-        async function deleteMatch(matchId, winnerUsername, loserUsername, winnerOldElo, loserOldElo, winnerNewElo, loserNewElo) {
-            if (!confirm(`¿Estás seguro de eliminar este partido?\n${winnerUsername} vs ${loserUsername}`)) {
-                return;
-            }
-            
-            const container = document.getElementById('matchesContainer');
-            container.innerHTML = '<div class="loading">Eliminando partido...</div>';
-            
-            try {
-                // Check if database is available
-                if (typeof database === 'undefined' || !database.ref) {
-                    container.innerHTML = '<div class="status error">❌ Firebase no está inicializado</div>';
-                    return;
-                }
-                
-                // Get users by username
-                const winnerSnap = await database.ref('users').orderByChild('username').equalTo(winnerUsername).once('value');
-                const loserSnap = await database.ref('users').orderByChild('username').equalTo(loserUsername).once('value');
-                
-                const winner = Object.entries(winnerSnap.val() || {}).map(([uid, user]) => ({ uid, ...user }))[0];
-                const loser = Object.entries(loserSnap.val() || {}).map(([uid, user]) => ({ uid, ...user }))[0];
-                
-                if (!winner || !loser) {
-                    container.innerHTML = '<div class="status error">❌ No se encontraron los usuarios</div>';
-                    return;
-                }
-                
-                // Revert ELO changes
-                await database.ref(`users/${winner.uid}/elo_rating`).set(winnerOldElo);
-                await database.ref(`users/${loser.uid}/elo_rating`).set(loserOldElo);
-                
-                // Decrement matches played
-                await database.ref(`users/${winner.uid}/matches_played`).set((winner.matches_played || 0) - 1);
-                await database.ref(`users/${loser.uid}/matches_played`).set((loser.matches_played || 0) - 1);
-                
-                // Decrement matches won for winner
-                await database.ref(`users/${winner.uid}/matches_won`).set((winner.matches_won || 0) - 1);
-                
-                // Delete the match
-                await database.ref(`matches/${matchId}`).remove();
-                
-                container.innerHTML = `
-                    <div class="status success">
-                        ✅ Partido eliminado y ELO revertido
-                        <br>${winnerUsername}: ${winnerNewElo} → ${winnerOldElo}
-                        <br>${loserUsername}: ${loserNewElo} → ${loserOldElo}
-                    </div>
-                `;
-                
-                // Refresh matches list after 2 seconds
-                setTimeout(() => {
-                    loadAllMatches();
-                }, 2000);
-                
-            } catch (error) {
-                console.error('Error deleting match:', error);
-                container.innerHTML = `<div class="status error">Error: ${error.message}</div>`;
-            }
-        }
-
-        // Calculate ELO change for a single match
-        function calculateMatchEloChange(winnerElo, loserElo, winnerMatches, loserMatches, matchType) {
-            const K = matchType === 'torneo' ? 32 : (matchType === 'liga_finales' ? 24 : 16);
-            
-            const expectedWinner = 1 / (1 + Math.pow(10, (loserElo - winnerElo) / 400));
-            const expectedLoser = 1 / (1 + Math.pow(10, (winnerElo - loserElo) / 400));
-            
-            const actualWinner = 1;
-            const actualLoser = 0;
-            
-            const winnerChange = Math.round(K * (actualWinner - expectedWinner));
-            const loserChange = Math.round(K * (actualLoser - expectedLoser));
-            
-            return {
-                winnerElo: winnerElo + winnerChange,
-                loserElo: loserElo + loserChange,
-                winnerChange,
-                loserChange
-            };
-        }
-
-        // Wait for Firebase to be ready
-        async function waitForFirebase() {
-            return new Promise((resolve) => {
-                let attempts = 0;
-                const maxAttempts = 50;
-                const interval = setInterval(() => {
-                    if (typeof firebase !== 'undefined' && firebase.database) {
-                        clearInterval(interval);
-                        resolve();
-                    } else if (attempts >= maxAttempts) {
-                        clearInterval(interval);
-                        console.error('Firebase failed to load');
-                        resolve();
-                    }
-                    attempts++;
-                }, 100);
-            });
-        }
-        
-        // Initialize
-        waitForFirebase().then(async () => {
-            document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
-            initFirebase();
-            
-            // Check admin authentication
-            checkAdminAuth();
-            
-            // Load notifications if admin
-            if (isAdminAuthenticated) {
-                const bellContainer = document.getElementById('notificationBellContainer');
-                bellContainer.innerHTML = createNotificationBell();
-                await updateNotificationBell('admin');
-            }
-        });
-    </script>
+<div id="status-container"></div>
 
 <script>
-// FAVICON ANIMADO: Bola de billar 8 rotando horizontalmente
-const faviconCanvas = document.createElement('canvas');
-faviconCanvas.width = 32;
-faviconCanvas.height = 32;
-const faviconCtx = faviconCanvas.getContext('2d');
+    const AUTH_TOKEN = 'INwsYYgPTSIzptBA3ttg3GMzQ0Y4aGYsGWmYiqpp';
+    const BASE_URL = 'https://elopool-f1e62-default-rtdb.europe-west1.firebasedatabase.app/liga';
+    const PASS = 'catrina2026';
 
-function updateFavicon() {
-    const time = Date.now() * 0.005;
-    const rotation = Math.sin(time) * 0.15;
+    let playersData = {};
+    let matchesData = {};
 
-    faviconCtx.clearRect(0, 0, 32, 32);
-    const cx = 16;
-    const cy = 16;
-    const radius = 14;
-
-    const gradient = faviconCtx.createRadialGradient(
-        cx - 3, cy - 3, 0,
-        cx, cy, radius
-    );
-    gradient.addColorStop(0, '#ffffff');
-    gradient.addColorStop(0.3, '#ffffff');
-    gradient.addColorStop(0.5, '#0a0a0a');
-    gradient.addColorStop(1, '#000000');
-
-    faviconCtx.beginPath();
-    faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
-    faviconCtx.fillStyle = gradient;
-    faviconCtx.fill();
-
-    faviconCtx.save();
-    faviconCtx.translate(cx, cy);
-    faviconCtx.scale(1 + rotation * 0.5, 1);
-    faviconCtx.translate(-cx, -cy);
-
-    faviconCtx.fillStyle = '#ffffff';
-    faviconCtx.font = 'bold 14px Arial';
-    faviconCtx.textAlign = 'center';
-    faviconCtx.textBaseline = 'middle';
-    faviconCtx.fillText('8', cx, cy + 1);
-
-    faviconCtx.restore();
-
-    faviconCtx.beginPath();
-    faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
-    faviconCtx.strokeStyle = '#d4af37';
-    faviconCtx.lineWidth = 2;
-    faviconCtx.stroke();
-
-    const link = document.getElementById('favicon');
-    if (link) {
-        link.href = faviconCanvas.toDataURL('image/png');
+    function checkPass() {
+        const input = document.getElementById('admin-pass').value;
+        if (input === PASS) {
+            document.getElementById('login-overlay').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+            loadData();
+        } else {
+            alert('Contraseña incorrecta');
+        }
     }
 
-    requestAnimationFrame(updateFavicon);
-}
+    function logout() {
+        location.reload();
+    }
 
-updateFavicon();
+    function showStatus(msg, type = 'success') {
+        const container = document.getElementById('status-container');
+        const div = document.createElement('div');
+        div.className = `status-msg status-${type}`;
+        div.innerText = msg;
+        container.appendChild(div);
+        setTimeout(() => div.remove(), 3000);
+    }
+
+    async function loadData() {
+        try {
+            const [playersRes, matchesRes] = await Promise.all([
+                fetch(`${BASE_URL}/stats.json?auth=${AUTH_TOKEN}`),
+                fetch(`${BASE_URL}/matches.json?auth=${AUTH_TOKEN}`)
+            ]);
+
+            playersData = await playersRes.json() || {};
+            matchesData = await matchesRes.json() || {};
+
+            renderPlayers();
+            renderMatches();
+        } catch (err) {
+            console.error(err);
+            showStatus('Error cargando datos', 'error');
+        }
+    }
+
+    function renderPlayers() {
+        const body = document.getElementById('players-body');
+        body.innerHTML = '';
+
+        Object.entries(playersData).sort((a,b) => b[1].points - a[1].points).forEach(([id, stats]) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-weight:bold; color:var(--gold)">${id}</td>
+                <td><input type="number" id="p-${id}-played" value="${stats.played || 0}"></td>
+                <td><input type="number" id="p-${id}-wins" value="${stats.wins || 0}"></td>
+                <td><input type="number" id="p-${id}-losses" value="${stats.losses || 0}"></td>
+                <td><input type="number" id="p-${id}-framesWon" value="${stats.framesWon || 0}"></td>
+                <td><input type="number" id="p-${id}-framesLost" value="${stats.framesLost || 0}"></td>
+                <td><input type="number" id="p-${id}-points" value="${stats.points || 0}" style="border-color:var(--gold)"></td>
+                <td>
+                    <button class="btn btn-gold" onclick="updatePlayer('${id}')">Guardar</button>
+                </td>
+            `;
+            body.appendChild(tr);
+        });
+    }
+
+    function renderMatches() {
+        const body = document.getElementById('matches-body');
+        body.innerHTML = '';
+
+        const sortedMatches = Object.entries(matchesData).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+        sortedMatches.forEach(([id, match]) => {
+            const date = match.timestamp ? new Date(match.timestamp * 1000).toLocaleDateString() : '---';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-size:0.7rem">${date}</td>
+                <td><input type="text" id="m-${id}-winnerId" value="${match.winnerId}" class="wide"></td>
+                <td><input type="text" id="m-${id}-loserId" value="${match.loserId}" class="wide"></td>
+                <td>
+                    <input type="number" id="m-${id}-winnerFrames" value="${match.winnerFrames}"> -
+                    <input type="number" id="m-${id}-loserFrames" value="${match.loserFrames}">
+                </td>
+                <td>
+                    <input type="number" id="m-${id}-winnerPointsAwarded" value="${match.winnerPointsAwarded}"> /
+                    <input type="number" id="m-${id}-loserPointsAwarded" value="${match.loserPointsAwarded}">
+                </td>
+                <td>
+                    <input type="number" id="m-${id}-winnerTeam" value="${match.winnerTeam || 0}"> /
+                    <input type="number" id="m-${id}-loserTeam" value="${match.loserTeam || 0}">
+                </td>
+                <td style="white-space:nowrap">
+                    <button class="btn btn-gold" onclick="updateMatch('${id}')">💾</button>
+                    <button class="btn btn-red" onclick="deleteMatch('${id}')">🗑️</button>
+                </td>
+            `;
+            body.appendChild(tr);
+        });
+    }
+
+    async function updatePlayer(id) {
+        const data = {
+            played: parseInt(document.getElementById(`p-${id}-played`).value),
+            wins: parseInt(document.getElementById(`p-${id}-wins`).value),
+            losses: parseInt(document.getElementById(`p-${id}-losses`).value),
+            framesWon: parseInt(document.getElementById(`p-${id}-framesWon`).value),
+            framesLost: parseInt(document.getElementById(`p-${id}-framesLost`).value),
+            points: parseInt(document.getElementById(`p-${id}-points`).value)
+        };
+
+        try {
+            const res = await fetch(`${BASE_URL}/stats/${id}.json?auth=${AUTH_TOKEN}`, {
+                method: 'PATCH',
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                showStatus(`Jugador ${id} actualizado`);
+                playersData[id] = data;
+            }
+        } catch (err) {
+            showStatus('Error al actualizar jugador', 'error');
+        }
+    }
+
+    async function updateMatch(id) {
+        const data = {
+            winnerId: document.getElementById(`m-${id}-winnerId`).value,
+            loserId: document.getElementById(`m-${id}-loserId`).value,
+            winnerFrames: parseInt(document.getElementById(`m-${id}-winnerFrames`).value),
+            loserFrames: parseInt(document.getElementById(`m-${id}-loserFrames`).value),
+            winnerPointsAwarded: parseInt(document.getElementById(`m-${id}-winnerPointsAwarded`).value),
+            loserPointsAwarded: parseInt(document.getElementById(`m-${id}-loserPointsAwarded`).value),
+            winnerTeam: parseInt(document.getElementById(`m-${id}-winnerTeam`).value),
+            loserTeam: parseInt(document.getElementById(`m-${id}-loserTeam`).value)
+        };
+
+        try {
+            const res = await fetch(`${BASE_URL}/matches/${id}.json?auth=${AUTH_TOKEN}`, {
+                method: 'PATCH',
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                showStatus('Partido actualizado');
+                matchesData[id] = { ...matchesData[id], ...data };
+            }
+        } catch (err) {
+            showStatus('Error al actualizar partido', 'error');
+        }
+    }
+
+    async function deleteMatch(id) {
+        if (!confirm('¿Seguro que quieres borrar este partido? Se intentará revertir las estadísticas de los jugadores.')) return;
+
+        try {
+            const match = matchesData[id];
+            if (match) {
+                const wId = match.winnerId;
+                const lId = match.loserId;
+                const wF = parseInt(match.winnerFrames);
+                const lF = parseInt(match.loserFrames);
+                const wP = parseInt(match.winnerPointsAwarded);
+                const lP = parseInt(match.loserPointsAwarded);
+
+                const wStats = playersData[wId];
+                const lStats = playersData[lId];
+
+                if (wStats && lStats) {
+                    wStats.played--;
+                    wStats.wins--;
+                    wStats.framesWon -= wF;
+                    wStats.framesLost -= lF;
+                    wStats.points -= wP;
+
+                    lStats.played--;
+                    lStats.losses--;
+                    lStats.framesWon -= lF;
+                    lStats.framesLost -= wF;
+                    lStats.points -= lP;
+
+                    await Promise.all([
+                        fetch(`${BASE_URL}/stats/${wId}.json?auth=${AUTH_TOKEN}`, { method: 'PATCH', body: JSON.stringify(wStats) }),
+                        fetch(`${BASE_URL}/stats/${lId}.json?auth=${AUTH_TOKEN}`, { method: 'PATCH', body: JSON.stringify(lStats) })
+                    ]);
+                }
+            }
+
+            const res = await fetch(`${BASE_URL}/matches/${id}.json?auth=${AUTH_TOKEN}`, {
+                method: 'DELETE'
+            });
+            if (res.ok) {
+                showStatus('Partido eliminado y estadísticas revertidas');
+                delete matchesData[id];
+                loadData();
+            }
+        } catch (err) {
+            showStatus('Error al borrar partido', 'error');
+        }
+    }
+
+    async function createNewMatch() {
+        const wId = document.getElementById('new-winner-id').value.trim().toLowerCase();
+        const lId = document.getElementById('new-loser-id').value.trim().toLowerCase();
+        const wF = parseInt(document.getElementById('new-winner-frames').value);
+        const lF = parseInt(document.getElementById('new-loser-frames').value);
+        const wP = parseInt(document.getElementById('new-winner-pts').value);
+        const lP = parseInt(document.getElementById('new-loser-pts').value);
+        const wT = parseInt(document.getElementById('new-winner-team').value);
+        const lT = parseInt(document.getElementById('new-loser-team').value);
+        const auto = document.getElementById('auto-update-stats').checked;
+
+        if (!wId || !lId) {
+            alert('Faltan IDs de jugadores');
+            return;
+        }
+
+        const matchId = `admin_${Date.now()}`;
+        const matchData = {
+            winnerId: wId,
+            loserId: lId,
+            winnerFrames: wF,
+            loserFrames: lF,
+            winnerPointsAwarded: wP,
+            loserPointsAwarded: lP,
+            winnerTeam: wT,
+            loserTeam: lT,
+            timestamp: Math.floor(Date.now() / 1000),
+            source: 'admin'
+        };
+
+        try {
+            // Guardar Partido
+            await fetch(`${BASE_URL}/matches/${matchId}.json?auth=${AUTH_TOKEN}`, {
+                method: 'PUT',
+                body: JSON.stringify(matchData)
+            });
+
+            if (auto) {
+                await updatePlayerStatsAfterMatch(wId, lId, wF, lF, wP, lP);
+            }
+
+            showStatus('Partido registrado con éxito');
+            loadData();
+
+            // Limpiar formulario (parcial)
+            document.getElementById('new-winner-id').value = '';
+            document.getElementById('new-loser-id').value = '';
+        } catch (err) {
+            showStatus('Error al crear partido', 'error');
+        }
+    }
+
+    async function updatePlayerStatsAfterMatch(wId, lId, wF, lF, wP, lP) {
+        // Obtener datos actuales o crear vacíos
+        const wStats = playersData[wId] || { played: 0, wins: 0, losses: 0, framesWon: 0, framesLost: 0, points: 0 };
+        const lStats = playersData[lId] || { played: 0, wins: 0, losses: 0, framesWon: 0, framesLost: 0, points: 0 };
+
+        // Actualizar Ganador
+        wStats.played++;
+        wStats.wins++;
+        wStats.framesWon += wF;
+        wStats.framesLost += lF;
+        wStats.points += wP;
+
+        // Actualizar Perdedor
+        lStats.played++;
+        lStats.losses++;
+        lStats.framesWon += lF;
+        lStats.framesLost += wF;
+        lStats.points += lP;
+
+        await Promise.all([
+            fetch(`${BASE_URL}/stats/${wId}.json?auth=${AUTH_TOKEN}`, { method: 'PATCH', body: JSON.stringify(wStats) }),
+            fetch(`${BASE_URL}/stats/${lId}.json?auth=${AUTH_TOKEN}`, { method: 'PATCH', body: JSON.stringify(lStats) })
+        ]);
+    }
+
 </script>
 </body>
 </html>
