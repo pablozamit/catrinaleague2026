@@ -203,12 +203,26 @@
                     <input type="number" id="new-loser-pts" value="0">
                 </div>
                 <div class="form-group">
-                    <label>Equipo Ganador (1-6)</label>
-                    <input type="number" id="new-winner-team" value="1">
+                    <label>Equipo Ganador</label>
+                    <select id="new-winner-team">
+                        <option value="1">1. BAH!</option>
+                        <option value="2">2. JAMPOOLEROS TEAM</option>
+                        <option value="3">3. LOS INTERNACIONALES</option>
+                        <option value="4">4. ITCHY ARMPITS</option>
+                        <option value="5">5. MACHACADORAS CON ACTITUD</option>
+                        <option value="6">6. MICROPLÁSTICOS EN LOS COJONES S.L.</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Equipo Perdedor (1-6)</label>
-                    <input type="number" id="new-loser-team" value="1">
+                    <label>Equipo Perdedor</label>
+                    <select id="new-loser-team">
+                        <option value="1">1. BAH!</option>
+                        <option value="2">2. JAMPOOLEROS TEAM</option>
+                        <option value="3">3. LOS INTERNACIONALES</option>
+                        <option value="4">4. ITCHY ARMPITS</option>
+                        <option value="5">5. MACHACADORAS CON ACTITUD</option>
+                        <option value="6">6. MICROPLÁSTICOS EN LOS COJONES S.L.</option>
+                    </select>
                 </div>
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
@@ -279,6 +293,15 @@
     const AUTH_TOKEN = 'INwsYYgPTSIzptBA3ttg3GMzQ0Y4aGYsGWmYiqpp';
     const BASE_URL = 'https://elopool-f1e62-default-rtdb.europe-west1.firebasedatabase.app/liga';
     const PASS = 'catrina2026';
+
+    const teamNames = {
+        1: 'BAH!',
+        2: 'JAMPOOLEROS TEAM',
+        3: 'LOS INTERNACIONALES',
+        4: 'ITCHY ARMPITS',
+        5: 'MACHACADORAS CON ACTITUD',
+        6: 'MICROPLÁSTICOS EN LOS COJONES S.L.'
+    };
 
     let playersData = {};
     let matchesData = {};
@@ -369,7 +392,10 @@
                     <input type="number" id="m-${id}-loserPointsAwarded" value="${match.loserPointsAwarded}">
                 </td>
                 <td>
-                    <input type="number" id="m-${id}-winnerTeam" value="${match.winnerTeam || 0}"> /
+                    <div style="font-size:0.7rem; color:var(--gold)">${teamNames[match.winnerTeam] || '---'}</div>
+                    <input type="number" id="m-${id}-winnerTeam" value="${match.winnerTeam || 0}">
+                    <hr style="border:0; border-top:1px solid #333; margin:2px 0">
+                    <div style="font-size:0.7rem; color:var(--gold)">${teamNames[match.loserTeam] || '---'}</div>
                     <input type="number" id="m-${id}-loserTeam" value="${match.loserTeam || 0}">
                 </td>
                 <td style="white-space:nowrap">
