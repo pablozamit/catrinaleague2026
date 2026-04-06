@@ -284,6 +284,15 @@
       6: ['pablo', 'joe', 'lucasc', 'joel', 'roman', 'manuela']
     };
 
+    const teamNames = {
+      1: 'BAH!',
+      2: 'JAMPOOLEROS TEAM',
+      3: 'LOS INTERNACIONALES',
+      4: 'ITCHY ARMPITS',
+      5: 'MACHACADORAS CON ACTITUD',
+      6: 'MICROPLÁSTICOS EN LOS COJONES S.L.'
+    };
+
     const playerToTeam = {};
     Object.entries(teamMap).forEach(([team, players]) => {
       players.forEach(player => { playerToTeam[player] = Number(team); });
@@ -324,7 +333,7 @@
       for (let i = 1; i <= 6; i++) {
         const option = document.createElement('option');
         option.value = String(i);
-        option.textContent = `Equipo ${i}`;
+        option.textContent = teamNames[i] || `Equipo ${i}`;
         teamFilter.appendChild(option);
       }
 
@@ -337,7 +346,9 @@
       [...players].sort().forEach(player => {
         const option = document.createElement('option');
         option.value = player;
-        option.textContent = `${player} (Equipo ${playerToTeam[player] || '-'})`;
+        const teamId = playerToTeam[player];
+        const teamName = teamNames[teamId] || '-';
+        option.textContent = `${player} (${teamName})`;
         playerFilter.appendChild(option);
       });
     }
@@ -394,7 +405,7 @@
                 <span>${escapeHtml(match.loserId || '—')}</span>
               </div>
               <div class="teams">
-                Equipo ${match.winnerTeam ?? '-'} vs Equipo ${match.loserTeam ?? '-'}
+                ${teamNames[match.winnerTeam] || 'Equipo ' + (match.winnerTeam ?? '-')} vs ${teamNames[match.loserTeam] || 'Equipo ' + (match.loserTeam ?? '-')}
               </div>
             </div>
             <div class="tag">${formatDate(match.timestamp)}</div>
