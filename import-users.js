@@ -50,7 +50,7 @@ const players = [
     { username: 'paddy', password: 'paddy123', elo: 1210 },
     { username: 'pavlo', password: 'pavlo123', elo: 1205 },
     { username: 'charles', password: 'charles123', elo: 1203 },
-    { username: 'nica', password: 'nica123', elo: 1188 },
+    { username: 'ponci', password: 'ponci123', elo: 1188 },
     { username: 'juanma', password: 'juanma123', elo: 1186 },
     { username: 'nino', password: 'nino123', elo: 1177 },
     { username: 'roman', password: 'roman123', elo: 1129 },

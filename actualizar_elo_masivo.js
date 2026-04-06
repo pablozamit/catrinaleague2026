@@ -27,7 +27,7 @@ const resultados = [
     { winner: 'artur', loser: 'jorge', tipo: 'torneo' },
     { winner: 'fer', loser: 'charles', tipo: 'torneo' },
     { winner: 'johnny', loser: 'artur', tipo: 'torneo' },
-    { winner: 'nica', loser: 'fer', tipo: 'torneo' },
+    { winner: 'ponci', loser: 'fer', tipo: 'torneo' },
     { winner: 'johnny', loser: 'pablo', tipo: 'torneo' },
     { winner: 'jonathan', loser: 'roman', tipo: 'torneo' },
     { winner: 'andres', loser: 'erfan', tipo: 'torneo' },
