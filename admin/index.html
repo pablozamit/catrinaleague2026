@@ -144,6 +144,14 @@
             margin-bottom: 0.3rem;
         }
 
+        select, input[type="number"], input[type="text"] {
+            background: #000;
+            border: 1px solid #444;
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
         .hidden { display: none !important; }
 
         .status-msg {
@@ -179,12 +187,34 @@
             <h2>Registrar Nuevo Partido</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>ID Ganador</label>
-                    <input type="text" id="new-winner-id" class="wide" placeholder="ej: erfan">
+                    <label>Equipo Ganador</label>
+                    <select id="new-winner-team" onchange="updatePlayerDropdown('winner')">
+                        <option value="1">1. BAH!</option>
+                        <option value="2">2. JAMPOOLEROS TEAM</option>
+                        <option value="3">3. LOS INTERNACIONALES</option>
+                        <option value="4">4. ITCHY ARMPITS</option>
+                        <option value="5">5. MACHACADORAS CON ACTITUD</option>
+                        <option value="6">6. MICROPLÁSTICOS EN LOS COJONES S.L.</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>ID Perdedor</label>
-                    <input type="text" id="new-loser-id" class="wide" placeholder="ej: charles">
+                    <label>Jugador Ganador</label>
+                    <select id="new-winner-id"></select>
+                </div>
+                <div class="form-group">
+                    <label>Equipo Perdedor</label>
+                    <select id="new-loser-team" onchange="updatePlayerDropdown('loser')">
+                        <option value="1">1. BAH!</option>
+                        <option value="2">2. JAMPOOLEROS TEAM</option>
+                        <option value="3">3. LOS INTERNACIONALES</option>
+                        <option value="4">4. ITCHY ARMPITS</option>
+                        <option value="5">5. MACHACADORAS CON ACTITUD</option>
+                        <option value="6">6. MICROPLÁSTICOS EN LOS COJONES S.L.</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jugador Perdedor</label>
+                    <select id="new-loser-id"></select>
                 </div>
                 <div class="form-group">
                     <label>Frames Ganador</label>
@@ -201,28 +231,6 @@
                 <div class="form-group">
                     <label>Puntos Perdedor</label>
                     <input type="number" id="new-loser-pts" value="0">
-                </div>
-                <div class="form-group">
-                    <label>Equipo Ganador</label>
-                    <select id="new-winner-team">
-                        <option value="1">1. BAH!</option>
-                        <option value="2">2. JAMPOOLEROS TEAM</option>
-                        <option value="3">3. LOS INTERNACIONALES</option>
-                        <option value="4">4. ITCHY ARMPITS</option>
-                        <option value="5">5. MACHACADORAS CON ACTITUD</option>
-                        <option value="6">6. MICROPLÁSTICOS EN LOS COJONES S.L.</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Equipo Perdedor</label>
-                    <select id="new-loser-team">
-                        <option value="1">1. BAH!</option>
-                        <option value="2">2. JAMPOOLEROS TEAM</option>
-                        <option value="3">3. LOS INTERNACIONALES</option>
-                        <option value="4">4. ITCHY ARMPITS</option>
-                        <option value="5">5. MACHACADORAS CON ACTITUD</option>
-                        <option value="6">6. MICROPLÁSTICOS EN LOS COJONES S.L.</option>
-                    </select>
                 </div>
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
@@ -303,6 +311,15 @@
         6: 'MICROPLÁSTICOS EN LOS COJONES S.L.'
     };
 
+    const teamMap = {
+        1: ['johnny', 'andres', 'mo', 'david', 'ponci', 'danilo'],
+        2: ['artur', 'sergio', 'alexf', 'jorge', 'alexb', 'sol'],
+        3: ['amauris', 'sasa', 'angel', 'erfan', 'nino', 'damian'],
+        4: ['jack', 'jonathan', 'connor', 'charles', 'lucas', 'favio'],
+        5: ['fer', 'katee', 'enrique', 'mina', 'ruth', 'rauls'],
+        6: ['pablo', 'joe', 'lucasc', 'joel', 'roman', 'manuela']
+    };
+
     let playersData = {};
     let matchesData = {};
 
@@ -312,6 +329,8 @@
             document.getElementById('login-overlay').classList.add('hidden');
             document.getElementById('admin-dashboard').classList.remove('hidden');
             loadData();
+            updatePlayerDropdown('winner');
+            updatePlayerDropdown('loser');
         } else {
             alert('Contraseña incorrecta');
         }
@@ -328,6 +347,20 @@
         div.innerText = msg;
         container.appendChild(div);
         setTimeout(() => div.remove(), 3000);
+    }
+
+    function updatePlayerDropdown(type) {
+        const teamId = document.getElementById(`new-${type}-team`).value;
+        const playerSelect = document.getElementById(`new-${type}-id`);
+        const players = teamMap[teamId] || [];
+
+        playerSelect.innerHTML = '';
+        players.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p;
+            opt.textContent = p;
+            playerSelect.appendChild(opt);
+        });
     }
 
     async function loadData() {
@@ -352,7 +385,20 @@
         const body = document.getElementById('players-body');
         body.innerHTML = '';
 
-        Object.entries(playersData).sort((a,b) => b[1].points - a[1].points).forEach(([id, stats]) => {
+        // Combine all players from teamMap with playersData
+        const allPlayers = {};
+
+        // Initialize with 0s for all known players from teamMap
+        Object.values(teamMap).flat().forEach(playerId => {
+            allPlayers[playerId] = { played: 0, wins: 0, losses: 0, framesWon: 0, framesLost: 0, points: 0 };
+        });
+
+        // Merge with actual data from Firebase
+        Object.entries(playersData).forEach(([id, stats]) => {
+            allPlayers[id] = stats;
+        });
+
+        Object.entries(allPlayers).sort((a,b) => (b[1].points || 0) - (a[1].points || 0)).forEach(([id, stats]) => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="font-weight:bold; color:var(--gold)">${id}</td>
@@ -549,10 +595,6 @@
 
             showStatus('Partido registrado con éxito');
             loadData();
-
-            // Limpiar formulario (parcial)
-            document.getElementById('new-winner-id').value = '';
-            document.getElementById('new-loser-id').value = '';
         } catch (err) {
             showStatus('Error al crear partido', 'error');
         }
