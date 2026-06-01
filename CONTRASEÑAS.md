@@ -35,7 +35,7 @@
 | 29 | Paddy | paddy123 |
 | 30 | Pavlo | pavlo123 |
 | 31 | Charles | charles123 |
-| 32 | Nica | nica123 |
+| 32 | Ponci | ponci123 |
 | 33 | Juanma | juanma123 |
 | 34 | Nino | nino123 |
 | 35 | Roman | roman123 |
