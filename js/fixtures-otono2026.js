@@ -1,7 +1,7 @@
 /* Generado por generar_calendario_otono2026.js — NO editar a mano */
 const FIXTURES_OTONO2026 = {
   "temporada": "Otoño 2026",
-  "formato": "Champions: tabla unica, 5 bombos x 6, 6 jornadas",
+  "formato": "Champions: tabla unica, 5 bombos x 6, 5 jornadas",
   "bombos": {
     "A": [
       "amauris",
@@ -171,6 +171,78 @@ const FIXTURES_OTONO2026 = {
       "fecha": "16 – 22 sep 2026",
       "partidos": [
         {
+          "p1": "florian",
+          "p2": "enrique",
+          "tipo": "cruce",
+          "bombos": "B-C"
+        },
+        {
+          "p1": "wilkins",
+          "p2": "evodia",
+          "tipo": "cruce",
+          "bombos": "B-C"
+        },
+        {
+          "p1": "connor",
+          "p2": "roman",
+          "tipo": "cruce",
+          "bombos": "B-C"
+        },
+        {
+          "p1": "joel",
+          "p2": "angel",
+          "tipo": "cruce",
+          "bombos": "B-C"
+        },
+        {
+          "p1": "alexf",
+          "p2": "lucas",
+          "tipo": "cruce",
+          "bombos": "B-C"
+        },
+        {
+          "p1": "charles",
+          "p2": "adri",
+          "tipo": "cruce",
+          "bombos": "B-C"
+        },
+        {
+          "p1": "nica",
+          "p2": "alexb",
+          "tipo": "cruce",
+          "bombos": "D-E"
+        },
+        {
+          "p1": "dani",
+          "p2": "sol",
+          "tipo": "cruce",
+          "bombos": "D-E"
+        },
+        {
+          "p1": "nino",
+          "p2": "favio",
+          "tipo": "cruce",
+          "bombos": "D-E"
+        },
+        {
+          "p1": "ponci",
+          "p2": "rauls",
+          "tipo": "cruce",
+          "bombos": "D-E"
+        },
+        {
+          "p1": "aymar",
+          "p2": "manuela",
+          "tipo": "cruce",
+          "bombos": "D-E"
+        },
+        {
+          "p1": "danilo",
+          "p2": "damian",
+          "tipo": "cruce",
+          "bombos": "D-E"
+        },
+        {
           "p1": "amauris",
           "p2": "pablo",
           "tipo": "derbi",
@@ -187,6 +259,83 @@ const FIXTURES_OTONO2026 = {
           "p2": "johnny",
           "tipo": "derbi",
           "bombo": "A"
+        }
+      ]
+    },
+    "2": {
+      "fecha": "23 – 29 sep 2026",
+      "partidos": [
+        {
+          "p1": "amauris",
+          "p2": "nino",
+          "tipo": "cruce",
+          "bombos": "A-D"
+        },
+        {
+          "p1": "pablo",
+          "p2": "ponci",
+          "tipo": "cruce",
+          "bombos": "A-D"
+        },
+        {
+          "p1": "sasa",
+          "p2": "aymar",
+          "tipo": "cruce",
+          "bombos": "A-D"
+        },
+        {
+          "p1": "katee",
+          "p2": "danilo",
+          "tipo": "cruce",
+          "bombos": "A-D"
+        },
+        {
+          "p1": "joe",
+          "p2": "nica",
+          "tipo": "cruce",
+          "bombos": "A-D"
+        },
+        {
+          "p1": "johnny",
+          "p2": "dani",
+          "tipo": "cruce",
+          "bombos": "A-D"
+        },
+        {
+          "p1": "adri",
+          "p2": "sol",
+          "tipo": "cruce",
+          "bombos": "C-E"
+        },
+        {
+          "p1": "enrique",
+          "p2": "favio",
+          "tipo": "cruce",
+          "bombos": "C-E"
+        },
+        {
+          "p1": "evodia",
+          "p2": "rauls",
+          "tipo": "cruce",
+          "bombos": "C-E"
+        },
+        {
+          "p1": "roman",
+          "p2": "manuela",
+          "tipo": "cruce",
+          "bombos": "C-E"
+        },
+        {
+          "p1": "angel",
+          "p2": "damian",
+          "tipo": "cruce",
+          "bombos": "C-E"
+        },
+        {
+          "p1": "lucas",
+          "p2": "alexb",
+          "tipo": "cruce",
+          "bombos": "C-E"
         },
         {
           "p1": "florian",
@@ -205,6 +354,83 @@ const FIXTURES_OTONO2026 = {
           "p2": "charles",
           "tipo": "derbi",
           "bombo": "B"
+        }
+      ]
+    },
+    "3": {
+      "fecha": "30 sep – 6 oct 2026",
+      "partidos": [
+        {
+          "p1": "amauris",
+          "p2": "rauls",
+          "tipo": "cruce",
+          "bombos": "A-E"
+        },
+        {
+          "p1": "pablo",
+          "p2": "manuela",
+          "tipo": "cruce",
+          "bombos": "A-E"
+        },
+        {
+          "p1": "sasa",
+          "p2": "damian",
+          "tipo": "cruce",
+          "bombos": "A-E"
+        },
+        {
+          "p1": "katee",
+          "p2": "alexb",
+          "tipo": "cruce",
+          "bombos": "A-E"
+        },
+        {
+          "p1": "joe",
+          "p2": "sol",
+          "tipo": "cruce",
+          "bombos": "A-E"
+        },
+        {
+          "p1": "johnny",
+          "p2": "favio",
+          "tipo": "cruce",
+          "bombos": "A-E"
+        },
+        {
+          "p1": "florian",
+          "p2": "nino",
+          "tipo": "cruce",
+          "bombos": "B-D"
+        },
+        {
+          "p1": "wilkins",
+          "p2": "ponci",
+          "tipo": "cruce",
+          "bombos": "B-D"
+        },
+        {
+          "p1": "connor",
+          "p2": "aymar",
+          "tipo": "cruce",
+          "bombos": "B-D"
+        },
+        {
+          "p1": "joel",
+          "p2": "danilo",
+          "tipo": "cruce",
+          "bombos": "B-D"
+        },
+        {
+          "p1": "alexf",
+          "p2": "nica",
+          "tipo": "cruce",
+          "bombos": "B-D"
+        },
+        {
+          "p1": "charles",
+          "p2": "dani",
+          "tipo": "cruce",
+          "bombos": "B-D"
         },
         {
           "p1": "adri",
@@ -223,24 +449,83 @@ const FIXTURES_OTONO2026 = {
           "p2": "lucas",
           "tipo": "derbi",
           "bombo": "C"
+        }
+      ]
+    },
+    "4": {
+      "fecha": "7 – 13 oct 2026",
+      "partidos": [
+        {
+          "p1": "amauris",
+          "p2": "florian",
+          "tipo": "cruce",
+          "bombos": "A-B"
         },
         {
-          "p1": "nica",
-          "p2": "dani",
-          "tipo": "derbi",
-          "bombo": "D"
+          "p1": "pablo",
+          "p2": "wilkins",
+          "tipo": "cruce",
+          "bombos": "A-B"
         },
         {
-          "p1": "nino",
+          "p1": "sasa",
+          "p2": "connor",
+          "tipo": "cruce",
+          "bombos": "A-B"
+        },
+        {
+          "p1": "katee",
+          "p2": "joel",
+          "tipo": "cruce",
+          "bombos": "A-B"
+        },
+        {
+          "p1": "joe",
+          "p2": "alexf",
+          "tipo": "cruce",
+          "bombos": "A-B"
+        },
+        {
+          "p1": "johnny",
+          "p2": "charles",
+          "tipo": "cruce",
+          "bombos": "A-B"
+        },
+        {
+          "p1": "adri",
           "p2": "ponci",
-          "tipo": "derbi",
-          "bombo": "D"
+          "tipo": "cruce",
+          "bombos": "C-D"
         },
         {
-          "p1": "aymar",
+          "p1": "enrique",
+          "p2": "aymar",
+          "tipo": "cruce",
+          "bombos": "C-D"
+        },
+        {
+          "p1": "evodia",
           "p2": "danilo",
-          "tipo": "derbi",
-          "bombo": "D"
+          "tipo": "cruce",
+          "bombos": "C-D"
+        },
+        {
+          "p1": "roman",
+          "p2": "nica",
+          "tipo": "cruce",
+          "bombos": "C-D"
+        },
+        {
+          "p1": "angel",
+          "p2": "dani",
+          "tipo": "cruce",
+          "bombos": "C-D"
+        },
+        {
+          "p1": "lucas",
+          "p2": "nino",
+          "tipo": "cruce",
+          "bombos": "C-D"
         },
         {
           "p1": "alexb",
@@ -262,391 +547,11 @@ const FIXTURES_OTONO2026 = {
         }
       ]
     },
-    "2": {
-      "fecha": "23 – 29 sep 2026",
-      "partidos": [
-        {
-          "p1": "florian",
-          "p2": "enrique",
-          "tipo": "cruce",
-          "bombos": "B-C"
-        },
-        {
-          "p1": "wilkins",
-          "p2": "evodia",
-          "tipo": "cruce",
-          "bombos": "B-C"
-        },
-        {
-          "p1": "connor",
-          "p2": "roman",
-          "tipo": "cruce",
-          "bombos": "B-C"
-        },
-        {
-          "p1": "joel",
-          "p2": "angel",
-          "tipo": "cruce",
-          "bombos": "B-C"
-        },
-        {
-          "p1": "alexf",
-          "p2": "lucas",
-          "tipo": "cruce",
-          "bombos": "B-C"
-        },
-        {
-          "p1": "charles",
-          "p2": "adri",
-          "tipo": "cruce",
-          "bombos": "B-C"
-        },
-        {
-          "p1": "nica",
-          "p2": "alexb",
-          "tipo": "cruce",
-          "bombos": "D-E"
-        },
-        {
-          "p1": "dani",
-          "p2": "sol",
-          "tipo": "cruce",
-          "bombos": "D-E"
-        },
-        {
-          "p1": "nino",
-          "p2": "favio",
-          "tipo": "cruce",
-          "bombos": "D-E"
-        },
-        {
-          "p1": "ponci",
-          "p2": "rauls",
-          "tipo": "cruce",
-          "bombos": "D-E"
-        },
-        {
-          "p1": "aymar",
-          "p2": "manuela",
-          "tipo": "cruce",
-          "bombos": "D-E"
-        },
-        {
-          "p1": "danilo",
-          "p2": "damian",
-          "tipo": "cruce",
-          "bombos": "D-E"
-        },
-        {
-          "p1": "pablo",
-          "p2": "sasa",
-          "tipo": "derbi",
-          "bombo": "A"
-        },
-        {
-          "p1": "katee",
-          "p2": "joe",
-          "tipo": "derbi",
-          "bombo": "A"
-        },
-        {
-          "p1": "johnny",
-          "p2": "amauris",
-          "tipo": "derbi",
-          "bombo": "A"
-        }
-      ]
-    },
-    "3": {
-      "fecha": "30 sep – 6 oct 2026",
-      "partidos": [
-        {
-          "p1": "amauris",
-          "p2": "nino",
-          "tipo": "cruce",
-          "bombos": "A-D"
-        },
-        {
-          "p1": "pablo",
-          "p2": "ponci",
-          "tipo": "cruce",
-          "bombos": "A-D"
-        },
-        {
-          "p1": "sasa",
-          "p2": "aymar",
-          "tipo": "cruce",
-          "bombos": "A-D"
-        },
-        {
-          "p1": "katee",
-          "p2": "danilo",
-          "tipo": "cruce",
-          "bombos": "A-D"
-        },
-        {
-          "p1": "joe",
-          "p2": "nica",
-          "tipo": "cruce",
-          "bombos": "A-D"
-        },
-        {
-          "p1": "johnny",
-          "p2": "dani",
-          "tipo": "cruce",
-          "bombos": "A-D"
-        },
-        {
-          "p1": "adri",
-          "p2": "sol",
-          "tipo": "cruce",
-          "bombos": "C-E"
-        },
-        {
-          "p1": "enrique",
-          "p2": "favio",
-          "tipo": "cruce",
-          "bombos": "C-E"
-        },
-        {
-          "p1": "evodia",
-          "p2": "rauls",
-          "tipo": "cruce",
-          "bombos": "C-E"
-        },
-        {
-          "p1": "roman",
-          "p2": "manuela",
-          "tipo": "cruce",
-          "bombos": "C-E"
-        },
-        {
-          "p1": "angel",
-          "p2": "damian",
-          "tipo": "cruce",
-          "bombos": "C-E"
-        },
-        {
-          "p1": "lucas",
-          "p2": "alexb",
-          "tipo": "cruce",
-          "bombos": "C-E"
-        },
-        {
-          "p1": "wilkins",
-          "p2": "connor",
-          "tipo": "derbi",
-          "bombo": "B"
-        },
-        {
-          "p1": "joel",
-          "p2": "alexf",
-          "tipo": "derbi",
-          "bombo": "B"
-        },
-        {
-          "p1": "charles",
-          "p2": "florian",
-          "tipo": "derbi",
-          "bombo": "B"
-        }
-      ]
-    },
-    "4": {
-      "fecha": "7 – 13 oct 2026",
-      "partidos": [
-        {
-          "p1": "amauris",
-          "p2": "rauls",
-          "tipo": "cruce",
-          "bombos": "A-E"
-        },
-        {
-          "p1": "pablo",
-          "p2": "manuela",
-          "tipo": "cruce",
-          "bombos": "A-E"
-        },
-        {
-          "p1": "sasa",
-          "p2": "damian",
-          "tipo": "cruce",
-          "bombos": "A-E"
-        },
-        {
-          "p1": "katee",
-          "p2": "alexb",
-          "tipo": "cruce",
-          "bombos": "A-E"
-        },
-        {
-          "p1": "joe",
-          "p2": "sol",
-          "tipo": "cruce",
-          "bombos": "A-E"
-        },
-        {
-          "p1": "johnny",
-          "p2": "favio",
-          "tipo": "cruce",
-          "bombos": "A-E"
-        },
-        {
-          "p1": "florian",
-          "p2": "nino",
-          "tipo": "cruce",
-          "bombos": "B-D"
-        },
-        {
-          "p1": "wilkins",
-          "p2": "ponci",
-          "tipo": "cruce",
-          "bombos": "B-D"
-        },
-        {
-          "p1": "connor",
-          "p2": "aymar",
-          "tipo": "cruce",
-          "bombos": "B-D"
-        },
-        {
-          "p1": "joel",
-          "p2": "danilo",
-          "tipo": "cruce",
-          "bombos": "B-D"
-        },
-        {
-          "p1": "alexf",
-          "p2": "nica",
-          "tipo": "cruce",
-          "bombos": "B-D"
-        },
-        {
-          "p1": "charles",
-          "p2": "dani",
-          "tipo": "cruce",
-          "bombos": "B-D"
-        },
-        {
-          "p1": "enrique",
-          "p2": "evodia",
-          "tipo": "derbi",
-          "bombo": "C"
-        },
-        {
-          "p1": "roman",
-          "p2": "angel",
-          "tipo": "derbi",
-          "bombo": "C"
-        },
-        {
-          "p1": "lucas",
-          "p2": "adri",
-          "tipo": "derbi",
-          "bombo": "C"
-        }
-      ]
-    },
     "5": {
       "fecha": "14 – 20 oct 2026",
       "partidos": [
         {
           "p1": "amauris",
-          "p2": "florian",
-          "tipo": "cruce",
-          "bombos": "A-B"
-        },
-        {
-          "p1": "pablo",
-          "p2": "wilkins",
-          "tipo": "cruce",
-          "bombos": "A-B"
-        },
-        {
-          "p1": "sasa",
-          "p2": "connor",
-          "tipo": "cruce",
-          "bombos": "A-B"
-        },
-        {
-          "p1": "katee",
-          "p2": "joel",
-          "tipo": "cruce",
-          "bombos": "A-B"
-        },
-        {
-          "p1": "joe",
-          "p2": "alexf",
-          "tipo": "cruce",
-          "bombos": "A-B"
-        },
-        {
-          "p1": "johnny",
-          "p2": "charles",
-          "tipo": "cruce",
-          "bombos": "A-B"
-        },
-        {
-          "p1": "adri",
-          "p2": "ponci",
-          "tipo": "cruce",
-          "bombos": "C-D"
-        },
-        {
-          "p1": "enrique",
-          "p2": "aymar",
-          "tipo": "cruce",
-          "bombos": "C-D"
-        },
-        {
-          "p1": "evodia",
-          "p2": "danilo",
-          "tipo": "cruce",
-          "bombos": "C-D"
-        },
-        {
-          "p1": "roman",
-          "p2": "nica",
-          "tipo": "cruce",
-          "bombos": "C-D"
-        },
-        {
-          "p1": "angel",
-          "p2": "dani",
-          "tipo": "cruce",
-          "bombos": "C-D"
-        },
-        {
-          "p1": "lucas",
-          "p2": "nino",
-          "tipo": "cruce",
-          "bombos": "C-D"
-        },
-        {
-          "p1": "sol",
-          "p2": "favio",
-          "tipo": "derbi",
-          "bombo": "E"
-        },
-        {
-          "p1": "manuela",
-          "p2": "rauls",
-          "tipo": "derbi",
-          "bombo": "E"
-        },
-        {
-          "p1": "damian",
-          "p2": "alexb",
-          "tipo": "derbi",
-          "bombo": "E"
-        }
-      ]
-    },
-    "6": {
-      "fecha": "21 – 27 oct 2026",
-      "partidos": [
-        {
-          "p1": "amauris",
           "p2": "enrique",
           "tipo": "cruce",
           "bombos": "A-C"
@@ -718,20 +623,20 @@ const FIXTURES_OTONO2026 = {
           "bombos": "B-E"
         },
         {
-          "p1": "dani",
-          "p2": "nino",
+          "p1": "nica",
+          "p2": "dani",
           "tipo": "derbi",
           "bombo": "D"
         },
         {
-          "p1": "ponci",
-          "p2": "aymar",
+          "p1": "nino",
+          "p2": "ponci",
           "tipo": "derbi",
           "bombo": "D"
         },
         {
-          "p1": "danilo",
-          "p2": "nica",
+          "p1": "aymar",
+          "p2": "danilo",
           "tipo": "derbi",
           "bombo": "D"
         }
@@ -739,10 +644,10 @@ const FIXTURES_OTONO2026 = {
     }
   },
   "playoffs": {
-    "preliminar": "28 oct – 1 nov 2026 · puestos 9-24, sorteo, race to 3",
-    "octavos": "4 – 8 nov 2026 · top 8 + 8 ganadores preliminar, race to 5",
-    "cuartos": "11 – 15 nov 2026 · race to 5",
-    "semifinales": "18 – 22 nov 2026 · race to 7",
-    "final": "25 – 29 nov 2026 · race to 9"
+    "preliminar": "21 – 27 oct 2026 · puestos 9-24, sorteo, race to 3",
+    "octavos": "28 oct – 1 nov 2026 · top 8 + 8 ganadores preliminar, race to 5",
+    "cuartos": "4 – 8 nov 2026 · race to 5",
+    "semifinales": "11 – 15 nov 2026 · race to 7",
+    "final": "18 – 22 nov 2026 · race to 9"
   }
 };

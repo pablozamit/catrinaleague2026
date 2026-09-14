@@ -1,7 +1,7 @@
 // Genera el calendario de la Liga Otono 2026 (formato Champions):
-// 30 jugadores, 5 bombos x 6 por ELO. 6 jornadas, 15 partidos/jornada.
-// Cada jugador: 2 vs propio bombo + 1 vs cada uno de los otros 4 = 6 partidos.
-// J1 = derbis de bombo; J2-J6 = round-robin entre bombos (el bombo libre juega su 2o derbi).
+// 30 jugadores, 5 bombos x 6 por ELO. 5 jornadas, 15 partidos/jornada.
+// Cada jugador: 1 vs propio bombo + 1 vs cada uno de los otros 4 = 5 partidos.
+// Cada jornada: 1 bombo juega su derbi interno + los otros 4 se cruzan por parejas.
 // Salida: js/fixtures-otono2026.js (const FIXTURES_OTONO2026) para las paginas web.
 const fs = require('fs');
 const path = require('path');
@@ -92,13 +92,13 @@ function crossMatches(potX, potY, offset) {
     return m;
 }
 
-// Round-robin de bombos J2-J6 (cada pareja una vez; el libre juega derbi 2)
+// Round-robin de bombos J1-J5 (cada pareja una vez; el libre juega su derbi)
 const pairSchedule = {
-    2: { pairs: [['B', 'C', 1], ['D', 'E', 0]], bye: 'A' },
-    3: { pairs: [['A', 'D', 2], ['C', 'E', 1]], bye: 'B' },
-    4: { pairs: [['A', 'E', 3], ['B', 'D', 2]], bye: 'C' },
-    5: { pairs: [['A', 'B', 0], ['C', 'D', 3]], bye: 'E' },
-    6: { pairs: [['A', 'C', 1], ['B', 'E', 0]], bye: 'D' },
+    1: { pairs: [['B', 'C', 1], ['D', 'E', 0]], bye: 'A' },
+    2: { pairs: [['A', 'D', 2], ['C', 'E', 1]], bye: 'B' },
+    3: { pairs: [['A', 'E', 3], ['B', 'D', 2]], bye: 'C' },
+    4: { pairs: [['A', 'B', 0], ['C', 'D', 3]], bye: 'E' },
+    5: { pairs: [['A', 'C', 1], ['B', 'E', 0]], bye: 'D' },
 };
 
 const DATES = {
@@ -107,48 +107,41 @@ const DATES = {
     3: '30 sep – 6 oct 2026',
     4: '7 – 13 oct 2026',
     5: '14 – 20 oct 2026',
-    6: '21 – 27 oct 2026',
 };
 
 const jornadas = {};
-for (let j = 1; j <= 6; j++) {
+for (let j = 1; j <= 5; j++) {
     const matches = [];
-    if (j === 1) {
-        for (const pot of POT_NAMES) {
-            intraMatches(anillos[pot], 1).forEach(([a, b]) => matches.push({ p1: a, p2: b, tipo: 'derbi', bombo: pot }));
-        }
-    } else {
-        const s = pairSchedule[j];
-        s.pairs.forEach(([x, y, off]) => {
-            crossMatches(pots[x], pots[y], off).forEach(([a, b]) => matches.push({ p1: a, p2: b, tipo: 'cruce', bombos: x + '-' + y }));
-        });
-        intraMatches(anillos[s.bye], 2).forEach(([a, b]) => matches.push({ p1: a, p2: b, tipo: 'derbi', bombo: s.bye }));
-    }
+    const s = pairSchedule[j];
+    s.pairs.forEach(([x, y, off]) => {
+        crossMatches(pots[x], pots[y], off).forEach(([a, b]) => matches.push({ p1: a, p2: b, tipo: 'cruce', bombos: x + '-' + y }));
+    });
+    intraMatches(anillos[s.bye], 1).forEach(([a, b]) => matches.push({ p1: a, p2: b, tipo: 'derbi', bombo: s.bye }));
     jornadas[j] = { fecha: DATES[j], partidos: matches };
 }
 
-// Verificacion: cada jugador juega exactamente 6 partidos (2 derbi + 4 cruce)
+// Verificacion: cada jugador juega exactamente 5 partidos (1 derbi + 4 cruces)
 const count = {};
 Object.values(jornadas).forEach(j => j.partidos.forEach(m => {
     count[m.p1] = (count[m.p1] || 0) + 1;
     count[m.p2] = (count[m.p2] || 0) + 1;
 }));
-const bad = Object.entries(count).filter(([, n]) => n !== 6);
-if (bad.length) { console.error('ERROR jugadores con != 6 partidos:', bad); process.exit(1); }
-console.log('OK: 30 jugadores x 6 partidos =', Object.values(jornadas).reduce((a, j) => a + j.partidos.length, 0), 'partidos en 6 jornadas');
+const bad = Object.entries(count).filter(([, n]) => n !== 5);
+if (bad.length) { console.error('ERROR jugadores con != 5 partidos:', bad); process.exit(1); }
+console.log('OK: 30 jugadores x 5 partidos =', Object.values(jornadas).reduce((a, j) => a + j.partidos.length, 0), 'partidos en 5 jornadas');
 
 const meta = {
     temporada: 'Otoño 2026',
-    formato: 'Champions: tabla unica, 5 bombos x 6, 6 jornadas',
+    formato: 'Champions: tabla unica, 5 bombos x 6, 5 jornadas',
     bombos: Object.fromEntries(POT_NAMES.map(p => [p, pots[p]])),
     jugadores: Object.fromEntries(PLAYERS.map(([u, nombre, elo]) => [u, { nombre, elo }])),
     jornadas,
     playoffs: {
-        preliminar: '28 oct – 1 nov 2026 · puestos 9-24, sorteo, race to 3',
-        octavos: '4 – 8 nov 2026 · top 8 + 8 ganadores preliminar, race to 5',
-        cuartos: '11 – 15 nov 2026 · race to 5',
-        semifinales: '18 – 22 nov 2026 · race to 7',
-        final: '25 – 29 nov 2026 · race to 9',
+        preliminar: '21 – 27 oct 2026 · puestos 9-24, sorteo, race to 3',
+        octavos: '28 oct – 1 nov 2026 · top 8 + 8 ganadores preliminar, race to 5',
+        cuartos: '4 – 8 nov 2026 · race to 5',
+        semifinales: '11 – 15 nov 2026 · race to 7',
+        final: '18 – 22 nov 2026 · race to 9',
     },
 };
 
