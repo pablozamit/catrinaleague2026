@@ -22,7 +22,6 @@ const PLAYERS = [
     ['charles', 'Charles', 1241],
     ['adri', 'Adri', 1228],
     ['enrique', 'Enrique', 1212],
-    ['jugador30', 'Jugador 30', 1200], // plaza 30 pendiente de asignar
     ['evodia', 'Evo', 1185],
     ['roman', 'Román', 1163],
     ['lucas', 'Lucas', 1128],
@@ -33,6 +32,7 @@ const PLAYERS = [
     ['aymar', 'Aymar', 1000],
     ['danilo', 'Danilo', 995],
     ['alexb', 'Alex B.', 987],
+    ['sol', 'Sol', 983],
     ['favio', 'Fabio', 963],
     ['rauls', 'Raul S.', 961],
     ['manuela', 'Manuela', 931],

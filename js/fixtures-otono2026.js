@@ -22,22 +22,22 @@ const FIXTURES_OTONO2026 = {
     "C": [
       "adri",
       "enrique",
-      "jugador30",
       "evodia",
       "roman",
-      "angel"
+      "angel",
+      "lucas"
     ],
     "D": [
-      "lucas",
       "nica",
       "dani",
       "nino",
       "ponci",
-      "aymar"
+      "aymar",
+      "danilo"
     ],
     "E": [
-      "danilo",
       "alexb",
+      "sol",
       "favio",
       "rauls",
       "manuela",
@@ -101,10 +101,6 @@ const FIXTURES_OTONO2026 = {
       "nombre": "Enrique",
       "elo": 1212
     },
-    "jugador30": {
-      "nombre": "Jugador 30",
-      "elo": 1200
-    },
     "evodia": {
       "nombre": "Evo",
       "elo": 1185
@@ -144,6 +140,10 @@ const FIXTURES_OTONO2026 = {
     "alexb": {
       "nombre": "Alex B.",
       "elo": 987
+    },
+    "sol": {
+      "nombre": "Sol",
+      "elo": 983
     },
     "favio": {
       "nombre": "Fabio",
@@ -213,38 +213,38 @@ const FIXTURES_OTONO2026 = {
           "bombo": "C"
         },
         {
-          "p1": "jugador30",
-          "p2": "evodia",
+          "p1": "evodia",
+          "p2": "roman",
           "tipo": "derbi",
           "bombo": "C"
         },
         {
-          "p1": "roman",
-          "p2": "angel",
+          "p1": "angel",
+          "p2": "lucas",
           "tipo": "derbi",
           "bombo": "C"
         },
         {
-          "p1": "lucas",
-          "p2": "nica",
+          "p1": "nica",
+          "p2": "dani",
           "tipo": "derbi",
           "bombo": "D"
         },
         {
-          "p1": "dani",
-          "p2": "nino",
+          "p1": "nino",
+          "p2": "ponci",
           "tipo": "derbi",
           "bombo": "D"
         },
         {
-          "p1": "ponci",
-          "p2": "aymar",
+          "p1": "aymar",
+          "p2": "danilo",
           "tipo": "derbi",
           "bombo": "D"
         },
         {
-          "p1": "danilo",
-          "p2": "alexb",
+          "p1": "alexb",
+          "p2": "sol",
           "tipo": "derbi",
           "bombo": "E"
         },
@@ -273,25 +273,25 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "wilkins",
-          "p2": "jugador30",
-          "tipo": "cruce",
-          "bombos": "B-C"
-        },
-        {
-          "p1": "connor",
           "p2": "evodia",
           "tipo": "cruce",
           "bombos": "B-C"
         },
         {
-          "p1": "joel",
+          "p1": "connor",
           "p2": "roman",
           "tipo": "cruce",
           "bombos": "B-C"
         },
         {
-          "p1": "alexf",
+          "p1": "joel",
           "p2": "angel",
+          "tipo": "cruce",
+          "bombos": "B-C"
+        },
+        {
+          "p1": "alexf",
+          "p2": "lucas",
           "tipo": "cruce",
           "bombos": "B-C"
         },
@@ -302,12 +302,6 @@ const FIXTURES_OTONO2026 = {
           "bombos": "B-C"
         },
         {
-          "p1": "lucas",
-          "p2": "danilo",
-          "tipo": "cruce",
-          "bombos": "D-E"
-        },
-        {
           "p1": "nica",
           "p2": "alexb",
           "tipo": "cruce",
@@ -315,24 +309,30 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "dani",
-          "p2": "favio",
+          "p2": "sol",
           "tipo": "cruce",
           "bombos": "D-E"
         },
         {
           "p1": "nino",
-          "p2": "rauls",
+          "p2": "favio",
           "tipo": "cruce",
           "bombos": "D-E"
         },
         {
           "p1": "ponci",
-          "p2": "manuela",
+          "p2": "rauls",
           "tipo": "cruce",
           "bombos": "D-E"
         },
         {
           "p1": "aymar",
+          "p2": "manuela",
+          "tipo": "cruce",
+          "bombos": "D-E"
+        },
+        {
+          "p1": "danilo",
           "p2": "damian",
           "tipo": "cruce",
           "bombos": "D-E"
@@ -362,43 +362,43 @@ const FIXTURES_OTONO2026 = {
       "partidos": [
         {
           "p1": "amauris",
-          "p2": "dani",
-          "tipo": "cruce",
-          "bombos": "A-D"
-        },
-        {
-          "p1": "pablo",
           "p2": "nino",
           "tipo": "cruce",
           "bombos": "A-D"
         },
         {
-          "p1": "sasa",
+          "p1": "pablo",
           "p2": "ponci",
           "tipo": "cruce",
           "bombos": "A-D"
         },
         {
-          "p1": "katee",
+          "p1": "sasa",
           "p2": "aymar",
           "tipo": "cruce",
           "bombos": "A-D"
         },
         {
-          "p1": "joe",
-          "p2": "lucas",
+          "p1": "katee",
+          "p2": "danilo",
           "tipo": "cruce",
           "bombos": "A-D"
         },
         {
-          "p1": "johnny",
+          "p1": "joe",
           "p2": "nica",
           "tipo": "cruce",
           "bombos": "A-D"
         },
         {
+          "p1": "johnny",
+          "p2": "dani",
+          "tipo": "cruce",
+          "bombos": "A-D"
+        },
+        {
           "p1": "adri",
-          "p2": "alexb",
+          "p2": "sol",
           "tipo": "cruce",
           "bombos": "C-E"
         },
@@ -409,26 +409,26 @@ const FIXTURES_OTONO2026 = {
           "bombos": "C-E"
         },
         {
-          "p1": "jugador30",
+          "p1": "evodia",
           "p2": "rauls",
           "tipo": "cruce",
           "bombos": "C-E"
         },
         {
-          "p1": "evodia",
+          "p1": "roman",
           "p2": "manuela",
           "tipo": "cruce",
           "bombos": "C-E"
         },
         {
-          "p1": "roman",
+          "p1": "angel",
           "p2": "damian",
           "tipo": "cruce",
           "bombos": "C-E"
         },
         {
-          "p1": "angel",
-          "p2": "danilo",
+          "p1": "lucas",
+          "p2": "alexb",
           "tipo": "cruce",
           "bombos": "C-E"
         },
@@ -475,13 +475,13 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "katee",
-          "p2": "danilo",
+          "p2": "alexb",
           "tipo": "cruce",
           "bombos": "A-E"
         },
         {
           "p1": "joe",
-          "p2": "alexb",
+          "p2": "sol",
           "tipo": "cruce",
           "bombos": "A-E"
         },
@@ -493,54 +493,54 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "florian",
-          "p2": "dani",
-          "tipo": "cruce",
-          "bombos": "B-D"
-        },
-        {
-          "p1": "wilkins",
           "p2": "nino",
           "tipo": "cruce",
           "bombos": "B-D"
         },
         {
-          "p1": "connor",
+          "p1": "wilkins",
           "p2": "ponci",
           "tipo": "cruce",
           "bombos": "B-D"
         },
         {
-          "p1": "joel",
+          "p1": "connor",
           "p2": "aymar",
           "tipo": "cruce",
           "bombos": "B-D"
         },
         {
-          "p1": "alexf",
-          "p2": "lucas",
+          "p1": "joel",
+          "p2": "danilo",
           "tipo": "cruce",
           "bombos": "B-D"
         },
         {
-          "p1": "charles",
+          "p1": "alexf",
           "p2": "nica",
           "tipo": "cruce",
           "bombos": "B-D"
         },
         {
+          "p1": "charles",
+          "p2": "dani",
+          "tipo": "cruce",
+          "bombos": "B-D"
+        },
+        {
           "p1": "enrique",
-          "p2": "jugador30",
+          "p2": "evodia",
           "tipo": "derbi",
           "bombo": "C"
         },
         {
-          "p1": "evodia",
-          "p2": "roman",
+          "p1": "roman",
+          "p2": "angel",
           "tipo": "derbi",
           "bombo": "C"
         },
         {
-          "p1": "angel",
+          "p1": "lucas",
           "p2": "adri",
           "tipo": "derbi",
           "bombo": "C"
@@ -588,25 +588,19 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "adri",
-          "p2": "nino",
-          "tipo": "cruce",
-          "bombos": "C-D"
-        },
-        {
-          "p1": "enrique",
           "p2": "ponci",
           "tipo": "cruce",
           "bombos": "C-D"
         },
         {
-          "p1": "jugador30",
+          "p1": "enrique",
           "p2": "aymar",
           "tipo": "cruce",
           "bombos": "C-D"
         },
         {
           "p1": "evodia",
-          "p2": "lucas",
+          "p2": "danilo",
           "tipo": "cruce",
           "bombos": "C-D"
         },
@@ -623,7 +617,13 @@ const FIXTURES_OTONO2026 = {
           "bombos": "C-D"
         },
         {
-          "p1": "alexb",
+          "p1": "lucas",
+          "p2": "nino",
+          "tipo": "cruce",
+          "bombos": "C-D"
+        },
+        {
+          "p1": "sol",
           "p2": "favio",
           "tipo": "derbi",
           "bombo": "E"
@@ -636,7 +636,7 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "damian",
-          "p2": "danilo",
+          "p2": "alexb",
           "tipo": "derbi",
           "bombo": "E"
         }
@@ -653,25 +653,25 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "pablo",
-          "p2": "jugador30",
-          "tipo": "cruce",
-          "bombos": "A-C"
-        },
-        {
-          "p1": "sasa",
           "p2": "evodia",
           "tipo": "cruce",
           "bombos": "A-C"
         },
         {
-          "p1": "katee",
+          "p1": "sasa",
           "p2": "roman",
           "tipo": "cruce",
           "bombos": "A-C"
         },
         {
-          "p1": "joe",
+          "p1": "katee",
           "p2": "angel",
+          "tipo": "cruce",
+          "bombos": "A-C"
+        },
+        {
+          "p1": "joe",
+          "p2": "lucas",
           "tipo": "cruce",
           "bombos": "A-C"
         },
@@ -683,13 +683,13 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "florian",
-          "p2": "danilo",
+          "p2": "alexb",
           "tipo": "cruce",
           "bombos": "B-E"
         },
         {
           "p1": "wilkins",
-          "p2": "alexb",
+          "p2": "sol",
           "tipo": "cruce",
           "bombos": "B-E"
         },
@@ -718,20 +718,20 @@ const FIXTURES_OTONO2026 = {
           "bombos": "B-E"
         },
         {
-          "p1": "nica",
-          "p2": "dani",
+          "p1": "dani",
+          "p2": "nino",
           "tipo": "derbi",
           "bombo": "D"
         },
         {
-          "p1": "nino",
-          "p2": "ponci",
+          "p1": "ponci",
+          "p2": "aymar",
           "tipo": "derbi",
           "bombo": "D"
         },
         {
-          "p1": "aymar",
-          "p2": "lucas",
+          "p1": "danilo",
+          "p2": "nica",
           "tipo": "derbi",
           "bombo": "D"
         }
