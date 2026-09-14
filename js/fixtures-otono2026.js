@@ -250,12 +250,12 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "favio",
-          "p2": "rauls",
+          "p2": "manuela",
           "tipo": "derbi",
           "bombo": "E"
         },
         {
-          "p1": "manuela",
+          "p1": "rauls",
           "p2": "damian",
           "tipo": "derbi",
           "bombo": "E"
@@ -629,8 +629,8 @@ const FIXTURES_OTONO2026 = {
           "bombo": "E"
         },
         {
-          "p1": "rauls",
-          "p2": "manuela",
+          "p1": "manuela",
+          "p2": "rauls",
           "tipo": "derbi",
           "bombo": "E"
         },

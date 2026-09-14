@@ -6,6 +6,12 @@
 const fs = require('fs');
 const path = require('path');
 
+// Parejas que NO pueden enfrentarse en fase de grupos
+const PROHIBIDOS = [['manuela', 'damian']];
+function prohibida(a, b) {
+    return PROHIBIDOS.some(([x, y]) => (a === x && b === y) || (a === y && b === x));
+}
+
 const PLAYERS = [
     // username firebase, nombre visible, elo
     ['amauris', 'Amauris', 1659],
@@ -45,6 +51,32 @@ const sorted = [...PLAYERS].sort((a, b) => b[2] - a[2]);
 const POT_NAMES = ['A', 'B', 'C', 'D', 'E'];
 const pots = { A: [], B: [], C: [], D: [], E: [] };
 sorted.forEach((p, i) => pots[POT_NAMES[Math.floor(i / 6)]].push(p[0]));
+// Anillo de derbis por bombo (respeta parejas prohibidas)
+const anillos = Object.fromEntries(POT_NAMES.map(p => [p, ordenarAnillo(pots[p])]));
+
+// Ordena el anillo del bombo evitando parejas prohibidas en ambas rondas de derbi
+// (búsqueda exhaustiva: 6! = 720 permutaciones como máximo, primera válida)
+function ordenarAnillo(jugadores) {
+    const perms = permutar(jugadores);
+    for (const orden of perms) {
+        const pares = [
+            [orden[0], orden[1]], [orden[2], orden[3]], [orden[4], orden[5]],
+            [orden[1], orden[2]], [orden[3], orden[4]], [orden[5], orden[0]],
+        ];
+        if (!pares.some(([a, b]) => prohibida(a, b))) return orden;
+    }
+    throw new Error('No se pudo evitar pareja prohibida en bombo: ' + jugadores.join(','));
+}
+
+function permutar(arr) {
+    if (arr.length <= 1) return [arr];
+    const out = [];
+    for (let i = 0; i < arr.length; i++) {
+        const resto = [...arr.slice(0, i), ...arr.slice(i + 1)];
+        for (const p of permutar(resto)) out.push([arr[i], ...p]);
+    }
+    return out;
+}
 
 // Derbis de bombo: anillo de 6 -> J1: (0-1,2-3,4-5), jornada libre: (1-2,3-4,5-0)
 function intraMatches(potPlayers, round) {
@@ -83,14 +115,14 @@ for (let j = 1; j <= 6; j++) {
     const matches = [];
     if (j === 1) {
         for (const pot of POT_NAMES) {
-            intraMatches(pots[pot], 1).forEach(([a, b]) => matches.push({ p1: a, p2: b, tipo: 'derbi', bombo: pot }));
+            intraMatches(anillos[pot], 1).forEach(([a, b]) => matches.push({ p1: a, p2: b, tipo: 'derbi', bombo: pot }));
         }
     } else {
         const s = pairSchedule[j];
         s.pairs.forEach(([x, y, off]) => {
             crossMatches(pots[x], pots[y], off).forEach(([a, b]) => matches.push({ p1: a, p2: b, tipo: 'cruce', bombos: x + '-' + y }));
         });
-        intraMatches(pots[s.bye], 2).forEach(([a, b]) => matches.push({ p1: a, p2: b, tipo: 'derbi', bombo: s.bye }));
+        intraMatches(anillos[s.bye], 2).forEach(([a, b]) => matches.push({ p1: a, p2: b, tipo: 'derbi', bombo: s.bye }));
     }
     jornadas[j] = { fecha: DATES[j], partidos: matches };
 }
