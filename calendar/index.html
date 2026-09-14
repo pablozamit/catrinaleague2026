@@ -3,131 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario de Partidos - La Catrina Pool League</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            min-height: 100vh;
-            color: #fff;
-        }
-
-        .header {
-            text-align: center;
-            padding: 2rem;
-            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
-        }
-
-        .header h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            color: #d4af37;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-            letter-spacing: 4px;
-        }
-
-        .header p {
-            color: #888;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        .calendar-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .calendar-wrapper {
-            background: rgba(255, 255, 255, 1);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        iframe {
-            width: 100%;
-            height: 80vh;
-            min-height: 600px;
-            border: none;
-            display: block;
-        }
-
-        .info-box {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
-
-        .info-box p {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 8px;
-            padding: 1rem 1.5rem;
-            color: #ccc;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin: 1.5rem 2rem;
-            color: #d4af37;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
-        .back-link:hover {
-            color: #fff;
-        }
-
-        .back-link::before {
-            content: '← ';
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            iframe {
-                height: 60vh;
-                min-height: 400px;
-            }
-        }
-    </style>
+    <title>Calendario y Resultados · Liga de Otoño 2026 — La Catrina Pool League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/otono2026.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="../js/fixtures-otono2026.js"></script>
 </head>
-<body>
-    <a href="../" class="back-link">Volver al inicio</a>
-    
-    <div class="header">
-        <h1>CALENDARIO DE PARTIDOS</h1>
-        <p>Horario de la próxima jornada de La Catrina Pool League</p>
-    </div>
+<body class="otono">
+    <nav class="ot-nav">
+        <a href="../liga/">Clasificación</a>
+        <a href="../calendar/" class="active">Calendario</a>
+        <a href="../reglas/">Reglas</a>
+    </nav>
 
-    <div class="calendar-container">
-        <div class="calendar-wrapper">
-            <iframe 
-                src="https://calendar.google.com/calendar/embed?src=26b2b14efdb88c0f380cab93f59b346739701deea26a01c7be0fa6d14b20a491%40group.calendar.google.com&ctz=Europe%2FMadrid&mode=WEEK&hl=es&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=1"
-                title="Calendario de Partidos"
-                scrolling="no">
-            </iframe>
-        </div>
-    </div>
+    <header class="ot-header">
+        <div class="ot-kicker">La Catrina Pool League · Temporada Otoño 2026</div>
+        <h1 class="ot-title">Calendario<span class="thin">Seis jornadas · Noventa partidos</span></h1>
+        <p class="ot-lede">Del 16 de septiembre al 27 de octubre, los 30 juegan cada semana. Después, la eliminatoria.</p>
+    </header>
 
-    <div class="info-box">
-        <p>
-            Los horarios marcados en verde son partidas confirmadas. 
-            Para añadir una partida al calendario, contacta con el administrador de la liga.
-        </p>
-    </div>
+    <main>
+        <section class="ot-section" id="sec-jornadas">
+            <h2 class="ot-h2">Fase de grupos</h2>
+            <p class="ot-sub">Toca la jornada para desplegar sus 15 partidos. J1 = derbis de bombo.</p>
+            <div id="jornadas"></div>
+        </section>
+
+        <section class="ot-section" id="sec-playoffs">
+            <h2 class="ot-h2">Playoffs</h2>
+            <p class="ot-sub">La tabla manda: top 8 directo, del 9º al 24º a la preliminar.</p>
+            <div class="ot-bracket" id="bracket"></div>
+        </section>
+
+        <section class="ot-section" id="sec-resultados">
+            <h2 class="ot-h2">Resultados</h2>
+            <p class="ot-sub">Partidos confirmados de la liga, en directo desde la base de datos.</p>
+            <div id="resultados"><p style="color:var(--muted)">Cargando resultados…</p></div>
+            <p style="margin-top:1.4rem;font-size:0.9rem;color:var(--muted)">¿Has jugado? Registra el resultado en <a href="../resultados/" style="color:var(--gold)">Resultados</a> y que tu rival lo confirme en <a href="../confirmar/" style="color:var(--gold)">Confirmar</a>.</p>
+        </section>
+        <section class="ot-section" id="sec-gcal">
+            <h2 class="ot-h2">Calendario del club</h2>
+            <p class="ot-sub">Eventos y reservas de mesa en Google Calendar.</p>
+            <div style="border:1px solid var(--hairline);background:#fff">
+                <iframe src="https://calendar.google.com/calendar/embed?src=26b2b14efdb88c0f380cab93f59b346739701deea26a01c7be0fa6d14b20a491%40group.calendar.google.com&ctz=Europe%2FMadrid&mode=WEEK&hl=es&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=1" style="width:100%;height:60vh;min-height:420px;border:none;display:block" title="Calendario La Catrina"></iframe>
+            </div>
+        </section>
+    </main>
+
+    <footer class="ot-footer">
+        La Catrina Pool League · Otoño 2026 · <a href="../liga/verano-2026/">Archivo: Verano 2026</a>
+    </footer>
+
+    <script src="../js/iris-cursor.js"></script>
+    <script>
+        var F = FIXTURES_OTONO2026;
+        function nombre(u) { return (F.jugadores[u] && F.jugadores[u].nombre) || u; }
+
+        // ---- Jornadas ----
+        (function () {
+            var box = document.getElementById('jornadas');
+            box.innerHTML = '';
+            Object.keys(F.jornadas).forEach(function (j, idx) {
+                var J = F.jornadas[j];
+                var div = document.createElement('div');
+                div.className = 'ot-round' + (idx === 0 ? ' open' : '');
+                var head = document.createElement('header');
+                head.innerHTML = '<h3>Jornada ' + j + ' · ' + J.partidos.length + ' partidos</h3><span class="fecha">' + J.fecha + '</span>';
+                head.onclick = function () { div.classList.toggle('open'); };
+                var list = document.createElement('div');
+                list.className = 'fixtures';
+                J.partidos.forEach(function (m) {
+                    var row = document.createElement('div');
+                    row.className = 'ot-match';
+                    var etiqueta = m.tipo === 'derbi' ? 'DERBI ' + m.bombo : m.bombos;
+                    row.innerHTML = '<span>' + nombre(m.p1) + '</span><span class="vs">VS</span><span>' + nombre(m.p2) + '</span><span class="tipo">' + etiqueta + '</span>';
+                    list.appendChild(row);
+                });
+                div.appendChild(head);
+                div.appendChild(list);
+                box.appendChild(div);
+            });
+        })();
+
+        // ---- Bracket ----
+        (function () {
+            var fases = [
+                ['Ronda preliminar', F.playoffs.preliminar, 'Puestos 9–24 · cruces por sorteo', 'RACE TO 3'],
+                ['Octavos de final', F.playoffs.octavos, 'Top 8 + 8 ganadores de la preliminar', 'RACE TO 5'],
+                ['Cuartos de final', F.playoffs.cuartos, 'Los 8 supervivientes', 'RACE TO 5'],
+                ['Semifinales', F.playoffs.semifinales, 'Los 4 mejores', 'RACE TO 7'],
+                ['Final', F.playoffs.final, 'Los 2 finalistas', 'RACE TO 9'],
+            ];
+            var box = document.getElementById('bracket');
+            box.innerHTML = '';
+            fases.forEach(function (f) {
+                var d = document.createElement('div');
+                d.className = 'fase';
+                d.innerHTML = '<h4>' + f[0] + '</h4><p class="race">' + f[3] + '</p><p>' + f[1] + '<br>' + f[2] + '</p>';
+                box.appendChild(d);
+            });
+        })();
+
+        // ---- Resultados en vivo (Firebase) ----
+        (function () {
+            try {
+                firebase.initializeApp({
+                    apiKey: "AIzaSyBgyARlrVo-J1qIhu49Nfvif_p7xVVFW5s",
+                    authDomain: "elopool-f1e62.firebaseapp.com",
+                    databaseURL: "https://elopool-f1e62-default-rtdb.europe-west1.firebasedatabase.app",
+                    projectId: "elopool-f1e62",
+                    storageBucket: "elopool-f1e62.firebasestorage.app",
+                    messagingSenderId: "125100775441",
+                    appId: "1:125100775441:web:b61f62a308af5c678db9b0"
+                });
+            } catch (e) { /* ya inicializado */ }
+            var db = firebase.database();
+            db.ref('matches').once('value').then(function (snap) {
+                var box = document.getElementById('resultados');
+                var rows = [];
+                snap.forEach(function (c) {
+                    var m = c.val();
+                    if (!m || m.match_type !== 'liga_grupos') return;
+                    if ((m.status || '').toLowerCase() !== 'confirmed') return;
+                    rows.push(m);
+                });
+                if (!rows.length) {
+                    box.innerHTML = '<p style="color:var(--muted)">Aún no hay partidos confirmados. La J1 arranca la semana del 16 de septiembre.</p>';
+                    return;
+                }
+                rows.sort(function (a, b) { return (b.confirmed_at || 0) - (a.confirmed_at || 0); });
+                var t = '<table class="ot-table"><thead><tr><th>Ganador</th><th>Marcador</th><th>Perdedor</th><th>Fecha</th></tr></thead><tbody>';
+                rows.forEach(function (m) {
+                    var g = nombre(m.winner_username || m.winner_id || '?');
+                    var p1 = m.player1_username || '', p2 = m.player2_username || '';
+                    var perdedor = (p1 && p1 !== (m.winner_username || '')) ? p1 : p2;
+                    var sc = (m.player1_score != null && m.player2_score != null) ? (m.player1_score + ' – ' + m.player2_score) : '—';
+                    var fecha = m.confirmed_at ? new Date(m.confirmed_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : '—';
+                    t += '<tr><td><strong>' + g + '</strong></td><td class="ot-elo">' + sc + '</td><td>' + (perdedor || '?') + '</td><td>' + fecha + '</td></tr>';
+                });
+                box.innerHTML = t + '</tbody></table>';
+            }).catch(function () {
+                document.getElementById('resultados').innerHTML = '<p style="color:var(--muted)">No se pudieron cargar los resultados.</p>';
+            });
+        })();
+    </script>
 </body>
 </html>

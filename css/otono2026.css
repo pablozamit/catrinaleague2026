@@ -1,0 +1,250 @@
+/* ============================================================
+   LA CATRINA · OTOÑO 2026 — Sistema de diseño compartido
+   Editorial dorado (Lupi) + cursor iris · NO usar neones
+   ============================================================ */
+:root {
+    --gold: #d4af37;
+    --gold-light: #f4d03f;
+    --gold-dim: rgba(212, 175, 55, 0.35);
+    --black: #0a0a0a;
+    --coal: #141414;
+    --bone: #f5f5f5;
+    --muted: #9a9a9a;
+    --felt: #1a4d2e;
+    --hairline: rgba(212, 175, 55, 0.28);
+
+    --font-display: 'Cinzel', serif;
+    --font-serif: 'EB Garamond', serif;
+    --font-ui: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body.otono {
+    background: var(--black);
+    color: var(--bone);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Cabecera editorial ---------- */
+.ot-header {
+    padding: 5vw 4vw 3vw;
+    border-bottom: 1px solid var(--hairline);
+    position: relative;
+    overflow: hidden;
+}
+.ot-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+}
+.ot-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(2.6rem, 9vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    color: var(--gold);
+    text-transform: uppercase;
+}
+.ot-title .thin {
+    display: block;
+    color: var(--bone);
+    font-weight: 400;
+    font-size: 0.42em;
+    letter-spacing: 0.35em;
+}
+.ot-lede {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.05rem, 2.4vw, 1.5rem);
+    color: var(--bone);
+    opacity: 0.75;
+    max-width: 44rem;
+    margin-top: 1.4rem;
+    line-height: 1.45;
+}
+
+/* ---------- Navegación entre las 3 páginas ---------- */
+.ot-nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--hairline);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(10, 10, 10, 0.92);
+    backdrop-filter: blur(8px);
+}
+.ot-nav a {
+    flex: 1;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 1rem 0.4rem;
+    border-bottom: 2px solid transparent;
+    transition: color 0.25s, border-color 0.25s;
+}
+.ot-nav a:hover { color: var(--gold-light); }
+.ot-nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ---------- Secciones ---------- */
+.ot-section { max-width: 1100px; margin: 0 auto; padding: 3.5rem 4vw; }
+.ot-section + .ot-section { border-top: 1px solid var(--hairline); }
+.ot-h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 3.4vw, 2rem);
+    color: var(--bone);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.6rem;
+}
+.ot-h2 .n {
+    color: var(--black);
+    background: var(--gold);
+    display: inline-grid;
+    place-items: center;
+    width: 1.7em;
+    height: 1.7em;
+    border-radius: 50%;
+    font-size: 0.62em;
+    margin-right: 0.6em;
+    vertical-align: middle;
+}
+.ot-sub { font-family: var(--font-serif); font-style: italic; color: var(--muted); margin-bottom: 2rem; font-size: 1.08rem; }
+
+/* ---------- Tablas editoriales ---------- */
+.ot-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.ot-table thead th {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-align: left;
+    padding: 0.7rem 0.8rem;
+    border-bottom: 1px solid var(--gold);
+}
+.ot-table tbody td {
+    padding: 0.75rem 0.8rem;
+    border-bottom: 1px solid rgba(245, 245, 245, 0.08);
+}
+.ot-table tbody tr { transition: background 0.18s ease; }
+.ot-table tbody tr:hover { background: rgba(212, 175, 55, 0.07); }
+.ot-pos {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 2.4em;
+    display: inline-block;
+}
+.ot-elo { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+tr.cut-top td { border-top: 2px solid var(--gold); }
+tr.cut-elim td { opacity: 0.45; }
+.ot-tag {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    padding: 0.15em 0.7em;
+    color: var(--gold-light);
+    white-space: nowrap;
+}
+
+/* ---------- Bombos ---------- */
+.ot-pots { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); }
+.ot-pot { background: var(--black); padding: 1.2rem 1rem; }
+.ot-pot h4 { font-family: var(--font-display); color: var(--gold); letter-spacing: 0.2em; font-size: 0.85rem; margin-bottom: 0.8rem; }
+.ot-pot li { list-style: none; font-size: 0.88rem; padding: 0.28rem 0; border-bottom: 1px dotted rgba(245,245,245,0.12); display: flex; justify-content: space-between; gap: 0.5rem; }
+.ot-pot li:last-child { border-bottom: none; }
+.ot-pot .e { font-family: var(--font-mono); color: var(--muted); font-size: 0.78rem; }
+
+/* ---------- Tarjetas de jornada ---------- */
+.ot-round { border: 1px solid var(--hairline); margin-bottom: 1.4rem; background: var(--coal); }
+.ot-round > header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 1rem 1.3rem; cursor: pointer; user-select: none;
+}
+.ot-round > header h3 { font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; }
+.ot-round > header .fecha { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); }
+.ot-round .fixtures { display: none; padding: 0 1.3rem 1.2rem; }
+.ot-round.open .fixtures { display: block; }
+.ot-match {
+    display: flex; justify-content: space-between; align-items: center; gap: 0.8rem;
+    padding: 0.55rem 0; border-top: 1px solid rgba(245,245,245,0.07); font-size: 0.92rem;
+}
+.ot-match .vs { font-family: var(--font-mono); font-size: 0.68rem; color: var(--gold); letter-spacing: 0.2em; }
+.ot-match .tipo { font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); letter-spacing: 0.1em; }
+
+/* ---------- Bracket playoffs ---------- */
+.ot-bracket { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.2rem; }
+.ot-bracket .fase { border: 1px solid var(--hairline); padding: 1.2rem; background: var(--coal); }
+.ot-bracket .fase h4 { font-family: var(--font-display); color: var(--gold); font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.4rem; }
+.ot-bracket .fase p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+.ot-bracket .race { font-family: var(--font-mono); color: var(--bone); font-size: 0.78rem; }
+
+/* ---------- Pie ---------- */
+.ot-footer { text-align: center; padding: 2.5rem 1rem 4rem; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--hairline); }
+.ot-footer a { color: var(--gold); }
+
+/* ---------- Reglas: bloques ---------- */
+.ot-rule { display: grid; grid-template-columns: 3.2rem 1fr; gap: 1.2rem; padding: 1.6rem 0; border-bottom: 1px solid rgba(245,245,245,0.08); }
+.ot-rule:last-child { border-bottom: none; }
+.ot-rule .big { font-family: var(--font-display); font-weight: 900; font-size: 2rem; color: transparent; -webkit-text-stroke: 1px var(--gold); line-height: 1; }
+.ot-rule h3 { font-family: var(--font-display); font-size: 1.02rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bone); margin-bottom: 0.5rem; }
+.ot-rule p, .ot-rule li { font-size: 0.94rem; line-height: 1.65; color: #d8d8d8; }
+.ot-rule ul { margin: 0.6rem 0 0 1.1rem; }
+.ot-rule strong { color: var(--gold-light); font-weight: 600; }
+
+/* ============================================================
+   CURSOR IRIS — paleta Catrina (dorado). Solo puntero fino.
+   --ink-2 primario (dorado) · --ink-3 secundario (dorado claro)
+   ============================================================ */
+@property --x { syntax: '<length-percentage>'; inherits: true; initial-value: 50%; }
+@property --y { syntax: '<length-percentage>'; inherits: true; initial-value: 50%; }
+@property --angle { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+@property --speed { syntax: '<number>'; inherits: true; initial-value: 0; }
+
+#iris {
+    position: fixed;
+    left: var(--x);
+    top: var(--y);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #fffdf4;
+    box-shadow: inset 0 0 0 2px var(--gold), 0 0 18px rgba(212, 175, 55, 0.35);
+    overflow: hidden;
+    transform: translate(-50%, -50%);
+    transition: left 0.16s cubic-bezier(0.22, 1, 0.36, 1), top 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    z-index: 9999;
+    display: none;
+}
+#iris .pupil {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: inset 0 0 0 3px #fffdf4, inset 0 0 0 5px var(--gold-light);
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(calc(6px + var(--speed) * 4px)) rotate(calc(-1 * var(--angle)));
+    transition: transform 0.12s;
+}
+@media (hover: hover) and (pointer: fine) {
+    body.otono.iris-on, body.otono.iris-on a, body.otono.iris-on button { cursor: none; }
+    body.otono.iris-on #iris { display: block; }
+}
