@@ -13,6 +13,8 @@ const translations = {
         back: '← Volver',
         back_to_table: '← Volver a la mesa',
         back_to_ranking: '← Volver al Ranking',
+        videoteca_subtitle: 'PARTIDOS HISTÓRICOS',
+        videoteca_back: 'Volver al Salón',
         logout: 'Cerrar Sesión',
         change_password: 'Cambiar Contraseña',
         
@@ -22,9 +24,10 @@ const translations = {
         nav_league: 'Liga',
         nav_login: 'Login / Resultados',
         nav_history: 'Historial',
+        nav_videoteca: 'Videoteca',
         nav_coming_soon: 'Próximamente',
         nav_exam: 'Examen de la Liga',
-        instructions: 'Arrastra para rotar • Haz clic en las troneras',
+        instructions: 'Arrastra para rotar • Haz clic en las troneras, la televisión, el calendario, la caja de VHS, el periódico o las cabinas telefónicas',
         
         // Laboratorio
         lab_title: 'Laboratorio',
@@ -220,6 +223,11 @@ const translations = {
         // Notifications
         popup_new_achievements: '¡Nuevos Logros!',
         popup_accept: 'Aceptar',
+
+        // Bonus notice
+        bonus_notice_title: 'AVISO DE BONUS',
+        bonus_notice_message: '¡IMPORTANTE! Los 4 bonus (+1 hándicap, bola 9, bola 10 y parejas escocesas) están disponibles todas las semanas. Solo se puede usar 1 por equipo a la semana y se renuevan el lunes siguiente. Recuerda comunicarlo antes del lunes a las 18:59.',
+        bonus_notice_accept: 'ENTENDIDO',
         
         // Toast notifications
         toast_success_title: '¡Éxito!',
@@ -352,6 +360,8 @@ const translations = {
         back: '← Back',
         back_to_table: '← Back to Table',
         back_to_ranking: '← Back to Ranking',
+        videoteca_subtitle: 'HISTORICAL MATCHES',
+        videoteca_back: 'Back to the Lounge',
         logout: 'Logout',
         change_password: 'Change Password',
         
@@ -360,9 +370,10 @@ const translations = {
         nav_ranking: 'ELO Ranking',
         nav_league: 'League',
         nav_login: 'Login / Results',
+        nav_videoteca: 'Video Library',
         nav_coming_soon: 'Coming Soon',
         nav_lab: 'Laboratory',
-        instructions: 'Drag to rotate • Click on pockets',
+        instructions: 'Drag to rotate • Click on pockets, the TV, the calendar, the VHS box, the newspaper or the phone booths',
         
         // Laboratory
         lab_title: 'Laboratory',
@@ -558,6 +569,11 @@ const translations = {
         // Notifications
         popup_new_achievements: 'New Achievements!',
         popup_accept: 'Accept',
+
+        // Bonus notice
+        bonus_notice_title: 'BONUS NOTICE',
+        bonus_notice_message: 'IMPORTANT! The 4 bonuses (+1 handicap, 9-ball, 10-ball, and Scotch doubles) are available every week. Only 1 per team per week is allowed, and they renew the following week. Notify us before Monday at 6:59 PM.',
+        bonus_notice_accept: 'GOT IT',
         
         // Toast notifications
         toast_success_title: 'Success!',

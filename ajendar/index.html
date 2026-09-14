@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajendar - La Catrina Pool League</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 90%;
+            height: 90%;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+        }
+        #twitter-video-container {
+            width: 90%;
+            height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Overlay for interaction to allow autoplay with sound */
+        #interaction-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 90%;
+            height: 90%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            color: #d4af37;
+            cursor: pointer;
+            text-align: center;
+            padding: 20px;
+        }
+        #interaction-overlay h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        #interaction-overlay p {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="interaction-overlay">
+        <h2>PRESIONA PARA COMENZAR</h2>
+    </div>
+
+    <video id="main-video" playsinline>
+        <source src="../ssstwitter.com_1775304662881.mp4" type="video/mp4">
+    </video>
+
+    <style>
+        #main-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+    </style>
+
+    <script>
+        const video = document.getElementById('main-video');
+        const overlay = document.getElementById('interaction-overlay');
+        const videos = [
+            '../ssstwitter.com_1775304662881.mp4',
+            '../ssstwitter.com_1775304633916.mp4'
+        ];
+        let currentVideoIndex = 0;
+
+        overlay.addEventListener('click', function() {
+            overlay.style.display = 'none';
+            video.style.display = 'block';
+            video.play();
+        });
+
+        video.addEventListener('ended', function() {
+            currentVideoIndex++;
+            if (currentVideoIndex < videos.length) {
+                video.src = videos[currentVideoIndex];
+                video.play();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -20,19 +20,17 @@
             position: relative;
         }
 
-        /* Fondo del bar */
         .bar-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
                         url('material/imagen2.jpeg') center/cover;
             z-index: -1;
         }
 
-        /* Canvas 3D */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -42,7 +40,6 @@
             z-index: 1;
         }
 
-        /* UI Overlay */
         .ui-layer {
             position: fixed;
             top: 0;
@@ -77,7 +74,6 @@
             margin-top: 0.5rem;
         }
 
-        /* Marcadores de troneras (posicionados sobre el canvas) */
         .pocket-marker {
             position: fixed;
             width: 50px;
@@ -130,7 +126,6 @@
             border-color: #444;
         }
 
-        /* Indicador de carga */
         #loading {
             position: fixed;
             top: 50%;
@@ -141,7 +136,6 @@
             z-index: 1000;
         }
 
-        /* Instrucciones */
         .instructions {
             position: fixed;
             bottom: 4rem;
@@ -157,7 +151,6 @@
             z-index: 100;
         }
 
-        /* Footer con versión */
         .version-footer {
             position: fixed;
             bottom: 0.5rem;
@@ -190,54 +183,53 @@
         </div>
     </div>
 
-    <!-- Marcadores de troneras -->
     <div class="pocket-marker" id="marker-tl" data-target="reglas/" data-active="true" style="left: 20%; top: 30%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">📋</span>
         <div class="pocket-label" data-i18n="nav_rules">Reglas de la Liga</div>
     </div>
-    
+
     <div class="pocket-marker" id="marker-tc" data-target="elo/" data-active="true" style="left: 50%; top: 25%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🏆</span>
         <div class="pocket-label" data-i18n="nav_ranking">Ranking ELO</div>
     </div>
-    
+
     <div class="pocket-marker" id="marker-tr" data-target="login.html" data-active="true" style="left: 80%; top: 30%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🔐</span>
         <div class="pocket-label" data-i18n="nav_login">Login / Resultados</div>
     </div>
-    
+
     <div class="pocket-marker" id="marker-bl" data-target="exam/" data-active="true" style="left: 20%; top: 70%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">👓</span>
         <div class="pocket-label" data-i18n="nav_exam">Examen de la Liga</div>
     </div>
-    
+
     <div class="pocket-marker" id="marker-bc" data-target="liga/" data-active="true" style="left: 50%; top: 75%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">🎱</span>
         <div class="pocket-label" data-i18n="nav_league">Liga</div>
     </div>
-    
+
     <div class="pocket-marker" id="marker-br" data-target="historial/" data-active="true" style="left: 80%; top: 70%;">
         <span style="font-size: 2rem; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.8));">📜</span>
         <div class="pocket-label" data-i18n="nav_history">Historial</div>
     </div>
 
-    <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras</div>
+    <div class="instructions" data-i18n="instructions">Arrastra para rotar • Haz clic en las troneras, la televisión, el calendario, la caja de VHS, el periódico o las cabinas telefónicas</div>
 
     <div class="version-footer">
         La Catrina Pool League <span>v1.0.0</span>
     </div>
 
     <script>
-        // Escena 3D
+        const YOUTUBE_CHANNEL_ID = 'UCc8bs5OaX9FtzqxfCJfoRZw';
+        const YOUTUBE_API_KEY = 'AIzaSyD94SnWIvHOLKc5cbZMSjYmma2BvQkjcng';
+
         const scene = new THREE.Scene();
         scene.fog = new THREE.Fog(0x000000, 10, 50);
 
-        // Cámara
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 12, 18);
         camera.lookAt(0, 0, 0);
 
-        // Renderer
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
@@ -245,8 +237,7 @@
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        // ILUMINACIÓN
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.38);
         scene.add(ambientLight);
 
         const spotLight = new THREE.SpotLight(0xffeebb, 1.5);
@@ -264,34 +255,32 @@
         rimLight.position.set(-10, 10, -10);
         scene.add(rimLight);
 
-        // Light for under the table (man and radio)
         const underTableLight = new THREE.PointLight(0xffffff, 0.5, 10);
         underTableLight.position.set(0, -2, 0);
         scene.add(underTableLight);
 
-        // MATERIALES
         const feltMaterial = new THREE.MeshStandardMaterial({
             color: 0x1a4d2e,
             roughness: 0.9,
-            metalness: 0.1,
+            metalness: 0.1
         });
 
         const woodMaterial = new THREE.MeshStandardMaterial({
             color: 0x3d2817,
             roughness: 0.7,
-            metalness: 0.2,
+            metalness: 0.2
         });
 
         const rubberMaterial = new THREE.MeshStandardMaterial({
             color: 0x0a0a0a,
             roughness: 0.6,
-            metalness: 0.1,
+            metalness: 0.1
         });
 
         const pocketMaterial = new THREE.MeshStandardMaterial({
             color: 0x1a1a1a,
             roughness: 0.4,
-            metalness: 0.6,
+            metalness: 0.6
         });
 
         const ballMaterial = new THREE.MeshPhysicalMaterial({
@@ -299,24 +288,20 @@
             roughness: 0.1,
             metalness: 0.1,
             clearcoat: 1.0,
-            clearcoatRoughness: 0.1,
+            clearcoatRoughness: 0.1
         });
 
-        // MESA DE BILLAR
         const tableGroup = new THREE.Group();
 
-        // Tablero (fieltro)
         const boardGeometry = new THREE.BoxGeometry(14, 0.3, 7);
         const board = new THREE.Mesh(boardGeometry, feltMaterial);
         board.position.y = 0.15;
         board.receiveShadow = true;
         tableGroup.add(board);
 
-        // Marco de madera (alrededor)
         const frameThickness = 0.8;
         const frameHeight = 0.6;
 
-        // Marco - Lados largos
         const frameLongGeometry = new THREE.BoxGeometry(15.6, frameHeight, frameThickness);
         const frameLong1 = new THREE.Mesh(frameLongGeometry, woodMaterial);
         frameLong1.position.set(0, 0.3, 3.9);
@@ -328,7 +313,6 @@
         frameLong2.position.set(0, 0.3, -3.9);
         tableGroup.add(frameLong2);
 
-        // Marco - Lados cortos
         const frameShortGeometry = new THREE.BoxGeometry(frameThickness, frameHeight, 8.6);
         const frameShort1 = new THREE.Mesh(frameShortGeometry, woodMaterial);
         frameShort1.position.set(7.9, 0.3, 0);
@@ -340,11 +324,9 @@
         frameShort2.position.set(-7.9, 0.3, 0);
         tableGroup.add(frameShort2);
 
-        // Bandas de goma
         const cushionHeight = 0.5;
         const cushionThickness = 0.4;
 
-        // Cojines largos
         const cushionLongGeometry = new THREE.BoxGeometry(14, cushionHeight, cushionThickness);
         const cushionLong1 = new THREE.Mesh(cushionLongGeometry, rubberMaterial);
         cushionLong1.position.set(0, 0.55, 3.5);
@@ -355,7 +337,6 @@
         cushionLong2.position.set(0, 0.55, -3.5);
         tableGroup.add(cushionLong2);
 
-        // Cojines cortos
         const cushionShortGeometry = new THREE.BoxGeometry(cushionThickness, cushionHeight, 7);
         const cushionShort1 = new THREE.Mesh(cushionShortGeometry, rubberMaterial);
         cushionShort1.position.set(7, 0.55, 0);
@@ -366,7 +347,6 @@
         cushionShort2.position.set(-7, 0.55, 0);
         tableGroup.add(cushionShort2);
 
-        // Patas de la mesa
         const legGeometry = new THREE.CylinderGeometry(0.4, 0.3, 4, 16);
         const legPositions = [
             [-6, -2, -2.5], [6, -2, -2.5],
@@ -380,7 +360,6 @@
             tableGroup.add(leg);
         });
 
-        // TRONERAS
         const pocketGeometry = new THREE.CylinderGeometry(0.5, 0.4, 0.6, 16);
         const pockets = [];
         const pocketPositions = [
@@ -395,22 +374,23 @@
         pocketPositions.forEach((pocketData, index) => {
             const pocket = new THREE.Mesh(pocketGeometry, pocketMaterial);
             pocket.position.set(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]);
-            pocket.userData = { id: pocketData.id, index: index };
+            pocket.userData = { id: pocketData.id, index };
             pockets.push(pocket);
             tableGroup.add(pocket);
         });
 
-        // BOLA BLANCA
         const ballGeometry = new THREE.SphereGeometry(0.25, 32, 32);
         const cueBall = new THREE.Mesh(ballGeometry, ballMaterial);
         cueBall.position.set(0, 0.4, 0);
         cueBall.castShadow = true;
         tableGroup.add(cueBall);
 
-        // Líneas de la mesa
-        const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0.3, transparent: true });
-        
-        // Línea central
+        const lineMaterial = new THREE.LineBasicMaterial({
+            color: 0xffffff,
+            opacity: 0.3,
+            transparent: true
+        });
+
         const lineGeometry = new THREE.BufferGeometry().setFromPoints([
             new THREE.Vector3(0, 0.16, -3.5),
             new THREE.Vector3(0, 0.16, 3.5)
@@ -418,7 +398,6 @@
         const centerLine = new THREE.Line(lineGeometry, lineMaterial);
         tableGroup.add(centerLine);
 
-        // Línea horizontal
         const hLineGeometry = new THREE.BufferGeometry().setFromPoints([
             new THREE.Vector3(-7, 0.16, 0),
             new THREE.Vector3(7, 0.16, 0)
@@ -426,9 +405,13 @@
         const horizontalLine = new THREE.Line(hLineGeometry, lineMaterial);
         tableGroup.add(horizontalLine);
 
-        // Círculo central
         const circleGeometry = new THREE.RingGeometry(0.4, 0.42, 32);
-        const circleMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 0.3, transparent: true, side: THREE.DoubleSide });
+        const circleMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            opacity: 0.3,
+            transparent: true,
+            side: THREE.DoubleSide
+        });
         const centerCircle = new THREE.Mesh(circleGeometry, circleMaterial);
         centerCircle.rotation.x = -Math.PI / 2;
         centerCircle.position.set(0, 0.16, 0);
@@ -436,7 +419,6 @@
 
         scene.add(tableGroup);
 
-        // HOMBRE DEBAJO DE LA MESA - DISEÑO REALISTA
         const manGroup = new THREE.Group();
         const skinMaterial = new THREE.MeshStandardMaterial({ color: 0xffdbac, roughness: 0.7, metalness: 0.1 });
         const shirtMaterial = new THREE.MeshStandardMaterial({ color: 0x2c3e50, roughness: 0.8, metalness: 0.1 });
@@ -444,66 +426,57 @@
         const hairMaterial = new THREE.MeshStandardMaterial({ color: 0x2d1810, roughness: 0.9, metalness: 0.0 });
         const beltMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.6, metalness: 0.3 });
 
-        // Torso (más realista, no caja perfecta)
         const torsoGroup = new THREE.Group();
         const torsoGeo = new THREE.BoxGeometry(1.1, 0.7, 1.8);
         const torso = new THREE.Mesh(torsoGeo, shirtMaterial);
-        torso.position.set(0, 0, 0);
         torsoGroup.add(torso);
-        
-        // Cuello
+
         const neckGeo = new THREE.CylinderGeometry(0.12, 0.15, 0.2, 16);
         const neck = new THREE.Mesh(neckGeo, skinMaterial);
         neck.position.set(0, 0.45, 0.6);
         torsoGroup.add(neck);
-        
+
         torsoGroup.position.set(0, -3.7, 0);
         manGroup.add(torsoGroup);
 
-        // Cabeza con detalles
         const headGroup = new THREE.Group();
         const headGeo = new THREE.SphereGeometry(0.35, 24, 24);
         const head = new THREE.Mesh(headGeo, skinMaterial);
         headGroup.add(head);
-        
-        // Cabello
+
         const hairGeo = new THREE.SphereGeometry(0.37, 24, 24, 0, Math.PI * 2, 0, Math.PI / 2);
         const hair = new THREE.Mesh(hairGeo, hairMaterial);
         hair.position.y = 0.1;
         headGroup.add(hair);
-        
-        // Ojos
+
         const eyeGeo = new THREE.SphereGeometry(0.05, 12, 12);
         const eyeMaterial = new THREE.MeshStandardMaterial({ color: 0x333333, roughness: 0.3, metalness: 0.1 });
         const eye1 = new THREE.Mesh(eyeGeo, eyeMaterial);
         eye1.position.set(0.12, 0.05, 0.3);
         headGroup.add(eye1);
-        
+
         const eye2 = eye1.clone();
         eye2.position.set(-0.12, 0.05, 0.3);
         headGroup.add(eye2);
 
-        // Nariz
         const noseGeo = new THREE.ConeGeometry(0.05, 0.1, 8);
         const nose = new THREE.Mesh(noseGeo, skinMaterial);
         nose.rotation.x = Math.PI / 2;
         nose.position.set(0, 0, 0.35);
         headGroup.add(nose);
 
-        // Boca
         const mouthGeo = new THREE.BoxGeometry(0.1, 0.02, 0.05);
         const mouthMaterial = new THREE.MeshStandardMaterial({ color: 0x8b0000, roughness: 0.8 });
         const mouth = new THREE.Mesh(mouthGeo, mouthMaterial);
         mouth.position.set(0, -0.1, 0.33);
         headGroup.add(mouth);
-        
+
         headGroup.position.set(0, -3.15, 1.0);
         manGroup.add(headGroup);
 
-        // Piernas con forma más realista
-        const legGeo = new THREE.CylinderGeometry(0.18, 0.15, 1.4, 12);
-        
-        const leg1 = new THREE.Mesh(legGeo, pantsMaterial);
+        const legGeo2 = new THREE.CylinderGeometry(0.18, 0.15, 1.4, 12);
+
+        const leg1 = new THREE.Mesh(legGeo2, pantsMaterial);
         leg1.rotation.x = Math.PI / 2;
         leg1.rotation.y = Math.PI / 4;
         leg1.position.set(0.35, -3.7, -1.1);
@@ -514,9 +487,8 @@
         leg2.rotation.y = -Math.PI / 4;
         manGroup.add(leg2);
 
-        // Brazos con forma más realista
         const armGeo = new THREE.CylinderGeometry(0.12, 0.1, 1.1, 12);
-        
+
         const arm1 = new THREE.Mesh(armGeo, skinMaterial);
         arm1.rotation.z = Math.PI / 2;
         arm1.position.set(0.75, -3.7, 0.2);
@@ -526,7 +498,6 @@
         arm2.position.set(-0.75, -3.7, 0.2);
         manGroup.add(arm2);
 
-        // Manos con dedos
         const handGeo = new THREE.SphereGeometry(0.08, 12, 12);
         const hand1 = new THREE.Mesh(handGeo, skinMaterial);
         hand1.position.set(1.3, -3.7, 0.2);
@@ -536,7 +507,6 @@
         hand2.position.set(-1.3, -3.7, 0.2);
         manGroup.add(hand2);
 
-        // Dedos
         const fingerGeo = new THREE.CylinderGeometry(0.02, 0.015, 0.15, 8);
         for (let i = 0; i < 4; i++) {
             const finger1 = new THREE.Mesh(fingerGeo, skinMaterial);
@@ -549,16 +519,14 @@
             manGroup.add(finger2);
         }
 
-        // Cinturón
         const beltGeo = new THREE.BoxGeometry(1.15, 0.08, 0.25);
         const belt = new THREE.Mesh(beltGeo, beltMaterial);
         belt.position.set(0, -3.5, 0.3);
         manGroup.add(belt);
 
-        // Zapatos
         const shoeMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.5, metalness: 0.1 });
         const shoeGeo = new THREE.BoxGeometry(0.25, 0.1, 0.4);
-        
+
         const shoe1 = new THREE.Mesh(shoeGeo, shoeMaterial);
         shoe1.position.set(0.35, -4.4, -0.8);
         manGroup.add(shoe1);
@@ -567,67 +535,56 @@
         shoe2.position.set(-0.35, -4.4, -0.8);
         manGroup.add(shoe2);
 
-        manGroup.rotation.y = Math.PI / 6; 
+        manGroup.rotation.y = Math.PI / 6;
         scene.add(manGroup);
 
-        // RADIO DE PINTOR AÑOS 90
         const radioGroup = new THREE.Group();
         const radioBodyMaterial = new THREE.MeshStandardMaterial({ color: 0x3d3d3d, roughness: 0.6, metalness: 0.2 });
         const radioDetailMaterial = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.5, metalness: 0.3 });
         const radioAntennaMaterial = new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.3, metalness: 0.7 });
 
-        // Cuerpo principal de la radio
         const radioBodyGeo = new THREE.BoxGeometry(0.35, 0.2, 0.15);
         const radioBody = new THREE.Mesh(radioBodyGeo, radioBodyMaterial);
-        radioBody.position.set(0, 0, 0);
         radioGroup.add(radioBody);
 
-        // Parte superior redondeada
         const radioTopGeo = new THREE.BoxGeometry(0.35, 0.08, 0.15);
         const radioTop = new THREE.Mesh(radioTopGeo, radioDetailMaterial);
         radioTop.position.set(0, 0.14, 0);
         radioGroup.add(radioTop);
 
-        // Dial/número
         const dialGeo = new THREE.BoxGeometry(0.15, 0.02, 0.08);
         const dialMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4, metalness: 0.1 });
         const dial = new THREE.Mesh(dialGeo, dialMaterial);
         dial.position.set(0.08, 0.18, 0);
         radioGroup.add(dial);
 
-        // Perilla giratoria
         const knobGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.02, 16);
         const knob = new THREE.Mesh(knobGeo, radioDetailMaterial);
         knob.rotation.x = Math.PI / 2;
         knob.position.set(-0.08, 0.18, 0.05);
         radioGroup.add(knob);
 
-        // Antena retráctil
         const antennaGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.3, 8);
         const antenna = new THREE.Mesh(antennaGeo, radioAntennaMaterial);
         antenna.position.set(0.12, 0.35, 0);
         radioGroup.add(antenna);
 
-        // Base de la antena
         const antennaBaseGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.03, 16);
         const antennaBase = new THREE.Mesh(antennaBaseGeo, radioAntennaMaterial);
         antennaBase.position.set(0.12, 0.2, 0);
         radioGroup.add(antennaBase);
 
-        // Clip para cinturón
         const clipGeo = new THREE.BoxGeometry(0.05, 0.15, 0.02);
         const clip = new THREE.Mesh(clipGeo, radioDetailMaterial);
         clip.position.set(-0.15, 0, 0.07);
         radioGroup.add(clip);
 
-        // Grille/Speaker (agujeros)
         const grilleMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.8 });
         const grilleGeo = new THREE.BoxGeometry(0.2, 0.1, 0.01);
         const grille = new THREE.Mesh(grilleGeo, grilleMaterial);
         grille.position.set(0, 0.05, 0.075);
         radioGroup.add(grille);
 
-        // Agujeros en el grille (simples cilindros)
         const holeGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.02, 8);
         for (let i = -1; i <= 1; i++) {
             for (let j = -1; j <= 1; j++) {
@@ -638,89 +595,772 @@
             }
         }
 
-        // Posicionar radio al lado del hombre
         radioGroup.position.set(1.2, -3.6, 0.8);
         radioGroup.rotation.y = -Math.PI / 4;
         scene.add(radioGroup);
 
+        const tvGroup = new THREE.Group();
 
+        const tvFrameMaterial = new THREE.MeshStandardMaterial({
+            color: 0xe6dfd4,
+            roughness: 0.52,
+            metalness: 0.15
+        });
 
-        // CONTROLES DE CÁMARA (Mouse)
+        const tvScreenMaterial = new THREE.MeshStandardMaterial({
+            color: 0xd7ebff,
+            roughness: 0.08,
+            metalness: 0.02,
+            emissive: 0x8fcfff,
+            emissiveIntensity: 1.05
+        });
+
+        const tvStandMaterial = new THREE.MeshStandardMaterial({
+            color: 0xd1cbc0,
+            roughness: 0.45,
+            metalness: 0.12
+        });
+
+        const tvBackMaterial = new THREE.MeshStandardMaterial({
+            color: 0xf0ebe4,
+            roughness: 0.6,
+            metalness: 0.08
+        });
+
+        const tvFrameGeo = new THREE.BoxGeometry(8.8, 5.1, 0.34);
+        const tvFrame = new THREE.Mesh(tvFrameGeo, tvFrameMaterial);
+        tvFrame.castShadow = true;
+        tvFrame.receiveShadow = true;
+        tvGroup.add(tvFrame);
+
+        const tvBackGeo = new THREE.BoxGeometry(8.4, 4.7, 0.28);
+        const tvBack = new THREE.Mesh(tvBackGeo, tvBackMaterial);
+        tvBack.position.z = -0.08;
+        tvBack.castShadow = true;
+        tvBack.receiveShadow = true;
+        tvGroup.add(tvBack);
+
+        const tvScreenGeo = new THREE.BoxGeometry(7.75, 4.05, 0.06);
+        const tvScreen = new THREE.Mesh(tvScreenGeo, tvScreenMaterial);
+        tvScreen.position.z = 0.18;
+        tvScreen.userData = { isTV: true };
+        tvGroup.add(tvScreen);
+
+        const tvGlassGeo = new THREE.BoxGeometry(7.55, 3.85, 0.02);
+        const tvGlassMat = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.16,
+            roughness: 0.05,
+            metalness: 0,
+            clearcoat: 1,
+            clearcoatRoughness: 0.05
+        });
+        const tvGlass = new THREE.Mesh(tvGlassGeo, tvGlassMat);
+        tvGlass.position.z = 0.22;
+        tvGroup.add(tvGlass);
+
+        const tvBottomGeo = new THREE.BoxGeometry(8.9, 0.34, 0.36);
+        const tvBottom = new THREE.Mesh(tvBottomGeo, tvFrameMaterial);
+        tvBottom.position.set(0, -2.58, 0);
+        tvBottom.castShadow = true;
+        tvBottom.receiveShadow = true;
+        tvGroup.add(tvBottom);
+
+        const tvStandNeckGeo = new THREE.BoxGeometry(0.68, 1.25, 0.3);
+        const tvStandNeck = new THREE.Mesh(tvStandNeckGeo, tvStandMaterial);
+        tvStandNeck.position.set(0, -3.4, 0);
+        tvStandNeck.castShadow = true;
+        tvStandNeck.receiveShadow = true;
+        tvGroup.add(tvStandNeck);
+
+        const tvBaseGeo = new THREE.CylinderGeometry(1.45, 1.8, 0.2, 28);
+        const tvBase = new THREE.Mesh(tvBaseGeo, tvStandMaterial);
+        tvBase.position.set(0, -4.1, 0);
+        tvBase.castShadow = true;
+        tvBase.receiveShadow = true;
+        tvGroup.add(tvBase);
+
+        const tvLight = new THREE.PointLight(0xa8d8ff, 1.6, 26, 2);
+        tvLight.position.set(0, 0.2, 3);
+        tvGroup.add(tvLight);
+
+        tvGroup.position.set(0, 4.1, -9.4);
+        tvGroup.rotation.y = 0;
+        scene.add(tvGroup);
+
+        // =========================
+        // TEXTURA DEL CALENDARIO
+        // =========================
+        const calendarCanvas = document.createElement('canvas');
+        calendarCanvas.width = 768;
+        calendarCanvas.height = 1024;
+        const calendarCtx = calendarCanvas.getContext('2d');
+
+        function drawCalendarTexture() {
+            const now = new Date();
+            const monthNames = [
+                'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO',
+                'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'
+            ];
+            const dayNames = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+
+            const month = monthNames[now.getMonth()];
+            const year = now.getFullYear();
+            const currentDay = now.getDate();
+
+            calendarCtx.clearRect(0, 0, calendarCanvas.width, calendarCanvas.height);
+
+            calendarCtx.fillStyle = '#f7f1e7';
+            calendarCtx.fillRect(0, 0, 768, 1024);
+
+            calendarCtx.fillStyle = '#b63b2f';
+            calendarCtx.fillRect(0, 0, 768, 170);
+
+            calendarCtx.fillStyle = '#ffffff';
+            calendarCtx.font = 'bold 72px Arial';
+            calendarCtx.textAlign = 'center';
+            calendarCtx.fillText('CALENDARIO', 384, 85);
+
+            calendarCtx.font = 'bold 54px Arial';
+            calendarCtx.fillText(`${month} ${year}`, 384, 145);
+
+            calendarCtx.fillStyle = '#2b2b2b';
+            calendarCtx.font = 'bold 34px Arial';
+            for (let i = 0; i < 7; i++) {
+                calendarCtx.fillText(dayNames[i], 95 + i * 83, 250);
+            }
+
+            calendarCtx.strokeStyle = '#d6c8b1';
+            calendarCtx.lineWidth = 3;
+
+            const startX = 52;
+            const startY = 290;
+            const cellW = 95;
+            const cellH = 95;
+
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 7; col++) {
+                    const x = startX + col * cellW;
+                    const y = startY + row * cellH;
+                    calendarCtx.strokeRect(x, y, cellW, cellH);
+                }
+            }
+
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            let firstWeekday = firstDay.getDay();
+            if (firstWeekday === 0) firstWeekday = 7;
+
+            const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+            calendarCtx.font = 'bold 34px Arial';
+            calendarCtx.textAlign = 'left';
+
+            let day = 1;
+            for (let row = 0; row < 6; row++) {
+                for (let col = 1; col <= 7; col++) {
+                    const slot = row * 7 + col;
+                    if (slot >= firstWeekday && day <= daysInMonth) {
+                        const x = startX + (col - 1) * cellW;
+                        const y = startY + row * cellH;
+
+                        if (day === currentDay) {
+                            calendarCtx.fillStyle = '#d4af37';
+                            calendarCtx.fillRect(x + 8, y + 8, cellW - 16, cellH - 16);
+                            calendarCtx.fillStyle = '#111111';
+                        } else {
+                            calendarCtx.fillStyle = '#2b2b2b';
+                        }
+
+                        calendarCtx.fillText(String(day), x + 24, y + 48);
+                        day++;
+                    }
+                }
+            }
+
+            calendarCtx.textAlign = 'center';
+            calendarCtx.fillStyle = '#5f5a51';
+            calendarCtx.font = 'bold 30px Arial';
+            calendarCtx.fillText('LA CATRINA POOL LEAGUE', 384, 905);
+
+            calendarCtx.fillStyle = '#8e877b';
+            calendarCtx.font = '28px Arial';
+            calendarCtx.fillText('Haz clic para abrir el calendario completo', 384, 955);
+        }
+
+        drawCalendarTexture();
+        const calendarTexture = new THREE.CanvasTexture(calendarCanvas);
+        calendarTexture.needsUpdate = true;
+
+        // =========================
+        // CALENDARIO DE PARED
+        // =========================
+        const calendarGroup = new THREE.Group();
+
+        const calendarBack = new THREE.Mesh(
+            new THREE.BoxGeometry(2.5, 3.3, 0.08),
+            new THREE.MeshStandardMaterial({
+                color: 0xf1e6cc,
+                roughness: 0.92,
+                metalness: 0.05
+            })
+        );
+        calendarBack.castShadow = true;
+        calendarBack.receiveShadow = true;
+        calendarGroup.add(calendarBack);
+
+        const calendarTop = new THREE.Mesh(
+            new THREE.BoxGeometry(2.5, 0.42, 0.1),
+            new THREE.MeshStandardMaterial({
+                color: 0xb88b4a,
+                roughness: 0.6,
+                metalness: 0.2
+            })
+        );
+        calendarTop.position.set(0, 1.45, 0.05);
+        calendarTop.castShadow = true;
+        calendarTop.receiveShadow = true;
+        calendarGroup.add(calendarTop);
+
+        const ringBar = new THREE.Mesh(
+            new THREE.BoxGeometry(1.1, 0.06, 0.12),
+            new THREE.MeshStandardMaterial({
+                color: 0x8f6b32,
+                roughness: 0.45,
+                metalness: 0.35
+            })
+        );
+        ringBar.position.set(0, 1.2, 0.08);
+        calendarGroup.add(ringBar);
+
+        const calendarPagePivot = new THREE.Group();
+        calendarPagePivot.position.set(0, 1.15, 0.09);
+        calendarGroup.add(calendarPagePivot);
+
+        const calendarPage = new THREE.Mesh(
+            new THREE.PlaneGeometry(2.15, 2.7),
+            new THREE.MeshStandardMaterial({
+                map: calendarTexture,
+                roughness: 0.95,
+                side: THREE.DoubleSide
+            })
+        );
+        calendarPage.position.set(0, -1.35, 0);
+        calendarPage.userData = { isCalendar: true };
+        calendarPagePivot.add(calendarPage);
+
+        const calendarPage2 = new THREE.Mesh(
+            new THREE.PlaneGeometry(2.15, 2.7),
+            new THREE.MeshStandardMaterial({
+                color: 0xf4efe6,
+                roughness: 0.95,
+                side: THREE.DoubleSide
+            })
+        );
+        calendarPage2.position.set(0, -0.2, -0.012);
+        calendarGroup.add(calendarPage2);
+
+        const calendarPage3 = new THREE.Mesh(
+            new THREE.PlaneGeometry(2.15, 2.7),
+            new THREE.MeshStandardMaterial({
+                color: 0xebe4d7,
+                roughness: 0.95,
+                side: THREE.DoubleSide
+            })
+        );
+        calendarPage3.position.set(0, -0.17, -0.024);
+        calendarGroup.add(calendarPage3);
+
+        calendarGroup.position.set(6.2, 4.15, -9.2);
+        calendarGroup.rotation.y = -0.08;
+        scene.add(calendarGroup);
+
+        // =========================
+        // CAJA DE VHS (VIDEOTECA)
+        // =========================
+        const vhsGroup = new THREE.Group();
+        const boxMaterial = new THREE.MeshStandardMaterial({ color: 0x966f47, roughness: 0.9 });
+        const tapeMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4 });
+
+        const boxBody = new THREE.Mesh(new THREE.BoxGeometry(2, 1.2, 1.5), boxMaterial);
+        boxBody.castShadow = true;
+        boxBody.receiveShadow = true;
+        boxBody.userData = { isVHS: true };
+        vhsGroup.add(boxBody);
+
+        const flapGeo = new THREE.BoxGeometry(2.1, 0.1, 0.8);
+        const flap1 = new THREE.Mesh(flapGeo, boxMaterial);
+        flap1.position.set(0, 0.6, 0.4);
+        flap1.rotation.x = 0.2;
+        flap1.userData = { isVHS: true };
+        vhsGroup.add(flap1);
+
+        const flap2 = flap1.clone();
+        flap2.position.set(0, 0.6, -0.4);
+        flap2.rotation.x = -0.2;
+        flap2.userData = { isVHS: true };
+        vhsGroup.add(flap2);
+
+        const tapeGeo = new THREE.BoxGeometry(0.2, 0.8, 1.1);
+        const tapes = [];
+        for (let i = 0; i < 5; i++) {
+            const tape = new THREE.Mesh(tapeGeo, tapeMaterial);
+            tape.position.set(-0.6 + i * 0.3, 0.4, 0);
+            tape.castShadow = true;
+            tape.userData = { isVHS: true };
+            vhsGroup.add(tape);
+            tapes.push(tape);
+        }
+
+        const jumpingTape = tapes[2];
+
+        vhsGroup.position.set(-6.2, -3.4, -8.8);
+        vhsGroup.rotation.y = 0.5;
+        scene.add(vhsGroup);
+
+        // =========================
+        // CORCHO Y PERIODICO (RESULTADOS)
+        // =========================
+        const corkGroup = new THREE.Group();
+        const corkMaterial = new THREE.MeshStandardMaterial({ color: 0xba8c63, roughness: 1.0 });
+        const corkBoard = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.2, 0.1), corkMaterial);
+        corkBoard.castShadow = true;
+        corkBoard.receiveShadow = true;
+        corkGroup.add(corkBoard);
+
+        const frameMat = new THREE.MeshStandardMaterial({ color: 0x5d4037, roughness: 0.7 });
+        const frameT = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.15, 0.15), frameMat);
+        frameT.position.y = 1.1;
+        corkGroup.add(frameT);
+        const frameB = frameT.clone();
+        frameB.position.y = -1.1;
+        corkGroup.add(frameB);
+        const frameL = new THREE.Mesh(new THREE.BoxGeometry(0.15, 2.35, 0.15), frameMat);
+        frameL.position.x = -1.6;
+        corkGroup.add(frameL);
+        const frameR = frameL.clone();
+        frameR.position.x = 1.6;
+        corkGroup.add(frameR);
+
+        const newspaperGroup = new THREE.Group();
+        newspaperGroup.position.set(0, 0, 0.06);
+        corkGroup.add(newspaperGroup);
+
+        const newsCanvas = document.createElement('canvas');
+        newsCanvas.width = 512;
+        newsCanvas.height = 700;
+        const newsCtx = newsCanvas.getContext('2d');
+        newsCtx.fillStyle = '#f0ece2';
+        newsCtx.fillRect(0, 0, 512, 700);
+        newsCtx.fillStyle = '#000000';
+        newsCtx.font = 'bold 72px Times New Roman';
+        newsCtx.textAlign = 'center';
+        newsCtx.fillText('RESULTADOS', 256, 140);
+        newsCtx.strokeStyle = '#1a1a1a';
+        newsCtx.lineWidth = 4;
+        newsCtx.beginPath();
+        newsCtx.moveTo(50, 140);
+        newsCtx.lineTo(462, 140);
+        newsCtx.stroke();
+
+        newsCtx.fillStyle = '#333';
+        for(let i=0; i<12; i++) {
+            newsCtx.fillRect(50, 180 + i*40, 412, 20);
+        }
+
+        const newsTexture = new THREE.CanvasTexture(newsCanvas);
+        const newsMat = new THREE.MeshStandardMaterial({ map: newsTexture, side: THREE.DoubleSide });
+        const paperMaterial = new THREE.MeshStandardMaterial({ color: 0xf4f4f4, roughness: 0.8, side: THREE.DoubleSide });
+
+        const newsPages = [];
+        for(let i=0; i<3; i++) {
+            const pagePivot = new THREE.Group();
+            pagePivot.position.set(-0.75, 0, i * 0.01);
+            const pageMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 2), i === 0 ? newsMat : paperMaterial);
+            pageMesh.position.set(0.75, 0, 0);
+            pageMesh.userData = { isNewspaper: true };
+            pagePivot.add(pageMesh);
+            newspaperGroup.add(pagePivot);
+            newsPages.push(pagePivot);
+        }
+
+        const pinGroup = new THREE.Group();
+        pinGroup.position.set(0, 0.95, 0.05);
+        const pinHead = new THREE.Mesh(new THREE.SphereGeometry(0.06, 16, 16), new THREE.MeshStandardMaterial({ color: 0xcc0000, metalness: 0.3 }));
+        pinGroup.add(pinHead);
+        newspaperGroup.add(pinGroup);
+
+        corkGroup.position.set(-6.2, 4.15, -9.2);
+        corkGroup.rotation.y = 0.08;
+        scene.add(corkGroup);
+
+        // =========================
+        // CABINAS TELEFÓNICAS
+        // =========================
+        function createPhoneBooth(color, targetURL) {
+            const boothGroup = new THREE.Group();
+            const frameMaterial = new THREE.MeshStandardMaterial({ color: color, roughness: 0.5, metalness: 0.2 });
+            const glassMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.3,
+                roughness: 0.1,
+                metalness: 0.1
+            });
+
+            // Base
+            const baseGeo = new THREE.BoxGeometry(3, 0.2, 3);
+            const base = new THREE.Mesh(baseGeo, frameMaterial);
+            base.position.y = 0.1;
+            boothGroup.add(base);
+
+            // Pillars
+            const pillarGeo = new THREE.BoxGeometry(0.3, 12, 0.3);
+            const pillarPositions = [
+                [-1.35, 6, -1.35], [1.35, 6, -1.35],
+                [1.35, 6, 1.35], [-1.35, 6, 1.35]
+            ];
+            pillarPositions.forEach(pos => {
+                const p = new THREE.Mesh(pillarGeo, frameMaterial);
+                p.position.set(pos[0], pos[1], pos[2]);
+                boothGroup.add(p);
+            });
+
+            // Walls (Back, Left, Right)
+            const wallGeo = new THREE.BoxGeometry(2.4, 12, 0.1);
+            const backWall = new THREE.Mesh(wallGeo, frameMaterial);
+            backWall.position.set(0, 6, -1.35);
+            boothGroup.add(backWall);
+
+            const sideWallGeo = new THREE.BoxGeometry(0.1, 12, 2.4);
+            const leftWall = new THREE.Mesh(sideWallGeo, frameMaterial);
+            leftWall.position.set(-1.35, 6, 0);
+            boothGroup.add(leftWall);
+
+            const rightWall = new THREE.Mesh(sideWallGeo, frameMaterial);
+            rightWall.position.set(1.35, 6, 0);
+            boothGroup.add(rightWall);
+
+            // Windows on walls
+            const glassWallGeo = new THREE.BoxGeometry(2.2, 9, 0.05);
+            const gBack = new THREE.Mesh(glassWallGeo, glassMaterial);
+            gBack.position.set(0, 6.5, -1.3);
+            boothGroup.add(gBack);
+
+            const glassSideGeo = new THREE.BoxGeometry(0.05, 9, 2.2);
+            const gLeft = new THREE.Mesh(glassSideGeo, glassMaterial);
+            gLeft.position.set(-1.3, 6.5, 0);
+            boothGroup.add(gLeft);
+
+            const gRight = new THREE.Mesh(glassSideGeo, glassMaterial);
+            gRight.position.set(1.3, 6.5, 0);
+            boothGroup.add(gRight);
+
+            // Roof
+            const roofGeo = new THREE.BoxGeometry(3.2, 0.8, 3.2);
+            const roof = new THREE.Mesh(roofGeo, frameMaterial);
+            roof.position.y = 12.4;
+            boothGroup.add(roof);
+
+            const domeGeo = new THREE.SphereGeometry(1.6, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+            const dome = new THREE.Mesh(domeGeo, frameMaterial);
+            dome.position.y = 12.8;
+            dome.scale.y = 0.5;
+            boothGroup.add(dome);
+
+            // Door
+            const doorPivot = new THREE.Group();
+            doorPivot.position.set(-1.35, 0, 1.35);
+            boothGroup.add(doorPivot);
+
+            const doorFrame = new THREE.Mesh(new THREE.BoxGeometry(2.7, 12, 0.15), frameMaterial);
+            doorFrame.position.set(1.35, 6, 0);
+            doorFrame.userData = { isBooth: true, targetURL: targetURL, pivot: doorPivot };
+            doorPivot.add(doorFrame);
+
+            const doorGlass = new THREE.Mesh(new THREE.BoxGeometry(2, 9, 0.05), glassMaterial);
+            doorGlass.position.set(1.35, 6.5, 0.1);
+            doorGlass.userData = { isBooth: true, targetURL: targetURL, pivot: doorPivot };
+            doorPivot.add(doorGlass);
+
+            const handle = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.05, 0.05, 0.6),
+                new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.8 })
+            );
+            handle.position.set(2.4, 6, 0.15);
+            handle.userData = { isBooth: true, targetURL: targetURL, pivot: doorPivot };
+            doorPivot.add(handle);
+
+            return { group: boothGroup, doorPivot, clickable: [doorFrame, doorGlass, handle] };
+        }
+
+        const redBooth = createPhoneBooth(0xaa0000, 'agendar');
+        redBooth.group.position.set(9.2, -4.3, -8.5);
+        redBooth.group.rotation.y = -0.35;
+        scene.add(redBooth.group);
+
+        const blueBooth = createPhoneBooth(0x0000aa, 'ajendar');
+        blueBooth.group.position.set(-9.2, -4.3, -8.5);
+        blueBooth.group.rotation.y = 0.35;
+        scene.add(blueBooth.group);
+
         let isDragging = false;
+        let pointerMoved = false;
         let previousMousePosition = { x: 0, y: 0 };
         let cameraAngle = 0;
         let cameraHeight = 12;
         let cameraRadius = 18;
 
-        document.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-        });
+        let isTvZooming = false;
+        let isCalendarAnimating = false;
+        let isVHSAnimating = false;
+        let isNewspaperAnimating = false;
+        let isBoothAnimating = false;
+        let cinematicCamera = null;
 
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                const deltaMove = {
-                    x: e.clientX - previousMousePosition.x,
-                    y: e.clientY - previousMousePosition.y
-                };
-
-                cameraAngle -= deltaMove.x * 0.01;
-                cameraHeight += deltaMove.y * 0.05;
-                cameraHeight = Math.max(5, Math.min(20, cameraHeight));
-
-                previousMousePosition = { x: e.clientX, y: e.clientY };
-            }
-        });
-
-        // Touch events para móvil
-        document.addEventListener('touchstart', (e) => {
-            if (e.touches && e.touches[0]) {
-                isDragging = true;
-                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            }
-        });
-
-        document.addEventListener('touchend', () => {
-            isDragging = false;
-        });
-
-        document.addEventListener('touchmove', (e) => {
-            if (isDragging && e.touches && e.touches[0]) {
-                const deltaMove = {
-                    x: e.touches[0].clientX - previousMousePosition.x,
-                    y: e.touches[0].clientY - previousMousePosition.y
-                };
-
-                cameraAngle -= deltaMove.x * 0.01;
-                cameraHeight += deltaMove.y * 0.05;
-                cameraHeight = Math.max(5, Math.min(20, cameraHeight));
-
-                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-            }
-        });
-
-        // Click en troneras (mantener funcionalidad original)
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
+        const clickableObjects = [
+            ...pockets,
+            tvScreen,
+            calendarPage,
+            boxBody,
+            flap1,
+            flap2,
+            ...tapes,
+            ...newsPages.map(p => p.children[0]),
+            ...redBooth.clickable,
+            ...blueBooth.clickable
+        ];
 
-        function onMouseClick(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        function setPointerFromClient(clientX, clientY) {
+            mouse.x = (clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(clientY / window.innerHeight) * 2 + 1;
+        }
 
+        function getTargetByPocketId(pocketId) {
+            if (pocketId === 'tl') return 'reglas/';
+            if (pocketId === 'tc') return 'elo/';
+            if (pocketId === 'tr') return 'login.html';
+            if (pocketId === 'bl') return 'exam/';
+            if (pocketId === 'bc') return 'liga/';
+            if (pocketId === 'br') return 'historial/';
+            return null;
+        }
+
+        function animateCameraToTV(onComplete) {
+            if (isTvZooming) return;
+
+            isTvZooming = true;
+
+            const startPosition = camera.position.clone();
+            const startTarget = new THREE.Vector3(0, 0, 0);
+
+            const endPosition = new THREE.Vector3(0, 5.2, -2.2);
+            const endTarget = new THREE.Vector3(0, 4.1, -9.4);
+
+            const startTime = performance.now();
+            const duration = 1300;
+
+            function step(now) {
+                const t = Math.min((now - startTime) / duration, 1);
+                const eased = t < 0.5
+                    ? 4 * t * t * t
+                    : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+                const currentPosition = startPosition.clone().lerp(endPosition, eased);
+                const currentTarget = startTarget.clone().lerp(endTarget, eased);
+
+                cinematicCamera = {
+                    position: currentPosition,
+                    target: currentTarget
+                };
+
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else if (typeof onComplete === 'function') {
+                    onComplete();
+                }
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        function handleTVActivation() {
+            if (isTvZooming || isCalendarAnimating) return;
+
+            animateCameraToTV(() => {
+                window.location.href = 'live/';
+            });
+        }
+
+        function handleCalendarActivation() {
+            if (isCalendarAnimating || isTvZooming || isVHSAnimating || isNewspaperAnimating) return;
+
+            isCalendarAnimating = true;
+
+            const start = performance.now();
+            const duration = 950;
+
+            function step(now) {
+                const t = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - t, 3);
+
+                calendarPagePivot.rotation.x = -Math.PI * 0.92 * eased;
+                calendarPagePivot.rotation.z = -0.08 * Math.sin(t * Math.PI);
+
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    window.location.href = 'calendario/';
+                }
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        function handleVHSActivation() {
+            if (isVHSAnimating || isTvZooming || isCalendarAnimating || isNewspaperAnimating) return;
+            isVHSAnimating = true;
+
+            const start = performance.now();
+            const duration = 1000;
+            const startY = jumpingTape.position.y;
+
+            function step(now) {
+                const t = Math.min((now - start) / duration, 1);
+                const jump = Math.sin(t * Math.PI) * 0.8;
+                jumpingTape.position.y = startY + jump;
+                jumpingTape.rotation.x = t * Math.PI * 4;
+                jumpingTape.rotation.z = t * Math.PI * 2;
+
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    window.location.href = 'videoteca/';
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function handleNewspaperActivation() {
+            if (isNewspaperAnimating || isTvZooming || isCalendarAnimating || isVHSAnimating || isBoothAnimating) return;
+            isNewspaperAnimating = true;
+
+            const start = performance.now();
+            const duration = 3000;
+
+            function step(now) {
+                const t = Math.min((now - start) / duration, 1);
+
+                newsPages.forEach((page, index) => {
+                    const delay = index * 0.15;
+                    const pageT = Math.max(0, Math.min((t - delay) / 0.7, 1));
+                    const eased = 1 - Math.pow(1 - pageT, 2);
+                    page.rotation.y = -Math.PI * 0.85 * eased;
+                });
+
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    window.location.href = 'resultados/';
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function handleBoothActivation(boothPivot, targetURL) {
+            if (isBoothAnimating || isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
+            isBoothAnimating = true;
+
+            const start = performance.now();
+            const duration = 800;
+
+            function step(now) {
+                const t = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - t, 3);
+
+                boothPivot.rotation.y = -Math.PI * 0.6 * eased;
+
+                if (t < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    window.location.href = targetURL;
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function handlePointerActivate(clientX, clientY) {
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating || isBoothAnimating) return;
+
+            setPointerFromClient(clientX, clientY);
             raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(pockets);
+            const intersects = raycaster.intersectObjects(clickableObjects, false);
 
-            if (intersects.length > 0) {
-                const pocket = intersects[0].object;
-                animateBallToPocket(pocket.position);
+            if (!intersects.length) return;
+
+            const clickedObject = intersects[0].object;
+
+            if (clickedObject.userData?.isTV) {
+                handleTVActivation();
+                return;
+            }
+
+            if (clickedObject.userData?.isCalendar) {
+                handleCalendarActivation();
+                return;
+            }
+
+            if (clickedObject.userData?.isVHS) {
+                handleVHSActivation();
+                return;
+            }
+
+            if (clickedObject.userData?.isNewspaper) {
+                handleNewspaperActivation();
+                return;
+            }
+
+            if (clickedObject.userData?.isBooth) {
+                handleBoothActivation(clickedObject.userData.pivot, clickedObject.userData.targetURL);
+                return;
+            }
+
+            if (clickedObject.userData?.id) {
+                const target = getTargetByPocketId(clickedObject.userData.id);
+                animateBallToPocket(clickedObject.position.clone(), target);
             }
         }
 
-        function animateBallToPocket(targetPosition) {
+        function updateInteractiveCursor(clientX, clientY) {
+            if (isDragging || isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating || isBoothAnimating) {
+                renderer.domElement.style.cursor = 'default';
+                return;
+            }
+
+            setPointerFromClient(clientX, clientY);
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(clickableObjects, false);
+
+            if (!intersects.length) {
+                renderer.domElement.style.cursor = 'default';
+                return;
+            }
+
+            const hoveredObject = intersects[0].object;
+            if (hoveredObject.userData?.isTV || hoveredObject.userData?.isCalendar ||
+                hoveredObject.userData?.isVHS || hoveredObject.userData?.isNewspaper ||
+                hoveredObject.userData?.id || hoveredObject.userData?.isBooth) {
+                renderer.domElement.style.cursor = 'pointer';
+            } else {
+                renderer.domElement.style.cursor = 'default';
+            }
+        }
+
+        function animateBallToPocket(targetPosition, finalTarget = null) {
+            cueBall.scale.setScalar(1);
+
             const startPosition = cueBall.position.clone();
             const duration = 800;
             const startTime = Date.now();
@@ -738,34 +1378,108 @@
                 } else {
                     cueBall.scale.setScalar(0);
                     setTimeout(() => {
-                        const pocketId = pockets.find(p => p.position.equals(targetPosition))?.userData.id;
-                        if (pocketId === 'tl') window.location.href = 'reglas/';
-                        else if (pocketId === 'tc') window.location.href = 'elo/';
-                        else if (pocketId === 'bc') window.location.href = 'liga/';
-                        else if (pocketId === 'br') window.location.href = 'historial/';
+                        if (finalTarget) {
+                            window.location.href = finalTarget;
+                        }
                     }, 300);
                 }
             }
+
             animateMatch();
         }
 
-        document.addEventListener('click', onMouseClick);
-        document.addEventListener('touchend', (e) => {
-            if (e.changedTouches && e.changedTouches[0]) {
-                mouse.x = (e.changedTouches[0].clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(e.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
-                
-                raycaster.setFromCamera(mouse, camera);
-                const intersects = raycaster.intersectObjects(pockets);
-
-                if (intersects.length > 0) {
-                    const pocket = intersects[0].object;
-                    animateBallToPocket(pocket.position);
-                }
-            }
+        document.addEventListener('mousedown', (e) => {
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
+            isDragging = true;
+            pointerMoved = false;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
         });
 
-        // ACTUALIZAR POSICIÓN DE MARCADORES HTML
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
+
+            if (isDragging) {
+                const deltaMove = {
+                    x: e.clientX - previousMousePosition.x,
+                    y: e.clientY - previousMousePosition.y
+                };
+
+                if (Math.abs(deltaMove.x) > 1 || Math.abs(deltaMove.y) > 1) {
+                    pointerMoved = true;
+                }
+
+                cameraAngle -= deltaMove.x * 0.01;
+                cameraHeight += deltaMove.y * 0.05;
+                cameraHeight = Math.max(5, Math.min(20, cameraHeight));
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+                return;
+            }
+
+            updateInteractiveCursor(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
+            if (pointerMoved) {
+                pointerMoved = false;
+                return;
+            }
+            handlePointerActivate(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('touchstart', (e) => {
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
+            if (e.touches && e.touches[0]) {
+                isDragging = true;
+                pointerMoved = false;
+                previousMousePosition = {
+                    x: e.touches[0].clientX,
+                    y: e.touches[0].clientY
+                };
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
+            if (isDragging && e.touches && e.touches[0]) {
+                const deltaMove = {
+                    x: e.touches[0].clientX - previousMousePosition.x,
+                    y: e.touches[0].clientY - previousMousePosition.y
+                };
+
+                if (Math.abs(deltaMove.x) > 2 || Math.abs(deltaMove.y) > 2) {
+                    pointerMoved = true;
+                }
+
+                cameraAngle -= deltaMove.x * 0.01;
+                cameraHeight += deltaMove.y * 0.05;
+                cameraHeight = Math.max(5, Math.min(20, cameraHeight));
+
+                previousMousePosition = {
+                    x: e.touches[0].clientX,
+                    y: e.touches[0].clientY
+                };
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            if (isTvZooming || isCalendarAnimating || isVHSAnimating || isNewspaperAnimating) return;
+
+            const changedTouch = e.changedTouches && e.changedTouches[0];
+            const wasDrag = pointerMoved;
+
+            isDragging = false;
+            pointerMoved = false;
+
+            if (!changedTouch || wasDrag) return;
+            handlePointerActivate(changedTouch.clientX, changedTouch.clientY);
+        }, { passive: true });
+
         const markers = {
             'tl': document.getElementById('marker-tl'),
             'tc': document.getElementById('marker-tc'),
@@ -778,47 +1492,60 @@
         function updateMarkers() {
             pocketPositions.forEach(pocketData => {
                 const marker = markers[pocketData.id];
-                if (marker) {
-                    const pos = new THREE.Vector3(pocketData.pos[0], pocketData.pos[1] + 1, pocketData.pos[2]);
-                    pos.project(camera);
-                    const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
-                    const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
-                    
-                    if (pos.z < 1) {
-                        marker.style.left = x + 'px';
-                        marker.style.top = y + 'px';
-                        marker.style.transform = 'translate(-50%, -50%)';
-                        marker.style.opacity = '1';
-                    } else {
-                        marker.style.opacity = '0';
-                    }
+                if (!marker) return;
+
+                const pos = new THREE.Vector3(
+                    pocketData.pos[0],
+                    pocketData.pos[1] + 1,
+                    pocketData.pos[2]
+                );
+
+                pos.project(camera);
+
+                const x = (pos.x * 0.5 + 0.5) * window.innerWidth;
+                const y = (-pos.y * 0.5 + 0.5) * window.innerHeight;
+
+                if (pos.z < 1) {
+                    marker.style.left = x + 'px';
+                    marker.style.top = y + 'px';
+                    marker.style.transform = 'translate(-50%, -50%)';
+                    marker.style.opacity = '1';
+                } else {
+                    marker.style.opacity = '0';
                 }
             });
         }
 
         Object.keys(markers).forEach(id => {
             const marker = markers[id];
-            if (marker) {
-                marker.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const target = marker.getAttribute('data-target');
-                    if (!marker.classList.contains('locked') && target) {
-                        const pocketData = pocketPositions.find(p => p.id === id);
-                        if (pocketData) {
-                            animateBallToPocket(new THREE.Vector3(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]));
-                            setTimeout(() => { window.location.href = target; }, 1000);
-                        }
-                    }
-                });
-            }
+            if (!marker) return;
+
+            marker.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const target = marker.getAttribute('data-target');
+                const pocketData = pocketPositions.find(p => p.id === id);
+                if (!pocketData || !target) return;
+
+                animateBallToPocket(
+                    new THREE.Vector3(pocketData.pos[0], pocketData.pos[1], pocketData.pos[2]),
+                    target
+                );
+            });
         });
 
         function animate() {
             requestAnimationFrame(animate);
-            camera.position.x = Math.sin(cameraAngle) * cameraRadius;
-            camera.position.z = Math.cos(cameraAngle) * cameraRadius;
-            camera.position.y = cameraHeight;
-            camera.lookAt(0, 0, 0);
+
+            if (cinematicCamera) {
+                camera.position.copy(cinematicCamera.position);
+                camera.lookAt(cinematicCamera.target);
+            } else {
+                camera.position.x = Math.sin(cameraAngle) * cameraRadius;
+                camera.position.z = Math.cos(cameraAngle) * cameraRadius;
+                camera.position.y = cameraHeight;
+                camera.lookAt(0, 0, 0);
+            }
+
             updateMarkers();
             renderer.render(scene, camera);
         }
@@ -831,17 +1558,16 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // Ocultar pantalla de carga
         window.addEventListener('load', () => {
             const l = document.getElementById('loading');
             if (l) l.style.display = 'none';
         });
+
         setTimeout(() => {
             const l = document.getElementById('loading');
             if (l) l.style.display = 'none';
         }, 1500);
 
-        // FAVICON ANIMADO: Bola de billar 8 rotando horizontalmente
         const faviconCanvas = document.createElement('canvas');
         faviconCanvas.width = 32;
         faviconCanvas.height = 32;
@@ -850,16 +1576,13 @@
         function updateFavicon() {
             const time = Date.now() * 0.005;
             const rotation = Math.sin(time) * 0.15;
-            
-            // Limpiar canvas
+
             faviconCtx.clearRect(0, 0, 32, 32);
-            
-            // Centro del canvas
+
             const cx = 16;
             const cy = 16;
             const radius = 14;
-            
-            // Gradiente para la bola
+
             const gradient = faviconCtx.createRadialGradient(
                 cx - 3, cy - 3, 0,
                 cx, cy, radius
@@ -868,52 +1591,160 @@
             gradient.addColorStop(0.3, '#ffffff');
             gradient.addColorStop(0.5, '#0a0a0a');
             gradient.addColorStop(1, '#000000');
-            
-            // Dibujar bola
+
             faviconCtx.beginPath();
             faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
             faviconCtx.fillStyle = gradient;
             faviconCtx.fill();
-            
-            // Dibujar número 8 (con rotación horizontal)
+
             faviconCtx.save();
             faviconCtx.translate(cx, cy);
-            faviconCtx.scale(1 + rotation * 0.5, 1); // Efecto de rotación horizontal
+            faviconCtx.scale(1 + rotation * 0.5, 1);
             faviconCtx.translate(-cx, -cy);
-            
+
             faviconCtx.fillStyle = '#ffffff';
             faviconCtx.font = 'bold 14px Arial';
             faviconCtx.textAlign = 'center';
             faviconCtx.textBaseline = 'middle';
             faviconCtx.fillText('8', cx, cy + 1);
-            
+
             faviconCtx.restore();
-            
-            // Borde dorado para la paleta de La Catrina
+
             faviconCtx.beginPath();
             faviconCtx.arc(cx, cy, radius, 0, Math.PI * 2);
             faviconCtx.strokeStyle = '#d4af37';
             faviconCtx.lineWidth = 2;
             faviconCtx.stroke();
-            
-            // Actualizar favicon
+
             const link = document.getElementById('favicon');
             if (link) {
                 link.href = faviconCanvas.toDataURL('image/png');
             }
-            
+
             requestAnimationFrame(updateFavicon);
         }
 
-        // Iniciar animación del favicon
         updateFavicon();
     </script>
-    
+
     <script src="js/translations.js"></script>
     <script>
         if (typeof createLanguageSelector === 'function') {
             document.getElementById('langSelectorContainer').innerHTML = createLanguageSelector();
         }
+
+        // Logic for Bonus Notice Pop-up
+        document.addEventListener('DOMContentLoaded', () => {
+            const NOTICE_KEY = 'catrina_bonus_notice_seen';
+            const hasSeenNotice = localStorage.getItem(NOTICE_KEY);
+
+            if (!hasSeenNotice) {
+                setTimeout(() => {
+                    showBonusNotice();
+                }, 2000); // Show after 2 seconds
+            }
+
+            function showBonusNotice() {
+                const modal = document.createElement('div');
+                modal.id = 'bonusNoticeModal';
+                Object.assign(modal.style, {
+                    position: 'fixed',
+                    top: '0',
+                    left: '0',
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: '10000',
+                    backdropFilter: 'blur(10px)',
+                    animation: 'fadeIn 0.5s ease'
+                });
+
+                const content = document.createElement('div');
+                Object.assign(content.style, {
+                    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+                    border: '2px solid #d4af37',
+                    borderRadius: '20px',
+                    padding: '40px',
+                    maxWidth: '500px',
+                    width: '90%',
+                    textAlign: 'center',
+                    boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.2)',
+                    animation: 'slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                });
+
+                const title = document.createElement('h2');
+                title.textContent = typeof t !== 'undefined' ? t('bonus_notice_title') : 'AVISO DE BONUS';
+                Object.assign(title.style, {
+                    color: '#d4af37',
+                    fontSize: '28px',
+                    marginBottom: '20px',
+                    fontFamily: 'Georgia, serif',
+                    letterSpacing: '2px'
+                });
+
+                const message = document.createElement('p');
+                message.textContent = typeof t !== 'undefined' ? t('bonus_notice_message') : 'Los 4 bonus pueden usarse todas las semanas...';
+                Object.assign(message.style, {
+                    color: '#e0e0e0',
+                    fontSize: '16px',
+                    lineHeight: '1.6',
+                    marginBottom: '30px'
+                });
+
+                const button = document.createElement('button');
+                button.textContent = typeof t !== 'undefined' ? t('bonus_notice_accept') : 'ENTENDIDO';
+                Object.assign(button.style, {
+                    background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)',
+                    border: 'none',
+                    borderRadius: '30px',
+                    color: '#000',
+                    padding: '12px 40px',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                });
+
+                button.onmouseover = () => {
+                    button.style.transform = 'scale(1.05)';
+                    button.style.boxShadow = '0 0 20px rgba(212, 175, 55, 0.4)';
+                };
+                button.onmouseout = () => {
+                    button.style.transform = 'scale(1)';
+                    button.style.boxShadow = 'none';
+                };
+
+                button.onclick = () => {
+                    localStorage.setItem(NOTICE_KEY, 'true');
+                    modal.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => modal.remove(), 300);
+                };
+
+                // Add animations to document
+                if (!document.getElementById('bonus-notice-animations')) {
+                    const style = document.createElement('style');
+                    style.id = 'bonus-notice-animations';
+                    style.textContent = `
+                        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+                        @keyframes slideUp {
+                            from { transform: translateY(50px) scale(0.9); opacity: 0; }
+                            to { transform: translateY(0) scale(1); opacity: 1; }
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+
+                content.appendChild(title);
+                content.appendChild(message);
+                content.appendChild(button);
+                modal.appendChild(content);
+                document.body.appendChild(modal);
+            }
+        });
     </script>
 </body>
 </html>
