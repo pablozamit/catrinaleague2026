@@ -48,7 +48,7 @@ const PLAYERS = [
 
 // Sustituciones: el entrante hereda el hueco exacto del saliente (mismo calendario).
 // (Evo sale sin haber jugado; Sergyo ocupa su slot aunque su ELO sea de otro bombo.)
-const SUSTITUCIONES = { evodia: ['sergio', 'Sergyo', 1372] };
+const SUSTITUCIONES = { evodia: ['sergio', 'Sergio', 1372] };
 
 // Ordenar por ELO desc y repartir en bombos A-E (6 por bombo)
 const sorted = [...PLAYERS].sort((a, b) => b[2] - a[2]);

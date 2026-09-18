@@ -162,7 +162,7 @@ const FIXTURES_OTONO2026 = {
       "elo": 807
     },
     "sergio": {
-      "nombre": "Sergyo",
+      "nombre": "Sergio",
       "elo": 1372
     }
   },
