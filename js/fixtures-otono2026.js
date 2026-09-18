@@ -22,7 +22,7 @@ const FIXTURES_OTONO2026 = {
     "C": [
       "adri",
       "enrique",
-      "evodia",
+      "sergio",
       "roman",
       "angel",
       "lucas"
@@ -101,10 +101,6 @@ const FIXTURES_OTONO2026 = {
       "nombre": "Enrique",
       "elo": 1212
     },
-    "evodia": {
-      "nombre": "Evo",
-      "elo": 1185
-    },
     "roman": {
       "nombre": "Román",
       "elo": 1163
@@ -164,6 +160,10 @@ const FIXTURES_OTONO2026 = {
     "damian": {
       "nombre": "Damian",
       "elo": 807
+    },
+    "sergio": {
+      "nombre": "Sergyo",
+      "elo": 1372
     }
   },
   "jornadas": {
@@ -178,7 +178,7 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "wilkins",
-          "p2": "evodia",
+          "p2": "sergio",
           "tipo": "cruce",
           "bombos": "B-C"
         },
@@ -314,7 +314,7 @@ const FIXTURES_OTONO2026 = {
           "bombos": "C-E"
         },
         {
-          "p1": "evodia",
+          "p1": "sergio",
           "p2": "rauls",
           "tipo": "cruce",
           "bombos": "C-E"
@@ -439,7 +439,7 @@ const FIXTURES_OTONO2026 = {
           "bombo": "C"
         },
         {
-          "p1": "evodia",
+          "p1": "sergio",
           "p2": "roman",
           "tipo": "derbi",
           "bombo": "C"
@@ -504,7 +504,7 @@ const FIXTURES_OTONO2026 = {
           "bombos": "C-D"
         },
         {
-          "p1": "evodia",
+          "p1": "sergio",
           "p2": "danilo",
           "tipo": "cruce",
           "bombos": "C-D"
@@ -558,7 +558,7 @@ const FIXTURES_OTONO2026 = {
         },
         {
           "p1": "pablo",
-          "p2": "evodia",
+          "p2": "sergio",
           "tipo": "cruce",
           "bombos": "A-C"
         },

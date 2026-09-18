@@ -46,6 +46,10 @@ const PLAYERS = [
     ['damian', 'Damian', 807],
 ];
 
+// Sustituciones: el entrante hereda el hueco exacto del saliente (mismo calendario).
+// (Evo sale sin haber jugado; Sergyo ocupa su slot aunque su ELO sea de otro bombo.)
+const SUSTITUCIONES = { evodia: ['sergio', 'Sergyo', 1372] };
+
 // Ordenar por ELO desc y repartir en bombos A-E (6 por bombo)
 const sorted = [...PLAYERS].sort((a, b) => b[2] - a[2]);
 const POT_NAMES = ['A', 'B', 'C', 'D', 'E'];
@@ -130,11 +134,28 @@ const bad = Object.entries(count).filter(([, n]) => n !== 5);
 if (bad.length) { console.error('ERROR jugadores con != 5 partidos:', bad); process.exit(1); }
 console.log('OK: 30 jugadores x 5 partidos =', Object.values(jornadas).reduce((a, j) => a + j.partidos.length, 0), 'partidos en 5 jornadas');
 
+// Aplicar sustituciones (el entrante hereda calendario, bombos y derbis del saliente)
+for (const [sale, [entra]] of Object.entries(SUSTITUCIONES)) {
+    for (const pot of POT_NAMES) {
+        pots[pot] = pots[pot].map(u => u === sale ? entra : u);
+        anillos[pot] = anillos[pot].map(u => u === sale ? entra : u);
+    }
+    Object.values(jornadas).forEach(J => J.partidos.forEach(m => {
+        if (m.p1 === sale) m.p1 = entra;
+        if (m.p2 === sale) m.p2 = entra;
+    }));
+}
+const JUGADORES = Object.fromEntries(PLAYERS.map(([u, nombre, elo]) => [u, { nombre, elo }]));
+for (const [sale, [entra, nombre, elo]] of Object.entries(SUSTITUCIONES)) {
+    delete JUGADORES[sale];
+    JUGADORES[entra] = { nombre, elo };
+}
+
 const meta = {
     temporada: 'Otoño 2026',
     formato: 'Champions: tabla unica, 5 bombos x 6, 5 jornadas',
     bombos: Object.fromEntries(POT_NAMES.map(p => [p, pots[p]])),
-    jugadores: Object.fromEntries(PLAYERS.map(([u, nombre, elo]) => [u, { nombre, elo }])),
+    jugadores: JUGADORES,
     jornadas,
     playoffs: {
         preliminar: '21 – 27 oct 2026 · puestos 9-24, sorteo, race to 3',
