@@ -189,7 +189,7 @@ tr.cut-elim td { opacity: 0.45; }
     min-width: 0;
 }
 .ot-slide .ot-round { margin-bottom: 0; }
-.ot-slide .ot-round .fixtures { display: block; max-height: 46vh; overflow-y: auto; }
+.ot-slide .ot-round .fixtures { display: block; }
 .ot-car-nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 1rem; }
 .ot-car-btn {
     font-family: var(--font-display);
