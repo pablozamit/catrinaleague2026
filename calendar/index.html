@@ -68,7 +68,7 @@
         var F = FIXTURES_OTONO2026;
         function nombre(u) { return (F.jugadores[u] && F.jugadores[u].nombre) || u; }
 
-        // ---- Jornadas (carrusel deslizable) ----
+        // ---- Jornadas (carrusel deslizable, con resultados pintados) ----
         (function () {
             var box = document.getElementById('jornadas');
             var dotsBox = document.getElementById('car-dots');
@@ -78,6 +78,9 @@
             dotsBox.innerHTML = '';
             var keys = Object.keys(F.jornadas);
             var slides = [];
+            var headCounts = {};
+
+            function clave(a, b) { return [a.toLowerCase(), b.toLowerCase()].sort().join('+'); }
 
             keys.forEach(function (j, idx) {
                 var J = F.jornadas[j];
@@ -86,14 +89,18 @@
                 var div = document.createElement('div');
                 div.className = 'ot-round open';
                 var head = document.createElement('header');
-                head.innerHTML = '<h3>Jornada ' + j + ' · ' + J.partidos.length + ' partidos</h3><span class="fecha">' + J.fecha + '</span>';
+                head.innerHTML = '<h3>Jornada ' + j + ' · <span data-jcount="' + j + '">0/' + J.partidos.length + ' jugados</span></h3><span class="fecha">' + J.fecha + '</span>';
+                headCounts[j] = head.querySelector('[data-jcount]');
                 var list = document.createElement('div');
                 list.className = 'fixtures';
                 J.partidos.forEach(function (m) {
                     var row = document.createElement('div');
                     row.className = 'ot-match';
+                    row.setAttribute('data-k', clave(m.p1, m.p2));
                     var etiqueta = m.tipo === 'derbi' ? 'DERBI ' + m.bombo : m.bombos;
-                    row.innerHTML = '<span>' + nombre(m.p1) + '</span><span class="vs">VS</span><span>' + nombre(m.p2) + '</span><span class="tipo">' + etiqueta + '</span>';
+                    row.innerHTML = '<span data-n="p1">' + nombre(m.p1) + '</span><span class="vs">VS</span><span data-n="p2">' + nombre(m.p2) + '</span><span class="tipo">' + etiqueta + '</span>';
+                    row.setAttribute('data-u1', m.p1.toLowerCase());
+                    row.setAttribute('data-u2', m.p2.toLowerCase());
                     list.appendChild(row);
                 });
                 div.appendChild(head);
@@ -143,6 +150,51 @@
             var start = 0;
             inicios.forEach(function (d, i) { if (hoy >= d) start = i; });
             requestAnimationFrame(function () { go(Math.min(start, slides.length - 1)); });
+
+            // Pintar resultados confirmados dentro de las jornadas
+            try { firebase.initializeApp({ apiKey: "AIzaSyBgyARlrVo-J1qIhu49Nfvif_p7xVVFW5s", authDomain: "elopool-f1e62.firebaseapp.com", databaseURL: "https://elopool-f1e62-default-rtdb.europe-west1.firebasedatabase.app", projectId: "elopool-f1e62" }); } catch (e) { /* ya inicializado */ }
+            firebase.database().ref('matches').once('value').then(function (snap) {
+                var porJornada = {};
+                snap.forEach(function (c) {
+                    var m = c.val();
+                    if (!m || m.match_type !== 'liga_grupos' || (m.status || '').toLowerCase() !== 'confirmed') return;
+                    var u1 = (m.player1_username || '').toLowerCase(), u2 = (m.player2_username || '').toLowerCase();
+                    if (!u1 || !u2) return;
+                    var w = (m.winner_username || '').toLowerCase();
+                    var k = [u1, u2].sort().join('+');
+                    var s1 = parseInt(m.player1_score, 10), s2 = parseInt(m.player2_score, 10);
+                    if (isNaN(s1) || isNaN(s2)) return;
+                    // localizar la jornada de este cruce
+                    keys.forEach(function (j) {
+                        var hit = F.jornadas[j].partidos.some(function (p) { return clave(p.p1, p.p2) === k; });
+                        if (hit) porJornada[k + '@' + j] = { w: w, a: u1, b: u2, sa: s1, sb: s2 };
+                    });
+                });
+                var counts = {};
+                document.querySelectorAll('#jornadas .ot-match').forEach(function (row) {
+                    var k = row.getAttribute('data-k');
+                    var u1 = row.getAttribute('data-u1'), u2 = row.getAttribute('data-u2');
+                    var slide = row.closest('.ot-slide');
+                    var jIdx = slides.indexOf(slide);
+                    var j = keys[jIdx];
+                    var r = porJornada[k + '@' + j];
+                    if (!r) return;
+                    row.classList.add('jugado');
+                    counts[j] = (counts[j] || 0) + 1;
+                    var gano1 = (r.w === u1);
+                    var izq = (u1 === r.a) ? r.sa : r.sb;
+                    var der = (u1 === r.a) ? r.sb : r.sa;
+                    var n1 = row.querySelector('[data-n="p1"]'), n2 = row.querySelector('[data-n="p2"]');
+                    n1.innerHTML = gano1 ? '<span class="win">' + n1.textContent + '</span>' : n1.textContent;
+                    n2.innerHTML = !gano1 ? '<span class="win">' + n2.textContent + '</span>' : n2.textContent;
+                    var mid = row.querySelector('.vs');
+                    mid.className = 'score';
+                    mid.textContent = izq + '–' + der;
+                });
+                Object.keys(counts).forEach(function (j) {
+                    if (headCounts[j]) headCounts[j].textContent = counts[j] + '/' + F.jornadas[j].partidos.length + ' jugados';
+                });
+            }).catch(function () { /* sin resultados */ });
         })();
 
         // ---- Bracket ----

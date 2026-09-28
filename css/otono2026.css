@@ -230,6 +230,10 @@ tr.cut-elim td { opacity: 0.45; }
 }
 .ot-match .vs { font-family: var(--font-mono); font-size: 0.68rem; color: var(--gold); letter-spacing: 0.2em; }
 .ot-match .tipo { font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); letter-spacing: 0.1em; }
+.ot-match.jugado { background: rgba(212, 175, 55, 0.06); }
+.ot-match .win { color: var(--gold-light); font-weight: 600; }
+.ot-match .score { font-family: var(--font-mono); color: var(--bone); letter-spacing: 0.1em; white-space: nowrap; }
+.ot-match .pend { font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); letter-spacing: 0.14em; }
 
 /* ---------- Bracket playoffs ---------- */
 .ot-bracket { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.2rem; }
