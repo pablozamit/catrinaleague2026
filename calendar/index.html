@@ -181,12 +181,15 @@
                     if (!r) return;
                     row.classList.add('jugado');
                     counts[j] = (counts[j] || 0) + 1;
-                    var gano1 = (r.w === u1);
+                    var gano1 = r.w && (r.w === u1);
+                    var hayGanador = !!r.w;
                     var izq = (u1 === r.a) ? r.sa : r.sb;
                     var der = (u1 === r.a) ? r.sb : r.sa;
                     var n1 = row.querySelector('[data-n="p1"]'), n2 = row.querySelector('[data-n="p2"]');
-                    n1.innerHTML = gano1 ? '<span class="win">' + n1.textContent + '</span>' : n1.textContent;
-                    n2.innerHTML = !gano1 ? '<span class="win">' + n2.textContent + '</span>' : n2.textContent;
+                    if (hayGanador) {
+                        n1.innerHTML = gano1 ? '<span class="win">' + n1.textContent + '</span>' : n1.textContent;
+                        n2.innerHTML = !gano1 ? '<span class="win">' + n2.textContent + '</span>' : n2.textContent;
+                    }
                     var mid = row.querySelector('.vs');
                     mid.className = 'score';
                     mid.textContent = izq + '–' + der;
@@ -246,11 +249,16 @@
                 rows.sort(function (a, b) { return (b.confirmed_at || 0) - (a.confirmed_at || 0); });
                 var t = '<table class="ot-table"><thead><tr><th>Ganador</th><th>Marcador</th><th>Perdedor</th><th>Fecha</th></tr></thead><tbody>';
                 rows.forEach(function (m) {
-                    var g = nombre(m.winner_username || m.winner_id || '?');
+                    var esEmpate = !!(m.draw || (!m.winner_username && !m.winner_id));
                     var p1 = m.player1_username || '', p2 = m.player2_username || '';
-                    var perdedor = (p1 && p1 !== (m.winner_username || '')) ? p1 : p2;
                     var sc = (m.player1_score != null && m.player2_score != null) ? (m.player1_score + ' – ' + m.player2_score) : '—';
                     var fecha = m.confirmed_at ? new Date(m.confirmed_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : '—';
+                    if (esEmpate) {
+                        t += '<tr><td>' + nombre(p1) + ' / ' + nombre(p2) + '</td><td class="ot-elo">' + sc + '</td><td><span class="ot-tag">EMPATE</span></td><td>' + fecha + '</td></tr>';
+                        return;
+                    }
+                    var g = nombre(m.winner_username || m.winner_id || '?');
+                    var perdedor = (p1 && p1 !== (m.winner_username || '')) ? p1 : p2;
                     t += '<tr><td><strong>' + g + '</strong></td><td class="ot-elo">' + sc + '</td><td>' + (perdedor || '?') + '</td><td>' + fecha + '</td></tr>';
                 });
                 box.innerHTML = t + '</tbody></table>';

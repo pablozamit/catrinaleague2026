@@ -121,14 +121,15 @@
                     var u1 = uid2user[m.player1_id] || (m.player1_username || '').toLowerCase();
                     var u2 = uid2user[m.player2_id] || (m.player2_username || '').toLowerCase();
                     var w = (m.winner_username || uid2user[m.winner_id] || '').toLowerCase();
-                    if (!base[u1] || !base[u2] || !w) return;
+                    if (!base[u1] || !base[u2]) return;
                     var s1 = parseInt(m.player1_score, 10), s2 = parseInt(m.player2_score, 10);
                     if (isNaN(s1)) s1 = 0; if (isNaN(s2)) s2 = 0;
                     base[u1].pj++; base[u2].pj++;
                     base[u1].mf += s1; base[u1].mc += s2;
                     base[u2].mf += s2; base[u2].mc += s1;
                     if (w === u1) { base[u1].g++; base[u1].pts += 3; base[u2].p++; }
-                    else { base[u2].g++; base[u2].pts += 3; base[u1].p++; }
+                    else if (w === u2) { base[u2].g++; base[u2].pts += 3; base[u1].p++; }
+                    // empate (w===''): cuenta PJ y mangas, sin puntos ni G/P
                     n++;
                 });
 
