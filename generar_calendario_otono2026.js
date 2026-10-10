@@ -35,7 +35,7 @@ const PLAYERS = [
     ['dani', 'Dani', 1100],
     ['nino', 'Nino', 1027],
     ['ponci', 'Ponciano', 1003],
-    ['aymar', 'Aymar', 1000],
+    ['aymar', 'Aimar', 1000],
     ['danilo', 'Danilo', 995],
     ['alexb', 'Alex B.', 987],
     ['sol', 'Sol', 983],

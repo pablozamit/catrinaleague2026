@@ -126,7 +126,7 @@ const FIXTURES_OTONO2026 = {
       "elo": 1003
     },
     "aymar": {
-      "nombre": "Aymar",
+      "nombre": "Aimar",
       "elo": 1000
     },
     "danilo": {
