@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendientes · Liga de Otoño 2026 — La Catrina Pool League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/otono2026.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="../js/fixtures-otono2026.js"></script>
+</head>
+<body class="otono">
+    <nav class="ot-nav">
+        <a href="../liga/">Clasificación</a>
+        <a href="../calendar/">Calendario</a>
+        <a href="../pendientes/" class="active">Pendientes</a>
+        <a href="../reglas/">Reglas</a>
+    </nav>
+
+    <header class="ot-header">
+        <div class="ot-kicker">La Catrina Pool League · Temporada Otoño 2026</div>
+        <h1 class="ot-title">Pendientes<span class="thin" id="resumen">Contando partidos…</span></h1>
+        <p class="ot-lede">Lo que falta por jugar, jornada a jornada. Si ves tu nombre aquí, ya sabes lo que toca.</p>
+    </header>
+
+    <main>
+        <section class="ot-section">
+            <div id="pendientes"><p style="color:var(--muted)">Cargando…</p></div>
+            <p style="margin-top:1.4rem;font-size:0.9rem;color:var(--muted)">¿Has jugado uno de estos? Registra el resultado en <a href="../resultados/" style="color:var(--gold)">Resultados</a> y que tu rival lo confirme en <a href="../confirmar/" style="color:var(--gold)">Confirmar</a> — o pásamelo y lo meto yo.</p>
+        </section>
+    </main>
+
+    <footer class="ot-footer">
+        La Catrina Pool League · Otoño 2026 · <a href="../liga/verano-2026/">Archivo: Verano 2026</a>
+    </footer>
+
+    <script src="../js/iris-cursor.js"></script>
+    <script>
+        var F = FIXTURES_OTONO2026;
+        function nombre(u) { return (F.jugadores[u] && F.jugadores[u].nombre) || u; }
+        function clave(a, b) { return [a.toLowerCase(), b.toLowerCase()].sort().join('+'); }
+
+        try { firebase.initializeApp({ apiKey: "AIzaSyBgyARlrVo-J1qIhu49Nfvif_p7xVVFW5s", authDomain: "elopool-f1e62.firebaseapp.com", databaseURL: "https://elopool-f1e62-default-rtdb.europe-west1.firebasedatabase.app", projectId: "elopool-f1e62" }); } catch (e) { /* ya inicializado */ }
+
+        firebase.database().ref('matches').once('value').then(function (snap) {
+            var jugados = {};
+            snap.forEach(function (c) {
+                var m = c.val();
+                if (!m || m.match_type !== 'liga_grupos' || (m.status || '').toLowerCase() !== 'confirmed') return;
+                var u1 = (m.player1_username || '').toLowerCase(), u2 = (m.player2_username || '').toLowerCase();
+                if (!u1 || !u2) return;
+                Object.keys(F.jornadas).forEach(function (j) {
+                    var hit = F.jornadas[j].partidos.some(function (p) { return clave(p.p1, p.p2) === clave(u1, u2); });
+                    if (hit) jugados[clave(u1, u2) + '@' + j] = true;
+                });
+            });
+
+            var box = document.getElementById('pendientes');
+            box.innerHTML = '';
+            var total = 0, jug = 0;
+            Object.keys(F.jornadas).forEach(function (j) {
+                var J = F.jornadas[j];
+                var pend = J.partidos.filter(function (m) { return !jugados[clave(m.p1, m.p2) + '@' + j]; });
+                total += J.partidos.length;
+                jug += J.partidos.length - pend.length;
+                var div = document.createElement('div');
+                div.className = 'ot-round open';
+                var head = document.createElement('header');
+                head.innerHTML = '<h3>Jornada ' + j + ' · ' + (pend.length ? pend.length + ' pendientes' : 'completa ✓') + '</h3><span class="fecha">' + J.fecha + '</span>';
+                div.appendChild(head);
+                if (pend.length) {
+                    var list = document.createElement('div');
+                    list.className = 'fixtures';
+                    pend.forEach(function (m) {
+                        var row = document.createElement('div');
+                        row.className = 'ot-match';
+                        var etiqueta = m.tipo === 'derbi' ? 'DERBI ' + m.bombo : m.bombos;
+                        row.innerHTML = '<span>' + nombre(m.p1) + '</span><span class="vs">VS</span><span>' + nombre(m.p2) + '</span><span class="tipo">' + etiqueta + '</span>';
+                        list.appendChild(row);
+                    });
+                    div.appendChild(list);
+                }
+                box.appendChild(div);
+            });
+            document.getElementById('resumen').textContent = (total - jug) + ' por jugar de ' + total;
+        }).catch(function () {
+            document.getElementById('pendientes').innerHTML = '<p style="color:var(--muted)">No se pudieron cargar los pendientes.</p>';
+        });
+    </script>
+</body>
+</html>
