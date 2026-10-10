@@ -644,7 +644,7 @@ const FIXTURES_OTONO2026 = {
     }
   },
   "playoffs": {
-    "preliminar": "21 – 27 oct 2026 · puestos 9-24, sorteo, race to 3",
+    "preliminar": "21 – 27 oct 2026 · puestos 9-24, sorteo, race to 5",
     "octavos": "28 oct – 1 nov 2026 · top 8 + 8 ganadores preliminar, race to 5",
     "cuartos": "4 – 8 nov 2026 · race to 5",
     "semifinales": "11 – 15 nov 2026 · race to 7",
