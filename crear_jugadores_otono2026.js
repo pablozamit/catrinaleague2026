@@ -1,3 +1,4 @@
+// CREDENCIALES ELIMINADAS (11-oct-2026): los valores reales van en config local NO versionada (.env / variables de entorno).
 // Crear jugadores nuevos para Liga Otoño 2026:
 // - nica: ya existe en Auth (uid NWhdkbW9pJdeQ46paOq56wpqFMj1), falta entrada en DB -> elo 1100
 // - aymar (1000), florian (1400), wilkins (1400): crear Auth + DB
@@ -12,9 +13,9 @@ admin.initializeApp({
 const NICA_UID = 'NWhdkbW9pJdeQ46paOq56wpqFMj1';
 
 const newPlayers = [
-    { username: 'aymar', password: 'aymar123', elo: 1000 },
-    { username: 'florian', password: 'florian123', elo: 1400 },
-    { username: 'wilkins', password: 'wilkins123', elo: 1400 }
+    { username: 'aymar', password: ', elo: 1000 },
+    { username: 'florian', password: ', elo: 1400 },
+    { username: 'wilkins', password: ', elo: 1400 }
 ];
 
 async function main() {
