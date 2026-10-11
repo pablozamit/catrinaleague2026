@@ -1,3 +1,4 @@
+// CREDENCIALES ELIMINADAS (11-oct-2026): los valores reales van en config local NO versionada (.env / variables de entorno).
 // Crear dani para Liga Otoño 2026 (Auth + DB), ELO inicial 1100
 const admin = require('firebase-admin');
 const serviceAccount = require('./elopool-f1e62-firebase-adminsdk-fbsvc-3154d48a46.json');
@@ -12,7 +13,7 @@ async function main() {
     try {
         const userRecord = await admin.auth().createUser({
             email: 'dani@catrina.local',
-            password: 'dani123',
+            password: ',
             displayName: 'dani'
         });
         await db.ref(`users/${userRecord.uid}`).set({
