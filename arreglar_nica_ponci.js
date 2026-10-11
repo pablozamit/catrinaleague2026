@@ -1,3 +1,4 @@
+// CREDENCIALES ELIMINADAS (11-oct-2026): los valores reales van en config local NO versionada (.env / variables de entorno).
 // Arreglar cruce nica/ponci:
 // 1. Restaurar entrada DB de nica (uid NWhdkbW9pJdeQ46paOq56wpqFMj1) -> username nica, elo 1100
 // 2. Crear Auth + DB para ponci con su ELO final del PDF (1003)
@@ -29,7 +30,7 @@ async function main() {
     try {
         const userRecord = await admin.auth().createUser({
             email: 'ponci@catrina.local',
-            password: 'ponci123',
+            password: ',
             displayName: 'ponci'
         });
         await db.ref(`users/${userRecord.uid}`).set({
