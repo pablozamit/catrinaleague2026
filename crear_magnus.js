@@ -1,3 +1,4 @@
+// CREDENCIALES ELIMINADAS (11-oct-2026): los valores reales van en config local NO versionada (.env / variables de entorno).
 // Crear magnus para Liga Otoño 2026 (Auth + DB), ELO inicial 1200
 const admin = require('firebase-admin');
 const serviceAccount = require('./elopool-f1e62-firebase-adminsdk-fbsvc-3154d48a46.json');
@@ -12,7 +13,7 @@ async function main() {
     try {
         const userRecord = await admin.auth().createUser({
             email: 'magnus@catrina.local',
-            password: 'magnus123',
+            password: ',
             displayName: 'magnus'
         });
         await db.ref(`users/${userRecord.uid}`).set({
