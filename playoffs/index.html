@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../css/otono2026.css">
     <style>
         /* ================= BRACKET DE TORNEO ================= */
+        .ot-section.wide { max-width: 1500px; padding-left: 2vw; padding-right: 2vw; }
         .bracket-stage {
             position: relative;
             overflow-x: auto;
@@ -36,8 +37,8 @@
         .bracket {
             position: relative;
             display: grid;
-            grid-template-columns: repeat(6, 210px);
-            gap: 4.5rem;
+            grid-template-columns: repeat(6, 178px);
+            gap: 2.2rem;
             min-width: max-content;
             align-items: stretch;
             padding-top: 2.8rem;
@@ -62,13 +63,13 @@
             top: 0;
             transform: translateY(-0.2rem);
             font-family: var(--font-display);
-            font-size: 0.72rem;
+            font-size: 0.6rem;
             font-weight: 700;
-            letter-spacing: 0.32em;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
             color: var(--gold);
             text-align: center;
-            width: 210px;
+            width: 178px;
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--gold-dim);
             white-space: nowrap;
@@ -128,7 +129,7 @@
             flex-shrink: 0;
         }
         .slot .nombre {
-            font-size: 0.86rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--bone);
             white-space: nowrap;
@@ -186,8 +187,8 @@
         .leyenda .ok { background: var(--gold); }
         .leyenda .q { border: 1px dashed #555; }
         @media (max-width: 720px) {
-            .bracket { grid-template-columns: repeat(6, 185px); gap: 3.6rem; }
-            .col-title { width: 185px; }
+            .bracket { grid-template-columns: repeat(6, 160px); gap: 2rem; }
+            .col-title { width: 160px; }
         }
     </style>
 </head>
@@ -208,7 +209,7 @@
     </header>
 
     <main>
-        <section class="ot-section">
+        <section class="ot-section wide">
             <p class="bracket-hint">Desliza horizontalmente para recorrer el cuadro completo →</p>
             <div class="bracket-stage" id="stage">
                 <div class="bracket" id="bracket">
@@ -263,7 +264,7 @@
 
                     <!-- ===== OCTAVOS ===== -->
                     <div class="col">
-                        <div class="col-title">Octavos · Race 5</div>
+                        <div class="col-title">Octavos · R5</div>
                         <div class="col-body">
                             <div class="match" id="o1" data-from="r8">
                                 <div class="match-label"><span>Octavo 1</span><span>28 oct–1 nov</span></div>
@@ -310,7 +311,7 @@
 
                     <!-- ===== CUARTOS ===== -->
                     <div class="col">
-                        <div class="col-title">Cuartos · Race 5</div>
+                        <div class="col-title">Cuartos · R5</div>
                         <div class="col-body">
                             <div class="match" id="c1" data-from="o1,o2">
                                 <div class="match-label"><span>Cuarto 1</span><span>4–8 nov</span></div>
@@ -337,7 +338,7 @@
 
                     <!-- ===== SEMIS ===== -->
                     <div class="col">
-                        <div class="col-title">Semifinales · Race 7</div>
+                        <div class="col-title">Semis · R7</div>
                         <div class="col-body">
                             <div class="match" id="s1" data-from="c1,c2">
                                 <div class="match-label"><span>Semi 1</span><span>11–15 nov</span></div>
@@ -354,7 +355,7 @@
 
                     <!-- ===== FINAL ===== -->
                     <div class="col">
-                        <div class="col-title">Final · Race 9</div>
+                        <div class="col-title">Final · R9</div>
                         <div class="col-body">
                             <div class="match" id="f1" data-from="s1,s2">
                                 <div class="match-label"><span>La Final</span><span>18–22 nov</span></div>
@@ -370,7 +371,7 @@
                         <div class="col-body">
                             <div class="champion" id="champ" data-from="f1">
                                 <span class="crown">🏆</span>
-                                <span class="label">Campeón Otoño 2026</span>
+                                <span class="label">Campeón</span>
                                 <div class="name" id="champ-name">?</div>
                             </div>
                         </div>
@@ -446,10 +447,11 @@
                     svg.appendChild(el);
                 }
 
-                // 1:1 repesca -> octavos
-                ['r1','r2','r3','r4','r5','r6','r7','r8'].forEach(function (rid) {
+                // 1:1 repesca -> octavos (O1 espera R8, O2 espera R7, ... O8 espera R1)
+                var map1a1 = { r8: 'o1', r7: 'o2', r6: 'o3', r5: 'o4', r4: 'o5', r3: 'o6', r2: 'o7', r1: 'o8' };
+                Object.keys(map1a1).forEach(function (rid) {
                     var from = document.getElementById(rid);
-                    var to = document.getElementById('o' + rid.slice(1));
+                    var to = document.getElementById(map1a1[rid]);
                     if (!from || !to) return;
                     var a = rightCenter(from), b = leftCenter(to);
                     var midX = a.x + (b.x - a.x) / 2;
