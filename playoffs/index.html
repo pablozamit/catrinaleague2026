@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playoffs · Liga de Otoño 2026 — La Catrina Pool League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/otono2026.css">
+</head>
+<body class="otono">
+    <nav class="ot-nav">
+        <a href="../liga/">Clasificación</a>
+        <a href="../calendar/">Calendario</a>
+        <a href="../pendientes/">Pendientes</a>
+        <a href="../repesca/">Repesca</a>
+        <a href="../playoffs/" class="active">Playoffs</a>
+        <a href="../reglas/">Reglas</a>
+    </nav>
+
+    <header class="ot-header">
+        <div class="ot-kicker">La Catrina Pool League · Temporada Otoño 2026 · 28 oct – 22 nov 2026</div>
+        <h1 class="ot-title">Playoffs<span class="thin">Top 8 directo · Octavos a Final</span></h1>
+        <p class="ot-lede">Los 8 primeros de la tabla entran directo a octavos. Los 8 ganadores de la repesca los esperan. Partido único, siempre bola 8.</p>
+    </header>
+
+    <main>
+        <section class="ot-section">
+            <h2 class="ot-h2">Octavos de final</h2>
+            <p class="ot-sub">28 oct – 1 nov 2026 · Carrera a 5 mangas · Partido único</p>
+            <div class="ot-bracket" id="octavos"></div>
+        </section>
+
+        <section class="ot-section">
+            <h2 class="ot-h2">Cuartos de final</h2>
+            <p class="ot-sub">4 – 8 nov 2026 · Carrera a 5 mangas</p>
+            <div class="ot-bracket" id="cuartos"></div>
+        </section>
+
+        <section class="ot-section">
+            <h2 class="ot-h2">Semifinales</h2>
+            <p class="ot-sub">11 – 15 nov 2026 · Carrera a 7 mangas</p>
+            <div class="ot-bracket" id="semis"></div>
+        </section>
+
+        <section class="ot-section">
+            <h2 class="ot-h2">Final</h2>
+            <p class="ot-sub">18 – 22 nov 2026 · Carrera a 9 mangas</p>
+            <div class="ot-bracket" id="final"></div>
+        </section>
+
+        <section class="ot-section">
+            <h2 class="ot-h2">Cómo se mueve</h2>
+            <div class="ot-rule">
+                <div class="big">8</div>
+                <div>
+                    <h3>Entran directo</h3>
+                    <p>Los <strong>1º al 8º</strong> de la clasificación al cerrar la fase de grupos (20 de octubre). Esperan al ganador de cada cruce de repesca.</p>
+                </div>
+            </div>
+            <div class="ot-rule">
+                <div class="big">8</div>
+                <div>
+                    <h3>Vienen de la repesca</h3>
+                    <p>Los 8 ganadores de los cruces entre el 9º y el 24º. Ninguno tiene ventaja de cabezada de serie: el cruce se sortea.</p>
+                </div>
+            </div>
+            <div class="ot-rule">
+                <div class="big">1</div>
+                <div>
+                    <h3>Campeón de liga</h3>
+                    <p>Quien gane la final (carrera a 9) es el campeón de la Liga de Otoño 2026.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="ot-footer">
+        La Catrina Pool League · Otoño 2026 · <a href="../liga/verano-2026/">Archivo: Verano 2026</a>
+    </footer>
+
+    <script src="../js/iris-cursor.js"></script>
+    <script>
+        (function () {
+            function ronda(id, num, race) {
+                var box = document.getElementById(id);
+                box.innerHTML = '';
+                for (var i = 1; i <= num; i++) {
+                    var d = document.createElement('div');
+                    d.className = 'fase';
+                    d.innerHTML = '<h4>Partido ' + i + '</h4>' +
+                        '<p class="race">RACE TO ' + race + '</p>' +
+                        '<p><span class="ot-tag">POR DEFINIR</span> vs <span class="ot-tag">POR DEFINIR</span></p>';
+                    box.appendChild(d);
+                }
+            }
+            ronda('octavos', 8, 5);
+            ronda('cuartos', 4, 5);
+            ronda('semis', 2, 7);
+            ronda('final', 1, 9);
+        })();
+    </script>
+</body>
+</html>
