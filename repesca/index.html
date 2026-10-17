@@ -64,16 +64,26 @@
     <script src="../js/iris-cursor.js"></script>
     <script>
         (function () {
+            var cruces = [
+                ['Favio', 'Sasa'],
+                ['Joe', 'Enrique'],
+                ['Adri', 'Ángel'],
+                ['Florian', 'Alex B.'],
+                ['Lucas', 'Charles'],
+                ['Wilkins', 'Nino'],
+                ['Dani', 'Joel'],
+                ['Manuela', 'Magnus']
+            ];
             var box = document.getElementById('cruces');
             box.innerHTML = '';
-            for (var i = 1; i <= 8; i++) {
+            cruces.forEach(function (c, i) {
                 var d = document.createElement('div');
                 d.className = 'fase';
-                d.innerHTML = '<h4>Cruce R' + i + '</h4>' +
+                d.innerHTML = '<h4>Cruce R' + (i + 1) + '</h4>' +
                     '<p class="race">RACE TO 5</p>' +
-                    '<p><span class="ot-tag">POR DEFINIR</span> vs <span class="ot-tag">POR DEFINIR</span><br>Sorteo al cerrar la fase de grupos</p>';
+                    '<p><strong>' + c[0] + '</strong> vs <strong>' + c[1] + '</strong><br>Repesca · Partido único</p>';
                 box.appendChild(d);
-            }
+            });
         })();
     </script>
 </body>
