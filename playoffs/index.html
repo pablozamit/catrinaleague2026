@@ -6,6 +6,103 @@
     <title>Playoffs · Liga de Otoño 2026 — La Catrina Pool League</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/otono2026.css">
+    <style>
+        /* ---------- Brackets playoffs ---------- */
+        .ot-ronda {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.2rem;
+            margin: 2rem 0;
+        }
+        .ot-partido {
+            border: 1px solid var(--hairline);
+            background: var(--coal);
+            position: relative;
+            padding: 1.4rem 1rem 1rem;
+            border-radius: 2px;
+        }
+        .ot-partido::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 50%;
+            width: 1px; height: 1.4rem;
+            background: var(--hairline);
+        }
+        .ot-partido h4 {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 0.8rem;
+            text-align: center;
+        }
+        .ot-lado {
+            padding: 0.6rem 0;
+            font-size: 1.05rem;
+            font-family: var(--font-ui);
+            color: var(--bone);
+            border-bottom: 1px solid rgba(245,245,245,0.08);
+            text-align: center;
+        }
+        .ot-lado:last-child { border-bottom: none; }
+        .ot-lado .nombre { font-weight: 600; }
+        .ot-lado .puesto {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--gold-light);
+            letter-spacing: 0.1em;
+            margin-top: 0.2rem;
+        }
+        .ot-lado .incognita {
+            font-family: var('font-mono');
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-style: italic;
+        }
+        .ot-vs {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--gold);
+            letter-spacing: 0.4em;
+            margin: 1rem 0;
+        }
+        .ot-vs .race {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            margin-top: 0.2rem;
+        }
+        .ot-conexion {
+            grid-column: 1 / -1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--hairline), transparent);
+            margin: 1rem 0;
+        }
+        .ot-nota {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: 0.95rem;
+            color: var(--muted);
+            margin-top: 1.4rem;
+            line-height: 1.6;
+            border-left: 2px solid var(--gold);
+            padding-left: 1rem;
+        }
+        .ot-tag-seguro {
+            font-family: var(--font-mono);
+            font-size: 0.62rem;
+            letter-spacing: 0.14em;
+            background: var(--gold);
+            color: var(--black);
+            padding: 0.15em 0.6em;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+    </style>
 </head>
 <body class="otono">
     <nav class="ot-nav">
@@ -18,60 +115,124 @@
     </nav>
 
     <header class="ot-header">
-        <div class="ot-kicker">La Catrina Pool League · Temporada Otoño 2026 · 28 oct – 22 nov 2026</div>
-        <h1 class="ot-title">Playoffs<span class="thin">Top 8 directo · Octavos a Final</span></h1>
-        <p class="ot-lede">Los 8 primeros de la tabla entran directo a octavos. Los 8 ganadores de la repesca los esperan. Partido único, siempre bola 8.</p>
+        <div class="ot-kicker">La Catrina Pool League · Temporada Otoño 2026</div>
+        <h1 class="ot-title">Playoffs<span class="thin">Octavos a Final</span></h1>
+        <p class="ot-lede">Del 28 de octubre al 22 de noviembre. Partido único, siempre bola 8. Los nombres con <span class="ot-tag-seguro">SEGURO</span> están matemáticamente fijados.</p>
     </header>
 
     <main>
         <section class="ot-section">
-            <h2 class="ot-h2">Octavos de final</h2>
+            <h2 class="ot-h2"><span class="n">1</span>Octavos de final</h2>
             <p class="ot-sub">28 oct – 1 nov 2026 · Carrera a 5 mangas · Partido único</p>
-            <div class="ot-bracket" id="octavos"></div>
+            <div class="ot-ronda" id="octavos">
+                <div class="ot-partido">
+                    <h4>Octavo 1</h4>
+                    <div class="ot-lado"><span class="nombre">Johnny</span><span class="puesto">Puesto 1 · SEGURO</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador R8</span><span class="puesto">Puesto 13 vs 22</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Octavo 2</h4>
+                    <div class="ot-lado"><span class="nombre">Alex F.</span><span class="puesto">Puesto 2 · SEGURO</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador R7</span><span class="puesto">Puesto 9 vs 14</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Octavo 3</h4>
+                    <div class="ot-lado"><span class="nombre">Pablo</span><span class="puesto">Puesto 3 · SEGURO</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador R6</span><span class="puesto">Puesto 16 vs 17</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Octavo 4</h4>
+                    <div class="ot-lado"><span class="nombre">Román</span><span class="puesto">Puesto 4 · SEGURO</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador R5</span><span class="puesto">Puesto 24 vs 20</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Octavo 5</h4>
+                    <div class="ot-lado"><span class="nombre">Katee</span><span class="puesto">Puesto 5 · SEGURO</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador R4</span><span class="puesto">Puesto 18 vs 10</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Octavo 6</h4>
+                    <div class="ot-lado"><span class="nombre">Connor</span><span class="puesto">Puesto 6 · SEGURO</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador R3</span><span class="puesto">Puesto 11 vs 19</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Octavo 7</h4>
+                    <div class="ot-lado"><span class="nombre">Amauris</span><span class="puesto">Puesto 7 · SEGURO</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador R2</span><span class="puesto">Puesto 23 vs 21</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Octavo 8</h4>
+                    <div class="ot-lado"><span class="nombre">Raúl S.</span><span class="puesto">Puesto 8 · SEGURO</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador R1</span><span class="puesto">Puesto 12 vs 15</span></div>
+                </div>
+            </div>
         </section>
 
+        <div class="ot-conexion"></div>
+
         <section class="ot-section">
-            <h2 class="ot-h2">Cuartos de final</h2>
+            <h2 class="ot-h2"><span class="n">2</span>Cuartos de final</h2>
             <p class="ot-sub">4 – 8 nov 2026 · Carrera a 5 mangas</p>
-            <div class="ot-bracket" id="cuartos"></div>
+            <div class="ot-ronda" id="cuartos">
+                <div class="ot-partido">
+                    <h4>Cuarto 1</h4>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Octavo 1</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Octavo 2</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Cuarto 2</h4>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Octavo 3</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Octavo 4</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Cuarto 3</h4>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Octavo 5</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Octavo 6</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Cuarto 4</h4>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Octavo 7</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Octavo 8</span></div>
+                </div>
+            </div>
         </section>
 
+        <div class="ot-conexion"></div>
+
         <section class="ot-section">
-            <h2 class="ot-h2">Semifinales</h2>
+            <h2 class="ot-h2"><span class="n">3</span>Semifinales</h2>
             <p class="ot-sub">11 – 15 nov 2026 · Carrera a 7 mangas</p>
-            <div class="ot-bracket" id="semis"></div>
+            <div class="ot-ronda" id="semis">
+                <div class="ot-partido">
+                    <h4>Semifinal 1</h4>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Cuarto 1</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Cuarto 2</span></div>
+                </div>
+                <div class="ot-partido">
+                    <h4>Semifinal 2</h4>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Cuarto 3</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Cuarto 4</span></div>
+                </div>
+            </div>
         </section>
 
-        <section class="ot-section">
-            <h2 class="ot-h2">Final</h2>
-            <p class="ot-sub">18 – 22 nov 2026 · Carrera a 9 mangas</p>
-            <div class="ot-bracket" id="final"></div>
-        </section>
+        <div class="ot-conexion"></div>
 
         <section class="ot-section">
-            <h2 class="ot-h2">Cómo se mueve</h2>
-            <div class="ot-rule">
-                <div class="big">8</div>
-                <div>
-                    <h3>Entran directo</h3>
-                    <p>Los <strong>1º al 8º</strong> de la clasificación al cerrar la fase de grupos (20 de octubre). Esperan al ganador de cada cruce de repesca.</p>
-                </div>
-            </div>
-            <div class="ot-rule">
-                <div class="big">8</div>
-                <div>
-                    <h3>Vienen de la repesca</h3>
-                    <p>Los 8 ganadores de los cruces entre el 9º y el 24º. Ninguno tiene ventaja de cabezada de serie: el cruce se sortea.</p>
-                </div>
-            </div>
-            <div class="ot-rule">
-                <div class="big">1</div>
-                <div>
-                    <h3>Campeón de liga</h3>
-                    <p>Quien gane la final (carrera a 9) es el campeón de la Liga de Otoño 2026.</p>
+            <h2 class="ot-h2"><span class="n">4</span>Final</h2>
+            <p class="ot-sub">18 – 22 nov 2026 · Carrera a 9 mangas · Campeón de liga</p>
+            <div class="ot-ronda" id="final">
+                <div class="ot-partido">
+                    <h4>Final</h4>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Semifinal 1</span></div>
+                    <div class="ot-lado"><span class="nombre incognita">Ganador Semifinal 2</span></div>
                 </div>
             </div>
         </section>
+
+        <div class="ot-nota">
+            <strong>Cómo se lee:</strong> Los nombres con <span class="ot-tag-seguro">SEGURO</span> ya están matemáticamente clasificados en esa posición y no pueden moverse. Los marcados como <em>Ganador R…</em> dependen del resultado de la repesca (puestos 9–24), que se resuelve al cerrar la fase de grupos. Hasta entonces, las posiciones 9–24 aún pueden cambiar entre sí, salvo Ángel (9º), Florian (10º), Enrique (11º) y Wilkins (12º), que ya están fijos.
+        </div>
     </main>
 
     <footer class="ot-footer">
@@ -79,25 +240,5 @@
     </footer>
 
     <script src="../js/iris-cursor.js"></script>
-    <script>
-        (function () {
-            function ronda(id, num, race) {
-                var box = document.getElementById(id);
-                box.innerHTML = '';
-                for (var i = 1; i <= num; i++) {
-                    var d = document.createElement('div');
-                    d.className = 'fase';
-                    d.innerHTML = '<h4>Partido ' + i + '</h4>' +
-                        '<p class="race">RACE TO ' + race + '</p>' +
-                        '<p><span class="ot-tag">POR DEFINIR</span> vs <span class="ot-tag">POR DEFINIR</span></p>';
-                    box.appendChild(d);
-                }
-            }
-            ronda('octavos', 8, 5);
-            ronda('cuartos', 4, 5);
-            ronda('semis', 2, 7);
-            ronda('final', 1, 9);
-        })();
-    </script>
 </body>
 </html>
