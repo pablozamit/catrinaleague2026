@@ -95,6 +95,11 @@ async function main() {
     const matchType = type || 'liga_grupos';
     const now = dateStr ? new Date(dateStr + 'T20:00:00') : new Date();
     const scoreW = parseInt(sW, 10), scoreL = parseInt(sL, 10);
+    if (!(scoreW > scoreL)) {
+        console.error('ERROR: el ganador debe tener MAS mangas que el perdedor. Recibido: ' + scoreW + '-' + scoreL);
+        console.error('Uso correcto: node registrar_partido.js <ganador> <perdedor> <mangasGanador> <mangasPerdedor>');
+        process.exit(1);
+    }
 
     const db = admin.database();
     const snap = await db.ref('users').once('value');
