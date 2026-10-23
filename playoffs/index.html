@@ -3,51 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playoffs · Liga de Otoño 2026 — La Catrina Pool League</title>
+    <title>Playoffs · La Catrina Pool League</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Inter:wght@300;400;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/otono2026.css">
     <style>
-        .bracket-stage { position: relative; overflow-x: auto; overflow-y: hidden; padding: 1.5rem 1rem 2.5rem; border: 1px solid var(--hairline); background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,175,55,0.08), transparent 60%), #0b0b0b; -webkit-overflow-scrolling: touch; }
-        .bracket-hint { text-align: center; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; margin: 0 0 1rem; }
-        .bracket { position: relative; display: grid; grid-template-columns: repeat(6, 178px); gap: 2.2rem; min-width: max-content; align-items: stretch; padding-top: 2.8rem; }
-        .bracket-lines { position: absolute; top: 0; left: 0; pointer-events: none; overflow: visible; z-index: 0; }
-        .col { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100%; }
-        .col-title { position: absolute; top: 0; transform: translateY(-0.2rem); font-family: var(--font-display); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); text-align: center; width: 178px; padding-bottom: 0.5rem; border-bottom: 1px solid var(--gold-dim); white-space: nowrap; }
-        .col-body { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 0.8rem; padding-top: 2.2rem; }
-        .match { position: relative; background: linear-gradient(160deg, #171717 0%, #101010 100%); border: 1px solid rgba(212,175,55,0.22); border-radius: 4px; overflow: hidden; transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s; box-shadow: 0 2px 12px rgba(0,0,0,0.45); }
-        .match:hover { border-color: var(--gold); box-shadow: 0 0 0 1px rgba(212,175,55,0.35), 0 0 24px rgba(212,175,55,0.18); transform: translateY(-1px); }
-        .match-label { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.18em; color: var(--gold); background: rgba(212,175,55,0.10); border-bottom: 1px solid rgba(212,175,55,0.18); padding: 0.28rem 0.5rem; text-transform: uppercase; display: flex; justify-content: space-between; }
-        .slot { display: flex; align-items: center; gap: 0.55rem; padding: 0.42rem 0.6rem; min-height: 2rem; }
-        .slot + .slot { border-top: 1px solid rgba(245,245,245,0.07); }
-        .slot .puesto { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); min-width: 1.6rem; text-align: center; border: 1px solid rgba(245,245,245,0.12); border-radius: 2px; padding: 0.08rem 0.2rem; flex-shrink: 0; }
-        .slot .nombre { font-size: 0.8rem; font-weight: 600; color: var(--bone); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .slot.seguro .nombre { color: var(--gold-light); }
-        .slot.seguro .puesto { border-color: var(--gold); color: var(--gold); }
-        .slot .incognita { color: #6b6b6b; font-weight: 400; font-style: italic; }
-        .ot-vs { grid-column: 1 / -1; text-align: center; font-family: var(--font-display); font-size: 0.9rem; color: var(--gold); letter-spacing: 0.4em; margin: 1rem 0; }
-        .ot-vs .race { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; margin-top: 0.2rem; }
-        .ot-conexion { grid-column: 1 / -1; height: 1px; background: linear-gradient(to right, transparent, var(--hairline), transparent); margin: 1rem 0; }
-        .champion { position: relative; background: linear-gradient(160deg, rgba(212,175,55,0.16), rgba(212,175,55,0.03)); border: 1px solid var(--gold); border-radius: 6px; padding: 1.2rem 0.8rem; text-align: center; box-shadow: 0 0 30px rgba(212,175,55,0.12), inset 0 0 20px rgba(212,175,55,0.05); }
-        .champion .crown { font-size: 1.8rem; display: block; margin-bottom: 0.4rem; }
-        .champion .label { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.28em; color: var(--gold); text-transform: uppercase; }
-        .champion .name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; color: var(--gold-light); margin-top: 0.5rem; letter-spacing: 0.08em; }
-        .leyenda { display: flex; flex-wrap: wrap; gap: 1.4rem; margin-top: 1.6rem; font-size: 0.82rem; color: var(--muted); }
-        .leyenda span { display: inline-flex; align-items: center; gap: 0.45rem; }
-        .leyenda i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
-        .leyenda .ok { background: var(--gold); }
-        .leyenda .q { border: 1px dashed #555; }
-        .bombo { border: 1px solid rgba(212,175,55,0.25); background: linear-gradient(160deg, rgba(212,175,55,0.06), rgba(0,0,0,0.2)); border-radius: 6px; padding: 1.2rem 1.3rem; margin: 0 0 1.6rem; }
-        .bombo-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.8rem; margin-bottom: 1rem; }
-        .bombo-kicker { font-family: var(--font-display); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
-        .bombo-sub { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
-        .bombo-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.45rem; margin: 0; padding: 0; }
-        .bombo-list li { display: flex; align-items: center; gap: 0.55rem; padding: 0.42rem 0.6rem; border: 1px solid rgba(245,245,245,0.08); border-radius: 3px; background: rgba(0,0,0,0.25); }
-        .bombo-list .pos { font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); border: 1px solid rgba(245,245,245,0.14); border-radius: 2px; padding: 0.06rem 0.3rem; min-width: 1.7rem; text-align: center; }
-        .bombo-list .who { font-size: 0.82rem; font-weight: 600; color: #6b6b6b; font-style: italic; }
-        .bombo-list li.fijo { border-color: rgba(212,175,55,0.45); background: rgba(212,175,55,0.08); }
-        .bombo-list li.fijo .pos { border-color: var(--gold); color: var(--gold); }
-        .bombo-list li.fijo .who { color: var(--gold-light); font-style: normal; }
-        @media (max-width: 720px) { .bracket { grid-template-columns: repeat(6, 148px); gap: 1.6rem; } .col-title { width: 148px; letter-spacing: 0.1em; } .slot .nombre { font-size: 0.76rem; } }
+        .lock-wrap {
+            min-height: 68vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1rem 4rem;
+        }
+        .lock {
+            width: 74px;
+            height: 74px;
+            color: var(--gold);
+            filter: drop-shadow(0 0 18px rgba(212, 175, 55, 0.28));
+            margin-bottom: 1.8rem;
+            animation: lockPulse 3.6s ease-in-out infinite;
+        }
+        @keyframes lockPulse {
+            0%, 100% { filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.18)); }
+            50% { filter: drop-shadow(0 0 26px rgba(212, 175, 55, 0.42)); }
+        }
+        .lock-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 4vw, 2.3rem);
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin: 0 0 0.9rem;
+        }
+        .lock-text {
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            color: var(--bone);
+            max-width: 34rem;
+            line-height: 1.6;
+            margin: 0 0 0.4rem;
+        }
+        .lock-text strong { color: var(--gold-light); font-weight: 600; }
+        .lock-sub {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 1.4rem 0 2.4rem;
+        }
+        .countdown {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 0.55rem;
+        }
+        .cd-cell {
+            min-width: 5.2rem;
+            padding: 0.9rem 0.6rem 0.75rem;
+            border: 1px solid rgba(212, 175, 55, 0.28);
+            border-radius: 4px;
+            background: linear-gradient(160deg, rgba(212, 175, 55, 0.08), rgba(0, 0, 0, 0.35));
+            box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.04);
+        }
+        .cd-num {
+            display: block;
+            font-family: var(--font-mono);
+            font-variant-numeric: tabular-nums;
+            font-size: clamp(1.6rem, 5vw, 2.4rem);
+            font-weight: 600;
+            color: var(--gold-light);
+            line-height: 1;
+        }
+        .cd-lab {
+            display: block;
+            margin-top: 0.55rem;
+            font-family: var(--font-mono);
+            font-size: 0.58rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .cd-done .cd-num { color: var(--muted); }
+        @media (max-width: 480px) {
+            .countdown { gap: 0.4rem; }
+            .cd-cell { min-width: 0; flex: 1; padding: 0.7rem 0.3rem 0.6rem; }
+            .cd-lab { letter-spacing: 0.1em; font-size: 0.52rem; }
+            .lock-wrap { min-height: 62vh; }
+        }
     </style>
 </head>
 <body class="otono">
@@ -55,110 +100,28 @@
         <a href="../liga/">Clasificación</a>
         <a href="../calendar/">Calendario</a>
         <a href="../pendientes/">Pendientes</a>
+        <a href="../playoffs/" class="active">Playoffs</a>
         <a href="../reglas/">Reglas</a>
     </nav>
-    <header class="ot-header">
-        <div class="ot-kicker">La Catrina Pool League · Temporada Otoño 2026</div>
-        <h1 class="ot-title">El Cuadro<span class="thin">Repesca · Octavos · Cuartos · Semis · Final</span></h1>
-        <p class="ot-lede">Dieciséis sillas, una corona. Solo los puestos inamovibles llevan nombre; todo lo demás se resolverá al cierre de la fase de grupos.</p>
-    </header>
     <main>
         <section class="ot-section wide">
-            <div class="bombo">
-                <div class="bombo-head">
-                    <span class="bombo-kicker">Bombo de repesca</span>
-                    <span class="bombo-sub">Puestos 9.º a 24.º · 16 jugadores · 8 eliminatorias</span>
-                </div>
-                <ul class="bombo-list">
-                    <li class="fijo"><span class="pos">9</span><span class="who">rauls</span></li>
-                    <li class="fijo"><span class="pos">10</span><span class="who">adri</span></li>
-                    <li class="fijo"><span class="pos">11</span><span class="who">florian</span></li>
-                    <li class="fijo"><span class="pos">12</span><span class="who">enrique</span></li>
-                    <li class="fijo"><span class="pos">13</span><span class="who">wilkins</span></li>
-                    <li><span class="pos">14</span><span class="who">Puesto 14</span></li>
-                    <li><span class="pos">15</span><span class="who">Puesto 15</span></li>
-                    <li><span class="pos">16</span><span class="who">Puesto 16</span></li>
-                    <li><span class="pos">17</span><span class="who">Puesto 17</span></li>
-                    <li><span class="pos">18</span><span class="who">Puesto 18</span></li>
-                    <li><span class="pos">19</span><span class="who">Puesto 19</span></li>
-                    <li><span class="pos">20</span><span class="who">Puesto 20</span></li>
-                    <li><span class="pos">21</span><span class="who">Puesto 21</span></li>
-                    <li><span class="pos">22</span><span class="who">Puesto 22</span></li>
-                    <li><span class="pos">23</span><span class="who">Puesto 23</span></li>
-                    <li><span class="pos">24</span><span class="who">Puesto 24</span></li>
-                </ul>
-            </div>
-            <p class="bracket-hint">Desliza horizontalmente para recorrer el cuadro completo →</p>
-            <div class="bracket-stage" id="stage">
-                <svg class="bracket-lines" id="lines" aria-hidden="true"></svg>
-                <div class="bracket" id="bracket">
-                    <div class="col">
-                        <div class="col-title">Repesca · Race 5</div>
-                        <div class="col-body">
-                            <div class="match" id="e1"><div class="match-label"><span>E1</span><span>Race 5</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div></div>
-                            <div class="match" id="e2"><div class="match-label"><span>E2</span><span>Race 5</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div></div>
-                            <div class="match" id="e3"><div class="match-label"><span>E3</span><span>Race 5</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div></div>
-                            <div class="match" id="e4"><div class="match-label"><span>E4</span><span>Race 5</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div></div>
-                            <div class="match" id="e5"><div class="match-label"><span>E5</span><span>Race 5</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div></div>
-                            <div class="match" id="e6"><div class="match-label"><span>E6</span><span>Race 5</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div></div>
-                            <div class="match" id="e7"><div class="match-label"><span>E7</span><span>Race 5</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div></div>
-                            <div class="match" id="e8"><div class="match-label"><span>E8</span><span>Race 5</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div><div class="slot"><span class="puesto">?</span><span class="nombre incognita">Por sorteo</span></div></div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="col-title">Octavos · Race 5</div>
-                        <div class="col-body">
-                            <div class="match" id="o1" data-from="e1"><div class="match-label"><span>Octavo 1</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">1</span><span class="nombre">johnny</span></div><div class="slot"><span class="puesto">E1</span><span class="nombre incognita">Ganador E1</span></div></div>
-                            <div class="match" id="o2" data-from="e2"><div class="match-label"><span>Octavo 2</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">2</span><span class="nombre">pablo</span></div><div class="slot"><span class="puesto">E2</span><span class="nombre incognita">Ganador E2</span></div></div>
-                            <div class="match" id="o3" data-from="e3"><div class="match-label"><span>Octavo 3</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">3</span><span class="nombre">connor</span></div><div class="slot"><span class="puesto">E3</span><span class="nombre incognita">Ganador E3</span></div></div>
-                            <div class="match" id="o4" data-from="e4"><div class="match-label"><span>Octavo 4</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">4</span><span class="nombre">alexf</span></div><div class="slot"><span class="puesto">E4</span><span class="nombre incognita">Ganador E4</span></div></div>
-                            <div class="match" id="o5" data-from="e5"><div class="match-label"><span>Octavo 5</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">5</span><span class="nombre">roman</span></div><div class="slot"><span class="puesto">E5</span><span class="nombre incognita">Ganador E5</span></div></div>
-                            <div class="match" id="o6" data-from="e6"><div class="match-label"><span>Octavo 6</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">6</span><span class="nombre">katee</span></div><div class="slot"><span class="puesto">E6</span><span class="nombre incognita">Ganador E6</span></div></div>
-                            <div class="match" id="o7" data-from="e7"><div class="match-label"><span>Octavo 7</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">7</span><span class="nombre">amauris</span></div><div class="slot"><span class="puesto">E7</span><span class="nombre incognita">Ganador E7</span></div></div>
-                            <div class="match" id="o8" data-from="e8"><div class="match-label"><span>Octavo 8</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">8</span><span class="nombre">angel</span></div><div class="slot"><span class="puesto">E8</span><span class="nombre incognita">Ganador E8</span></div></div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="col-title">Cuartos · Race 5</div>
-                        <div class="col-body">
-                            <div class="match" id="c1" data-from="o1,o2"><div class="match-label"><span>Cuarto 1</span><span>4–8 nov</span></div><div class="slot"><span class="puesto">O1</span><span class="nombre incognita">Ganador Octavo 1</span></div><div class="slot"><span class="puesto">O2</span><span class="nombre incognita">Ganador Octavo 2</span></div></div>
-                            <div class="match" id="c2" data-from="o3,o4"><div class="match-label"><span>Cuarto 2</span><span>4–8 nov</span></div><div class="slot"><span class="puesto">O3</span><span class="nombre incognita">Ganador Octavo 3</span></div><div class="slot"><span class="puesto">O4</span><span class="nombre incognita">Ganador Octavo 4</span></div></div>
-                            <div class="match" id="c3" data-from="o5,o6"><div class="match-label"><span>Cuarto 3</span><span>4–8 nov</span></div><div class="slot"><span class="puesto">O5</span><span class="nombre incognita">Ganador Octavo 5</span></div><div class="slot"><span class="puesto">O6</span><span class="nombre incognita">Ganador Octavo 6</span></div></div>
-                            <div class="match" id="c4" data-from="o7,o8"><div class="match-label"><span>Cuarto 4</span><span>4–8 nov</span></div><div class="slot"><span class="puesto">O7</span><span class="nombre incognita">Ganador Octavo 7</span></div><div class="slot"><span class="puesto">O8</span><span class="nombre incognita">Ganador Octavo 8</span></div></div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="col-title">Semis · Race 7</div>
-                        <div class="col-body">
-                            <div class="match" id="s1" data-from="c1,c2"><div class="match-label"><span>Semi 1</span><span>11–15 nov</span></div><div class="slot"><span class="puesto">C1</span><span class="nombre incognita">Ganador Cuarto 1</span></div><div class="slot"><span class="puesto">C2</span><span class="nombre incognita">Ganador Cuarto 2</span></div></div>
-                            <div class="match" id="s2" data-from="c3,c4"><div class="match-label"><span>Semi 2</span><span>11–15 nov</span></div><div class="slot"><span class="puesto">C3</span><span class="nombre incognita">Ganador Cuarto 3</span></div><div class="slot"><span class="puesto">C4</span><span class="nombre incognita">Ganador Cuarto 4</span></div></div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="col-title">Final · Race 9</div>
-                        <div class="col-body">
-                            <div class="match" id="f1" data-from="s1,s2"><div class="match-label"><span>La Final</span><span>18–22 nov</span></div><div class="slot"><span class="puesto">S1</span><span class="nombre incognita">Ganador Semi 1</span></div><div class="slot"><span class="puesto">S2</span><span class="nombre incognita">Ganador Semi 2</span></div></div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="col-title">Campeón</div>
-                        <div class="col-body"><div class="champion" id="champ" data-from="f1"><span class="crown">🏆</span><span class="label">Campeón</span><div class="name" id="champ-name">?</div></div></div>
-                    </div>
+            <div class="lock-wrap">
+                <svg class="lock" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="13" y="28" width="38" height="27" rx="4"></rect>
+                    <path d="M21 28 V19 a11 11 0 0 1 22 0 v9"></path>
+                    <circle cx="32" cy="40" r="3.2" fill="currentColor" stroke="none"></circle>
+                    <path d="M32 43.2 V47.5"></path>
+                </svg>
+                <h1 class="lock-title">Cuadro bloqueado</h1>
+                <p class="lock-text">Los enfrentamientos de la <strong>repesca</strong> y de los <strong>octavos</strong> se publican mañana, <strong>sábado 24 de octubre a las 12:00</strong>.</p>
+                <p class="lock-sub" id="cd-note">Faltan</p>
+                <div class="countdown" id="cd" aria-live="polite">
+                    <div class="cd-cell"><span class="cd-num" id="cd-d">00</span><span class="cd-lab">Días</span></div>
+                    <div class="cd-cell"><span class="cd-num" id="cd-h">00</span><span class="cd-lab">Horas</span></div>
+                    <div class="cd-cell"><span class="cd-num" id="cd-m">00</span><span class="cd-lab">Min</span></div>
+                    <div class="cd-cell"><span class="cd-num" id="cd-s">00</span><span class="cd-lab">Seg</span></div>
                 </div>
             </div>
-            <div class="leyenda">
-                <span><i class="ok"></i> Nombre confirmado (matemáticamente fijo)</span>
-                <span><i class="q"></i> Por definir al cerrar la fase de grupos</span>
-            </div>
-            <p class="ot-nota">
-                Los ocho primeros de la tabla entran directos a octavos. Los puestos 9.º a 24.º juegan la repesca: 8 eliminatorias a partido único y carrera a 5. Los puestos 25.º al 30.º quedan eliminados. Desde octavos: carrera a 5; semifinales a 7; final a 9.
-            </p>
-            <p class="ot-nota" style="margin-top:1rem;">
-                <strong>Cómo se sortea la repesca.</strong> Los 16 jugadores situados del 9.º al 24.º entran en un único bombo. Se forman 8 eliminatorias con una condición: <strong>no puede repetirse ningún enfrentamiento de la fase de grupos</strong>. Dicho de otra forma, cada jugador de la repesca se mide a uno de los rivales del bombo con el que todavía no ha jugado. Si en algún momento un cruce obligara a repetir, se rehace ese emparejamiento. Los 8 ganadores se reparten en octavos contra los 8 primeros de la tabla.
-            </p>
-            <p class="ot-nota" style="margin-top:1rem;">
-                Ahora mismo solo están cerrados los puestos <strong>1.º a 13.º</strong>. El resto depende del último partido de la fase de grupos, <strong>Lucas–Nino</strong>. Por eso en el bombo solo llevan nombre los puestos ya inamovibles.
-            </p>
         </section>
     </main>
     <footer class="ot-footer">
@@ -167,70 +130,39 @@
     <script src="../js/iris-cursor.js"></script>
     <script>
         (function () {
-            var bracket = document.getElementById('bracket');
-            var stage = document.getElementById('stage');
-            var svg = document.getElementById('lines');
-            function rel(el) { var r = el.getBoundingClientRect(); var br = bracket.getBoundingClientRect(); return { left: r.left - br.left, right: r.right - br.left, top: r.top - br.top, bottom: r.bottom - br.top, w: r.width, h: r.height }; }
-            function rightCenter(el) { var x = rel(el); return { x: x.right, y: x.top + x.h / 2 }; }
-            function leftCenter(el) { var x = rel(el); return { x: x.left, y: x.top + x.h / 2 }; }
-            function draw() {
-                var W = bracket.scrollWidth;
-                var H = bracket.scrollHeight;
-                svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-                svg.style.width = W + 'px';
-                svg.style.height = H + 'px';
-                svg.innerHTML = '';
-                svg.setAttribute('width', W);
-                svg.setAttribute('height', H);
-                function path(points) {
-                    var d = 'M ' + points.map(function (p, i) { return (i === 0 ? '' : 'L ') + p.x + ' ' + p.y; }).join(' ');
-                    var el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    el.setAttribute('d', d);
-                    el.setAttribute('fill', 'none');
-                    el.setAttribute('stroke', 'rgba(212,175,55,0.42)');
-                    el.setAttribute('stroke-width', '1.5');
-                    el.setAttribute('stroke-linejoin', 'round');
-                    svg.appendChild(el);
+            // Sábado 24 de octubre de 2026, 12:00 hora peninsular (CEST, UTC+2)
+            var target = new Date('2026-10-24T12:00:00+02:00').getTime();
+            var cd = document.getElementById('cd');
+            var note = document.getElementById('cd-note');
+            var el = {
+                d: document.getElementById('cd-d'),
+                h: document.getElementById('cd-h'),
+                m: document.getElementById('cd-m'),
+                s: document.getElementById('cd-s')
+            };
+            function pad(n) { return String(n).padStart(2, '0'); }
+            function tick() {
+                var diff = target - Date.now();
+                if (diff <= 0) {
+                    cd.classList.add('cd-done');
+                    note.textContent = 'El cuadro se está publicando';
+                    el.d.textContent = '00';
+                    el.h.textContent = '00';
+                    el.m.textContent = '00';
+                    el.s.textContent = '00';
+                    return;
                 }
-                var map1a1 = { e1: 'o1', e2: 'o2', e3: 'o3', e4: 'o4', e5: 'o5', e6: 'o6', e7: 'o7', e8: 'o8' };
-                Object.keys(map1a1).forEach(function (rid) {
-                    var from = document.getElementById(rid);
-                    var to = document.getElementById(map1a1[rid]);
-                    if (!from || !to) return;
-                    var a = rightCenter(from), b = leftCenter(to);
-                    var midX = a.x + (b.x - a.x) / 2;
-                    path([a, { x: midX, y: a.y }, { x: midX, y: b.y }, b]);
-                });
-                function connect2(ids, toId) {
-                    var to = document.getElementById(toId);
-                    if (!to) return;
-                    var b = leftCenter(to);
-                    var points = ids.map(function (id) { return rightCenter(document.getElementById(id)); });
-                    var maxX = Math.max.apply(null, points.map(function (p) { return p.x; }));
-                    var midX = maxX + (b.x - maxX) / 2;
-                    points.forEach(function (a) {
-                        path([a, { x: midX, y: a.y }, { x: midX, y: b.y }, b]);
-                    });
-                }
-                connect2(['o1','o2'], 'c1');
-                connect2(['o3','o4'], 'c2');
-                connect2(['o5','o6'], 'c3');
-                connect2(['o7','o8'], 'c4');
-                connect2(['c1','c2'], 's1');
-                connect2(['c3','c4'], 's2');
-                connect2(['s1','s2'], 'f1');
-                var f = document.getElementById('f1');
-                var ch = document.getElementById('champ');
-                if (f && ch) {
-                    var a2 = rightCenter(f), b2 = leftCenter(ch);
-                    var mx = a2.x + (b2.x - a2.x) / 2;
-                    path([a2, { x: mx, y: a2.y }, { x: mx, y: b2.y }, b2]);
-                }
+                var s = Math.floor(diff / 1000);
+                var d = Math.floor(s / 86400); s -= d * 86400;
+                var h = Math.floor(s / 3600); s -= h * 3600;
+                var m = Math.floor(s / 60); s -= m * 60;
+                el.d.textContent = pad(d);
+                el.h.textContent = pad(h);
+                el.m.textContent = pad(m);
+                el.s.textContent = pad(s);
+                setTimeout(tick, 1000);
             }
-            window.addEventListener('load', draw);
-            window.addEventListener('resize', function () { setTimeout(draw, 120); });
-            if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
-            setTimeout(draw, 400);
+            tick();
         })();
     </script>
 </body>
