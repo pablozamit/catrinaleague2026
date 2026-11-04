@@ -9,14 +9,14 @@
     <style>
         .bracket-stage { position: relative; overflow-x: auto; overflow-y: hidden; padding: 1.5rem 1rem 2.5rem; border: 1px solid var(--hairline); background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,175,55,0.08), transparent 60%), #0b0b0b; -webkit-overflow-scrolling: touch; }
         .bracket-hint { text-align: center; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.25em; color: var(--muted); text-transform: uppercase; margin: 0 0 1rem; }
-        .bracket { position: relative; display: grid; grid-template-columns: repeat(6, 178px); gap: 2.2rem; min-width: max-content; align-items: stretch; padding-top: 2.8rem; }
-        .bracket-lines { position: absolute; top: 0; left: 0; pointer-events: none; overflow: visible; z-index: 0; }
+        .bracket { position: relative; display: grid; grid-template-columns: repeat(6, 140px); gap: 1.2rem; width: max-content; min-width: max-content; align-items: stretch; padding-top: 2.8rem; margin: 0 auto; }
+        .bracket-lines { position: absolute; top: 1.5rem; left: 1rem; pointer-events: none; overflow: visible; z-index: 0; }
         .col { position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 100%; }
-        .col-title { position: absolute; top: 0; transform: translateY(-0.2rem); font-family: var(--font-display); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); text-align: center; width: 178px; padding-bottom: 0.5rem; border-bottom: 1px solid var(--gold-dim); white-space: nowrap; }
+        .col-title { position: absolute; top: 0; transform: translateY(-0.2rem); font-family: var(--font-display); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); text-align: center; width: 140px; padding-bottom: 0.5rem; border-bottom: 1px solid var(--gold-dim); white-space: nowrap; }
         .col-body { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 0.8rem; padding-top: 2.2rem; }
         .match { position: relative; background: linear-gradient(160deg, #171717 0%, #101010 100%); border: 1px solid rgba(212,175,55,0.22); border-radius: 4px; overflow: hidden; transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s; box-shadow: 0 2px 12px rgba(0,0,0,0.45); }
         .match:hover { border-color: var(--gold); box-shadow: 0 0 0 1px rgba(212,175,55,0.35), 0 0 24px rgba(212,175,55,0.18); transform: translateY(-1px); }
-        .match-label { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.18em; color: var(--gold); background: rgba(212,175,55,0.10); border-bottom: 1px solid rgba(212,175,55,0.18); padding: 0.28rem 0.5rem; text-transform: uppercase; display: flex; justify-content: space-between; }
+        .match-label { font-family: var(--font-mono); font-size: 0.48rem; letter-spacing: 0.08em; color: var(--gold); background: rgba(212,175,55,0.10); border-bottom: 1px solid rgba(212,175,55,0.18); padding: 0.26rem 0.45rem; text-transform: uppercase; display: flex; justify-content: space-between; gap: 0.4rem; white-space: nowrap; }
         .slot { display: flex; align-items: center; gap: 0.55rem; padding: 0.42rem 0.6rem; min-height: 2rem; }
         .slot + .slot { border-top: 1px solid rgba(245,245,245,0.07); }
         .slot .puesto { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); min-width: 1.6rem; text-align: center; border: 1px solid rgba(245,245,245,0.12); border-radius: 2px; padding: 0.08rem 0.2rem; flex-shrink: 0; }
@@ -43,7 +43,7 @@
         .bombo-list li { display: flex; align-items: center; gap: 0.55rem; padding: 0.42rem 0.6rem; border: 1px solid rgba(212,175,55,0.45); border-radius: 3px; background: rgba(212,175,55,0.08); }
         .bombo-list .pos { font-family: var(--font-mono); font-size: 0.62rem; color: var(--gold); border: 1px solid var(--gold); border-radius: 2px; padding: 0.06rem 0.3rem; min-width: 1.7rem; text-align: center; }
         .bombo-list .who { font-size: 0.82rem; font-weight: 600; color: var(--gold-light); font-style: normal; }
-        @media (max-width: 720px) { .bracket { grid-template-columns: repeat(6, 148px); gap: 1.6rem; } .col-title { width: 148px; letter-spacing: 0.1em; } .slot .nombre { font-size: 0.76rem; } }
+        @media (max-width: 720px) { .bracket { grid-template-columns: repeat(6, 132px); gap: 1rem; } .col-title { width: 132px; letter-spacing: 0.1em; } .slot .nombre { font-size: 0.76rem; } }
     </style>
 </head>
 <body class="otono">
@@ -112,29 +112,29 @@
                             <div class="match" id="o5" data-from="e5"><div class="match-label"><span>Octavo 5</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">5</span><span class="nombre">roman</span></div><div class="slot seguro"><span class="puesto">17</span><span class="nombre">joel</span></div></div>
                             <div class="match" id="o6" data-from="e6"><div class="match-label"><span>Octavo 6</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">6</span><span class="nombre">katee</span></div><div class="slot seguro"><span class="puesto">19</span><span class="nombre">joe</span></div></div>
                             <div class="match" id="o7" data-from="e7"><div class="match-label"><span>Octavo 7</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">7</span><span class="nombre">amauris</span></div><div class="slot seguro"><span class="puesto">22</span><span class="nombre">magnus</span></div></div>
-                            <div class="match" id="o8" data-from="e8"><div class="match-label"><span>Octavo 8</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">8</span><span class="nombre">angel</span></div><div class="slot seguro"><span class="puesto">24</span><span class="nombre">lucas</span></div></div
+                            <div class="match" id="o8" data-from="e8"><div class="match-label"><span>Octavo 8</span><span>28 oct–1 nov</span></div><div class="slot seguro"><span class="puesto">8</span><span class="nombre">angel</span></div><div class="slot seguro"><span class="puesto">24</span><span class="nombre">lucas</span></div></div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="col-title">Cuartos · Race 5</div>
                         <div class="col-body">
                             <div class="match" id="c1" data-from="o1,o2"><div class="match-label"><span>Cuarto 1</span><span>4–8 nov</span></div><div class="slot seguro"><span class="puesto">O1</span><span class="nombre">johnny</span></div><div class="slot seguro"><span class="puesto">O2</span><span class="nombre">pablo</span></div></div>
-                            <div class="match" id="c2" data-from="o3,o4"><div class="match-label"><span>Cuarto 2</span><span>4–8 nov</span></div><div class="slot"><span class="puesto">O3</span><span class="nombre incognita">Ganador Octavo 3</span></div><div class="slot seguro"><span class="puesto">O4</span><span class="nombre">alexf</span></div></div>
-                            <div class="match" id="c3" data-from="o5,o6"><div class="match-label"><span>Cuarto 3</span><span>4–8 nov</span></div><div class="slot"><span class="puesto">O5</span><span class="nombre incognita">Ganador Octavo 5</span></div><div class="slot"><span class="puesto">O6</span><span class="nombre incognita">Ganador Octavo 6</span></div></div>
-                            <div class="match" id="c4" data-from="o7,o8"><div class="match-label"><span>Cuarto 4</span><span>4–8 nov</span></div><div class="slot seguro"><span class="puesto">O7</span><span class="nombre">amauris</span></div><div class="slot"><span class="puesto">O8</span><span class="nombre incognita">Ganador Octavo 8</span></div></div>
+                            <div class="match" id="c2" data-from="o3,o4"><div class="match-label"><span>Cuarto 2</span><span>4–8 nov</span></div><div class="slot"><span class="puesto">O3</span><span class="nombre incognita">Ganador O3</span></div><div class="slot seguro"><span class="puesto">O4</span><span class="nombre">alexf</span></div></div>
+                            <div class="match" id="c3" data-from="o5,o6"><div class="match-label"><span>Cuarto 3</span><span>4–8 nov</span></div><div class="slot"><span class="puesto">O5</span><span class="nombre incognita">Ganador O5</span></div><div class="slot"><span class="puesto">O6</span><span class="nombre incognita">Ganador O6</span></div></div>
+                            <div class="match" id="c4" data-from="o7,o8"><div class="match-label"><span>Cuarto 4</span><span>4–8 nov</span></div><div class="slot seguro"><span class="puesto">O7</span><span class="nombre">amauris</span></div><div class="slot"><span class="puesto">O8</span><span class="nombre incognita">Ganador O8</span></div></div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="col-title">Semis · Race 7</div>
                         <div class="col-body">
-                            <div class="match" id="s1" data-from="c1,c2"><div class="match-label"><span>Semi 1</span><span>11–15 nov</span></div><div class="slot"><span class="puesto">C1</span><span class="nombre incognita">Ganador Cuarto 1</span></div><div class="slot"><span class="puesto">C2</span><span class="nombre incognita">Ganador Cuarto 2</span></div></div>
-                            <div class="match" id="s2" data-from="c3,c4"><div class="match-label"><span>Semi 2</span><span>11–15 nov</span></div><div class="slot"><span class="puesto">C3</span><span class="nombre incognita">Ganador Cuarto 3</span></div><div class="slot"><span class="puesto">C4</span><span class="nombre incognita">Ganador Cuarto 4</span></div></div>
+                            <div class="match" id="s1" data-from="c1,c2"><div class="match-label"><span>Semi 1</span><span>11–15 nov</span></div><div class="slot"><span class="puesto">C1</span><span class="nombre incognita">Ganador C1</span></div><div class="slot"><span class="puesto">C2</span><span class="nombre incognita">Ganador C2</span></div></div>
+                            <div class="match" id="s2" data-from="c3,c4"><div class="match-label"><span>Semi 2</span><span>11–15 nov</span></div><div class="slot"><span class="puesto">C3</span><span class="nombre incognita">Ganador C3</span></div><div class="slot"><span class="puesto">C4</span><span class="nombre incognita">Ganador C4</span></div></div>
                         </div>
                     </div>
                     <div class="col">
                         <div class="col-title">Final · Race 9</div>
                         <div class="col-body">
-                            <div class="match" id="f1" data-from="s1,s2"><div class="match-label"><span>La Final</span><span>18–22 nov</span></div><div class="slot"><span class="puesto">S1</span><span class="nombre incognita">Ganador Semi 1</span></div><div class="slot"><span class="puesto">S2</span><span class="nombre incognita">Ganador Semi 2</span></div></div>
+                            <div class="match" id="f1" data-from="s1,s2"><div class="match-label"><span>La Final</span><span>18–22 nov</span></div><div class="slot"><span class="puesto">S1</span><span class="nombre incognita">Ganador S1</span></div><div class="slot"><span class="puesto">S2</span><span class="nombre incognita">Ganador S2</span></div></div>
                         </div>
                     </div>
                     <div class="col">
